@@ -4,6 +4,9 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+
 const inter = Inter({subsets:['latin'],variable:'--font-sans'})
 
 const fontMono = Geist_Mono({
@@ -13,18 +16,16 @@ const fontMono = Geist_Mono({
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable)}
-    >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+    <html lang="es">
+      <body className={cn(inter.variable, fontMono.variable, "antialiased bg-cover bg-center bg-fixed")}>
+        <Header />
+        {children}
+        <Footer />
       </body>
     </html>
-  )
+  );
 }
