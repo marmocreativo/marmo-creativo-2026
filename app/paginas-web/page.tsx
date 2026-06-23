@@ -120,7 +120,7 @@ export default function Page() {
       <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/web_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
@@ -305,7 +305,7 @@ export default function Page() {
                 rel="noopener noreferrer"
               >
                 <SiWhatsapp className="mr-2 w-5 h-5" />
-                Contactar por WhatsApp
+                Contactar Ahora
               </a>
             </Button>
           </div>

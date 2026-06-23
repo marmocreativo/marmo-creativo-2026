@@ -26,7 +26,13 @@ export function Footer() {
             className="mt-6 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-[0_0_30px_rgba(220,38,38,0.6)] hover:shadow-[0_0_45px_rgba(220,38,38,0.8)] transition-shadow"
             asChild
           >
-            <Link href="/outsourcing">Contactar Ahora</Link>
+            <a
+              href="https://wa.me/525523995604?text=Hola%2C%20me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20servicios."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Contactar Ahora
+            </a>
           </Button>
         </div>
       </div>

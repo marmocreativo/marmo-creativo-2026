@@ -93,7 +93,7 @@ export default function Page() {
       <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/custom_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
@@ -119,7 +119,7 @@ export default function Page() {
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-3">
                   <CircleCheckBig className="w-5 h-5 text-green-400 shrink-0" />
                   <span className="text-sm sm:text-base">Cada funcionalidad pensada para tu proceso real</span>
                 </div>
@@ -132,7 +132,7 @@ export default function Page() {
 
             <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
               <div className="text-center">
-                <h3 className="text-lg sm:text-xl font-bold mb-2">
+                <h3 className="hidden sm:block text-lg sm:text-xl font-bold mb-2">
                   CMS Personalizado
                 </h3>
                 <p className="hidden sm:block text-sm text-secondary-foreground/60 mb-6">
@@ -140,13 +140,10 @@ export default function Page() {
                 </p>
 
                 <div className="mb-6">
-                  <div className="text-sm text-secondary-foreground/60 mb-1">
-                    Inversión
-                  </div>
                   <div className="text-3xl sm:text-4xl font-bold mb-2 text-accent">
                     Cotización a Medida
                   </div>
-                  <div className="text-sm text-secondary-foreground/60">
+                  <div className="hidden sm:block text-sm text-secondary-foreground/60">
                     Cada proyecto es distinto, lo cotizamos según tu alcance
                   </div>
                 </div>
@@ -176,7 +173,7 @@ export default function Page() {
         <a
           id="siguiente-seccion"
           href="#siguiente-seccion"
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors"
+          className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors"
         >
           <span className="text-sm font-medium">Leer más</span>
           <ChevronDown className="w-6 h-6 animate-bounce" />

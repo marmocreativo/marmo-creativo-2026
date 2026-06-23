@@ -91,7 +91,7 @@ export default function Page() {
       <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/grafico_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
@@ -297,7 +297,7 @@ export default function Page() {
             {socialPlans.map((plan) => (
               <div
                 key={plan.title}
-                className={`relative rounded-2xl p-6 pt-12 text-center shadow-xl transition-transform duration-300 ${
+                className={`relative rounded-2xl p-6 pt-12 mb-24 text-center shadow-xl transition-transform duration-300 ${
                   plan.featured
                     ? "bg-gradient-to-br from-secondary to-primary lg:scale-110 lg:z-10 shadow-2xl"
                     : "bg-white border border-primary/20"

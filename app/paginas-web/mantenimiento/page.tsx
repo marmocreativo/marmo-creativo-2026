@@ -123,7 +123,7 @@ export default function Page() {
       <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/mantenimiento_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
@@ -142,7 +142,7 @@ export default function Page() {
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 leading-relaxed">
+              <p className="hidden sm:block text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 leading-relaxed">
                 Ya sea por descuido propio o porque el desarrollador anterior
                 desapareció, un sitio sin mantenimiento es un riesgo real para
                 una empresa grande. Nosotros lo rescatamos y lo mantenemos
@@ -150,7 +150,7 @@ export default function Page() {
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-3">
                   <CircleCheckBig className="w-5 h-5 text-green-400 shrink-0" />
                   <span className="text-sm sm:text-base">Protección 24/7 contra hackers y caídas</span>
                 </div>
@@ -195,7 +195,7 @@ export default function Page() {
         <a
           id="siguiente-seccion"
           href="#siguiente-seccion"
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors"
+          className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors"
         >
           <span className="text-sm font-medium">Leer más</span>
           <ChevronDown className="w-6 h-6 animate-bounce" />
@@ -339,7 +339,7 @@ export default function Page() {
             {plans.map((plan) => (
               <div
                 key={plan.title}
-                className={`relative rounded-2xl p-6 pt-12 shadow-xl transition-transform duration-300 ${
+                className={`relative rounded-2xl p-6 pt-12 mb-24 shadow-xl transition-transform duration-300 ${
                   plan.featured
                     ? "bg-gradient-to-br from-secondary to-primary lg:scale-110 lg:z-10 shadow-2xl"
                     : "bg-white border border-primary/20"
@@ -459,7 +459,7 @@ export default function Page() {
 
               <Button
                 asChild
-                className="rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white px-10 py-7 text-lg font-semibold hover:opacity-90 transition-opacity"
+                className="rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white px-10 py-7 text-md font-semibold hover:opacity-90 transition-opacity"
                 size="lg"
               >
                 <a

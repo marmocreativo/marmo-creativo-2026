@@ -84,7 +84,7 @@ export default function Page() {
       <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/corporativo_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
@@ -103,14 +103,14 @@ export default function Page() {
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 leading-relaxed">
+              <p className="hidden sm:block text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 leading-relaxed">
                 Si tu empresa ya tiene trayectoria, necesitas algo más que una
                 landing page: un sitio con varias secciones que organice toda
                 tu información y transmita la solidez que tu negocio ya tiene.
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-3">
                   <CircleCheckBig className="w-5 h-5 text-green-400 shrink-0" />
                   <span className="text-sm sm:text-base">Varias secciones, cada una con su propósito claro</span>
                 </div>
@@ -136,9 +136,6 @@ export default function Page() {
                   </div>
                   <div className="text-4xl sm:text-5xl font-bold mb-2 text-accent">
                     $7,000 MXN
-                  </div>
-                  <div className="text-sm text-secondary-foreground/60">
-                    El alcance final se cotiza según tu proyecto
                   </div>
                 </div>
 
@@ -382,7 +379,7 @@ export default function Page() {
                   rel="noopener noreferrer"
                 >
                   <SiWhatsapp className="w-5 h-5 mr-2" />
-                  Quiero mi Sitio Corporativo
+                  Quiero mi Sitio
                 </a>
               </Button>
             </div>

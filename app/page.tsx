@@ -140,13 +140,13 @@ export default function Page() {
 
         <div className="max-w-6xl mx-auto px-6 text-center space-y-6 sm:space-y-8 w-full">
           <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
-            Transformamos tus Ideas en
-            <span className="block text-accent">Soluciones Digitales</span>
+            Impulsamos tu Negocio
+            <span className="block text-accent">Hasta las Estrellas</span>
           </h1>
 
           <p className="text-base sm:text-xl md:text-2xl text-secondary-foreground/80 max-w-3xl mx-auto leading-relaxed">
-            Desarrollo web, software personalizado, UX/UI y diseño gráfico
-            para empresas que buscan destacar en el mercado digital.
+            Desarrollo web, software a la medida y diseño gráfico
+            para empresas listas para despegar en el universo digital.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -361,7 +361,7 @@ export default function Page() {
                   rel="noopener noreferrer"
                 >
                   <SiWhatsapp className="mr-2 w-5 h-5" />
-                  Solicitar Consulta Gratuita
+                  Consulta Gratuita
                 </a>
               </Button>
             </div>

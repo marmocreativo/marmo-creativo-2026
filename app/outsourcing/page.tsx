@@ -62,7 +62,7 @@ const services = [
     title: "Desarrollo Web",
     description: "Convertimos tu diseño en sitios corporativos, e-commerce y aplicaciones web",
     delivery: "2-8 semanas",
-    popular: true,
+    popular: false,
   },
   {
     icon: Smartphone,
@@ -83,7 +83,7 @@ const services = [
     title: "Automatizaciones",
     description: "Bots y scripts para optimizar procesos de tus clientes",
     delivery: "1-4 semanas",
-    popular: true,
+    popular: false,
   },
 ];
 
@@ -165,7 +165,7 @@ export default function Page() {
       <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/outsourcing_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
@@ -327,7 +327,7 @@ export default function Page() {
                         {service.title}
                       </h3>
                       {service.popular && (
-                        <span className="bg-accent/20 text-accent border border-accent/40 text-xs px-2 py-0.5 rounded-full">
+                        <span className="bg-secondary/20 text-secondary border border-secondary/40 text-xs px-2 py-0.5 rounded-full">
                           Popular
                         </span>
                       )}
@@ -367,7 +367,7 @@ export default function Page() {
             {partnerships.map((plan) => (
               <div
                 key={plan.title}
-                className={`relative rounded-2xl p-6 pt-12 text-center shadow-xl transition-transform duration-300 ${
+                className={`relative rounded-2xl p-6 pt-12 mb-24 text-center shadow-xl transition-transform duration-300 ${
                   plan.featured
                     ? "bg-gradient-to-br from-secondary to-primary lg:scale-110 lg:z-10 shadow-2xl"
                     : "bg-white border border-primary/20"
@@ -529,7 +529,7 @@ export default function Page() {
                 rel="noopener noreferrer"
               >
                 <SiWhatsapp className="mr-2 w-5 h-5" />
-                Contactar por WhatsApp
+                Contactar Ahora
               </a>
             </Button>
 

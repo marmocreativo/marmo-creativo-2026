@@ -85,7 +85,7 @@ export default function Page() {
       <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/wordpress_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
@@ -104,14 +104,14 @@ export default function Page() {
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 leading-relaxed">
+              <p className="hidden sm:block text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 leading-relaxed">
                 Un sitio web completo, construido en la plataforma más usada
                 del mundo. Fácil de actualizar, seguro y con todo lo que tu
                 negocio necesita.
               </p>
 
               <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-3">
                   <CircleCheckBig className="w-5 h-5 text-green-400 shrink-0" />
                   <span className="text-sm sm:text-base">Editor intuitivo, sin necesidad de programar</span>
                 </div>
@@ -138,9 +138,6 @@ export default function Page() {
                   <div className="text-4xl sm:text-5xl font-bold mb-2 text-accent">
                     $8,000 MXN
                   </div>
-                  <div className="text-sm text-secondary-foreground/60">
-                    El alcance final se cotiza según tu proyecto
-                  </div>
                 </div>
 
                 <div className="hidden sm:block text-xs text-secondary-foreground/50 mb-6">
@@ -157,7 +154,7 @@ export default function Page() {
                     rel="noopener noreferrer"
                   >
                     <SiWhatsapp className="w-5 h-5 mr-2" />
-                    Quiero mi WordPress Profesional
+                    Quiero mi WordPress
                   </a>
                 </Button>
               </div>
@@ -380,7 +377,7 @@ export default function Page() {
                   rel="noopener noreferrer"
                 >
                   <SiWhatsapp className="w-5 h-5 mr-2" />
-                  Quiero mi WordPress Profesional
+                  Quiero mi WordPress
                 </a>
               </Button>
             </div>

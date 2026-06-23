@@ -136,7 +136,7 @@ export default function Page() {
       <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/software_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
@@ -155,14 +155,14 @@ export default function Page() {
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 leading-relaxed">
+              <p className="text-sm sm:text-lg md:text-xl text-secondary-foreground/80 mb-4 sm:mb-8 leading-relaxed">
                 Desarrollamos apps móviles, aplicaciones de escritorio, web
                 apps y automatizaciones con JavaScript. Una tecnología,
                 infinitas posibilidades para tu negocio.
               </p>
 
-              <div className="space-y-3 mb-8">
-                <div className="flex items-center gap-3">
+              <div className="hidden sm:block space-y-3 mb-8">
+                <div className="hidden sm:flex items-center gap-3">
                   <CircleCheckBig className="w-5 h-5 text-green-400 shrink-0" />
                   <span className="text-sm sm:text-base">70% menos costo que desarrollo nativo</span>
                 </div>
@@ -174,7 +174,7 @@ export default function Page() {
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
-              <h3 className="text-lg sm:text-xl font-bold mb-6 text-center">
+              <h3 className="hidden sm:block text-lg sm:text-xl font-bold mb-6 text-center">
                 Tecnologías que Dominamos
               </h3>
 
@@ -222,7 +222,7 @@ export default function Page() {
         <a
           id="siguiente-seccion"
           href="#siguiente-seccion"
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors"
+          className="hidden sm:block absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors"
         >
           <span className="text-sm font-medium">Leer más</span>
           <ChevronDown className="w-6 h-6 animate-bounce" />
@@ -420,7 +420,7 @@ export default function Page() {
                 rel="noopener noreferrer"
               >
                 <SiWhatsapp className="w-5 h-5 mr-2" />
-                ¡Empezar mi Proyecto!
+                ¡Empezar Ahora!
               </a>
             </Button>
           </div>
