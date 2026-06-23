@@ -17,6 +17,7 @@ const fontMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://marmo-creativo.com"),
   title: "Marmo Creativo | Agencia Digital",
   description: "Desarrollo web, software a medida, diseño gráfico y outsourcing creativo.",
   icons: {
