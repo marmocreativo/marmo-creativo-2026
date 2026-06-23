@@ -1,4 +1,6 @@
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+import type { Metadata } from "next";
+import { Geist_Mono, Inter } from "next/font/google"
+import { GoogleAnalytics } from "@next/third-parties/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -14,6 +16,11 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
+export const metadata: Metadata = {
+  title: "Marmo Creativo | Agencia Digital",
+  description: "Desarrollo web, software a medida, diseño gráfico y outsourcing creativo.",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -26,6 +33,7 @@ export default function RootLayout({
         {children}
         <Footer />
       </body>
+      <GoogleAnalytics gaId="G-QTEDWT40GE" />
     </html>
   );
 }

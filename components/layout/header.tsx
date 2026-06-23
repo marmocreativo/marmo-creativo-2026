@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
+import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -15,12 +16,12 @@ import {
 import { NavDropdown } from "./nav-dropdown";
 
 const paginasWebItems = [
+  { label: "Todos los paquetes", href: "/paginas-web" },
   { label: "Landing Pages", href: "/paginas-web/landing-pages" },
   { label: "Sitio Corporativo", href: "/paginas-web/sitio-corporativo" },
   { label: "WordPress", href: "/paginas-web/wordpress" },
   { label: "E-commerce", href: "/paginas-web/ecommerce" },
   { label: "CMS Custom", href: "/paginas-web/cms-custom" },
-  { label: "UX/UI", href: "/paginas-web/ux-ui" },
   { label: "Mantenimiento", href: "/paginas-web/mantenimiento" },
 ];
 
@@ -82,16 +83,25 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          <NavDropdown label="Herramientas" items={herramientasItems} />
         </nav>
 
         {/* Columna 3: Login (desktop) + hamburguesa (móvil) */}
         <div className="flex items-center justify-end gap-2">
           <div className="hidden lg:flex items-center gap-2">
-            <Button variant="secondary" size="sm">
-              Iniciar sesión
+            <Button
+              asChild
+              className="rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white"
+              size="sm"
+            >
+              <a
+                href="https://wa.me/525523995604"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <SiWhatsapp className="w-4 h-4 mr-2" />
+                WhatsApp
+              </a>
             </Button>
-            <Button size="sm">Registrarse</Button>
           </div>
 
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -144,27 +154,21 @@ export function Header() {
 
                 <div className="h-px bg-border my-2" />
 
-                <span className="text-xs font-semibold text-muted-foreground mb-1">
-                  Herramientas
-                </span>
-                {herramientasItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-md px-3 py-2 text-sm hover:bg-muted transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-
-                <div className="h-px bg-border my-2" />
-
                 <div className="flex flex-col gap-2 mt-2">
-                  <Button variant="outline" className="w-full">
-                    Iniciar sesión
+                  <Button
+                    asChild
+                    className="w-full rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white"
+                  >
+                    <a
+                      href="https://wa.me/525523995604"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <SiWhatsapp className="w-4 h-4 mr-2" />
+                      WhatsApp
+                    </a>
                   </Button>
-                  <Button className="w-full">Registrarse</Button>
                 </div>
               </nav>
             </SheetContent>

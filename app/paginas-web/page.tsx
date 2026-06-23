@@ -7,74 +7,109 @@ import {
   Users,
   Star,
   Clock,
-  CircleCheckBig,
   Building,
   FileText,
   ShoppingCart,
-  Database,
-  Phone,
+  Code2,
+  RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SiWhatsapp } from "@icons-pack/react-simple-icons";
+
+export const metadata = {
+  title: "Páginas Web Profesionales | Marmo Creativo",
+  description:
+    "Landing pages, sitios corporativos, WordPress, e-commerce, CMS a medida y mantenimiento web. Soluciones a la medida de tu negocio, en Marmo Creativo.",
+  keywords: [
+    "páginas web México",
+    "desarrollo web profesional CDMX",
+    "landing page sitio corporativo e-commerce",
+    "agencia de desarrollo web",
+    "diseño y desarrollo de páginas web a medida",
+  ],
+  openGraph: {
+    title: "Páginas Web Profesionales | Marmo Creativo",
+    description:
+      "Landing pages, sitios corporativos, WordPress, e-commerce, CMS a medida y mantenimiento web.",
+    url: "https://marmocreativo.com/paginas-web",
+    siteName: "Marmo Creativo",
+    locale: "es_MX",
+    type: "website",
+    images: [
+      {
+        url: "/images/og-paginas-web.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Páginas Web Profesionales - Marmo Creativo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Páginas Web Profesionales",
+    description:
+      "Desde landing pages hasta sistemas a medida. Soluciones para cada tipo de negocio.",
+  },
+  alternates: {
+    canonical: "https://marmocreativo.com/paginas-web",
+  },
+};
 
 const whyUs = [
-  {
-    icon: Zap,
-    title: "Velocidad Optimizada",
-    description: "Carga rápida garantizada para mejor experiencia de usuario",
-  },
-  {
-    icon: Shield,
-    title: "Seguridad Total",
-    description: "SSL certificado y protección contra amenazas",
-  },
-  {
-    icon: Users,
-    title: "Fácil de Usar",
-    description: "Interfaces intuitivas que cualquiera puede manejar",
-  },
-  {
-    icon: Star,
-    title: "Soporte Continuo",
-    description: "Asistencia técnica cuando la necesites",
-  },
+  { icon: Zap, title: "Velocidad Optimizada", description: "Carga rápida garantizada para mejor experiencia de usuario" },
+  { icon: Shield, title: "Seguridad Total", description: "SSL certificado y protección contra amenazas" },
+  { icon: Users, title: "Fácil de Usar", description: "Interfaces intuitivas que cualquiera puede manejar" },
+  { icon: Star, title: "Soporte Continuo", description: "Asistencia técnica cuando la necesites" },
 ];
 
-const packages = [
+const featuredPackages = [
   {
     icon: Globe,
     title: "Landing Page",
-    price: "$4,500",
-    oldPrice: "$5,500",
-    delivery: "Entrega: 5-7 días",
-    description: "Página única optimizada para conversiones y ventas",
-    featured: false,
+    price: "$5,000",
+    delivery: "Entrega: 2 semanas",
+    description: "Una sola página, bien hecha, para negocios que necesitan resolver su presencia en línea de forma simple y directa",
+    href: "/paginas-web/landing-pages",
   },
   {
     icon: Building,
     title: "Sitio Corporativo",
-    price: "$6,000",
-    oldPrice: "$8,000",
-    delivery: "Entrega: 12-16 días",
-    description: "Sitio empresarial completo con hasta 5 secciones",
-    featured: false,
+    price: "$7,000",
+    delivery: "Entrega: 3-4 semanas",
+    description: "Estructura completa con varias secciones, pensado para empresas con trayectoria que necesitan respaldar su presencia",
+    href: "/paginas-web/sitio-corporativo",
   },
   {
+    icon: Code2,
+    title: "CMS Personalizado",
+    price: "Cotización a Medida",
+    delivery: "Entrega: según alcance",
+    description: "Sistemas construidos 100% a la medida cuando tu negocio tiene procesos que ninguna solución estándar resuelve",
+    href: "/paginas-web/cms-custom",
+  },
+];
+
+const secondaryPackages = [
+  {
     icon: FileText,
-    title: "WordPress Pro",
+    title: "WordPress",
     price: "$8,000",
-    oldPrice: "$9,000",
-    delivery: "Entrega: 10-14 días",
-    description: "Sitio web profesional con gestor de contenidos",
-    featured: true,
+    delivery: "4 semanas",
+    href: "/paginas-web/wordpress",
   },
   {
     icon: ShoppingCart,
     title: "E-commerce",
-    price: "$15,000",
-    oldPrice: "$20,000",
-    delivery: "Entrega: 21-30 días",
-    description: "Tienda online completa para vender en línea",
-    featured: false,
+    price: "$20,000",
+    delivery: "5-6 semanas",
+    href: "/paginas-web/ecommerce",
+  },
+  {
+    icon: RefreshCw,
+    title: "Mantenimiento",
+    price: "Desde $800/mes",
+    delivery: "Planes mensuales",
+    href: "/paginas-web/mantenimiento",
   },
 ];
 
@@ -82,7 +117,7 @@ export default function Page() {
   return (
     <>
       {/* Hero */}
-      <section className="relative -mt-20 pt-20 flex items-center text-secondary-foreground overflow-hidden py-24">
+      <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
           style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
@@ -90,30 +125,46 @@ export default function Page() {
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
         <div className="relative max-w-6xl mx-auto px-6 text-center w-full">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-6">
             <Globe className="w-4 h-4" />
             Páginas Web Profesionales
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            Tu presencia digital
-            <span className="text-accent"> profesional</span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            Tu Presencia Digital
+            <span className="text-accent block">Profesional</span>
           </h1>
 
-          <p className="text-xl text-secondary-foreground/80 mb-10 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed">
             Creamos sitios web que convierten visitantes en clientes. Desde
-            landing pages hasta sistemas complejos, tenemos la solución
-            perfecta para tu negocio.
+            landing pages hasta sistemas a medida, tenemos la solución
+            correcta para tu negocio.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg">
-              Ver Paquetes
-              <ArrowRight className="ml-2 w-5 h-5" />
+            <Button
+              asChild
+              className="rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white px-6 sm:px-10 py-5 sm:py-7 text-base sm:text-lg font-semibold hover:opacity-90 transition-opacity w-full sm:w-auto"
+              size="lg"
+            >
+              <a href="#paquetes">
+                Ver Paquetes
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </a>
             </Button>
-            <Button size="lg" variant="outline">
-              <MessageCircle className="mr-2 w-5 h-5" />
-              Consulta Gratis
+            <Button
+              asChild
+              className="rounded-full bg-gradient-to-r from-secondary to-neutral-900 border-2 border-neutral-800 text-white px-6 sm:px-10 py-5 sm:py-7 text-base sm:text-lg font-semibold hover:opacity-90 transition-opacity w-full sm:w-auto"
+              size="lg"
+            >
+              <a
+                href="https://wa.me/525523995604?text=Hola%2C%20quisiera%20una%20consulta%20gratis"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <SiWhatsapp className="mr-2 w-5 h-5" />
+                Consulta Gratis
+              </a>
             </Button>
           </div>
         </div>
@@ -121,16 +172,16 @@ export default function Page() {
 
       {/* Por qué elegirnos */}
       <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
+        className="relative py-16 bg-background bg-cover bg-center bg-fixed overflow-hidden"
         style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
       >
         <div className="relative max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              ¿Por qué elegir nuestros sitios web?
+              ¿Por qué Elegir Nuestros Sitios Web?
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Cada sitio que creamos está diseñado para generar resultados
+              Cada sitio que creamos está pensado para generar resultados
               reales para tu negocio
             </p>
           </div>
@@ -141,8 +192,8 @@ export default function Page() {
                 key={item.title}
                 className="text-center rounded-2xl border border-primary/20 bg-white/40 backdrop-blur-xl p-6 shadow-xl"
               >
-                <div className="w-16 h-16 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <item.icon className="w-8 h-8 text-primary" />
+                <div className="w-14 h-14 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <item.icon className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-primary">
                   {item.title}
@@ -157,105 +208,74 @@ export default function Page() {
       </section>
 
       {/* Paquetes */}
-      <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
-        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
-      >
-        <div className="relative max-w-7xl mx-auto px-6">
+      <section id="paquetes" className="relative py-20 bg-neutral-100 overflow-hidden">
+        <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              Paquetes Estándar
+              Nuestros Paquetes
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Soluciones probadas y optimizadas para diferentes tipos de
-              negocio
+              Soluciones pensadas para cada etapa de tu negocio
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {packages.map((pkg) => (
-              <div
+          {/* Paquetes destacados */}
+          <div className="grid md:grid-cols-3 gap-6 mb-10">
+            {featuredPackages.map((pkg) => (
+              <a
                 key={pkg.title}
-                className={`relative rounded-2xl backdrop-blur-xl p-6 shadow-xl ${
-                  pkg.featured
-                    ? "border-2 border-primary bg-primary/10 lg:scale-105"
-                    : "border border-primary/20 bg-white/40"
-                }`}
+                href={pkg.href}
+                className="group relative rounded-3xl bg-gradient-to-br from-secondary to-primary p-8 pt-14 text-center shadow-2xl transition-transform duration-300 hover:-translate-y-1"
               >
-                {pkg.featured && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <div className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-medium">
-                      Más Popular
-                    </div>
-                  </div>
-                )}
-
-                <div className="text-center mb-4">
-                  <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3 bg-primary/10 border border-primary/30">
-                    <pkg.icon className="w-7 h-7 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-bold mb-2 text-primary">
-                    {pkg.title}
-                  </h3>
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <span className="text-2xl font-bold text-primary">
-                      {pkg.price}
-                    </span>
-                    <span className="text-sm text-muted-foreground line-through">
-                      {pkg.oldPrice}
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    {pkg.description}
-                  </p>
-                  <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-4">
-                    <Clock className="w-3 h-3" />
-                    <span>{pkg.delivery}</span>
-                  </div>
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-white border border-primary/20 rounded-full flex items-center justify-center shadow-md">
+                  <pkg.icon className="w-7 h-7 text-primary" />
                 </div>
 
-                <Button className="w-full" size="sm">
+                <h3 className="text-xl font-bold mb-2 text-white">
+                  {pkg.title}
+                </h3>
+                <div className="text-3xl font-bold mb-1 text-accent">
+                  {pkg.price}
+                </div>
+                <div className="flex items-center justify-center gap-1 text-xs text-white/70 mb-4">
+                  <Clock className="w-3 h-3" />
+                  <span>{pkg.delivery}</span>
+                </div>
+                <p className="text-sm text-white/80 mb-6">
+                  {pkg.description}
+                </p>
+
+                <span className="inline-flex items-center gap-2 rounded-full bg-accent text-accent-foreground px-6 py-3 text-sm font-semibold group-hover:opacity-90 transition-opacity">
                   Ver Detalles
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </div>
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </a>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Custom CMS */}
-      <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
-        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
-      >
-        <div className="relative max-w-4xl mx-auto px-6">
-          <div className="rounded-2xl border border-primary/30 bg-primary/10 backdrop-blur-xl p-8 shadow-xl shadow-primary/10 text-center">
-            <div className="w-16 h-16 bg-primary/20 border border-primary/40 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Database className="w-8 h-8 text-primary" />
-            </div>
-
-            <h2 className="text-2xl md:text-3xl font-bold mb-4 text-primary">
-              ¿Necesitas algo más complejo?
-            </h2>
-            <div className="text-xl font-bold text-primary mb-1">
-              Cotización Personalizada
-            </div>
-            <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-              Para proyectos empresariales que requieren un sistema
-              desarrollado 100% a medida.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button>
-                Ver Detalles
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-              <Button variant="outline">
-                <Phone className="mr-2 w-4 h-4" />
-                Solicitar Cotización
-              </Button>
-            </div>
+          {/* Paquetes secundarios */}
+          <div className="flex flex-wrap justify-center gap-6">
+            {secondaryPackages.map((pkg) => (
+              <a
+                key={pkg.title}
+                href={pkg.href}
+                className="w-full sm:w-[280px] rounded-2xl border border-primary/20 bg-white/60 backdrop-blur-xl p-6 text-center shadow-lg transition-transform duration-300 hover:-translate-y-1"
+              >
+                <div className="w-12 h-12 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <pkg.icon className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="font-bold mb-1 text-primary">
+                  {pkg.title}
+                </h3>
+                <div className="text-lg font-bold text-primary mb-1">
+                  {pkg.price}
+                </div>
+                <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+                  <Clock className="w-3 h-3" />
+                  <span>{pkg.delivery}</span>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -268,16 +288,25 @@ export default function Page() {
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-2xl">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              ¿Necesitas algo diferente?
+              ¿Necesitas Algo Diferente?
             </h2>
             <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
               Cada proyecto es único. Platiquemos sobre tus necesidades
-              específicas y creemos una solución 100% personalizada para tu
-              negocio.
+              específicas y encontremos la solución correcta para tu negocio.
             </p>
-            <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <MessageCircle className="mr-2 w-5 h-5" />
-              Contactar por WhatsApp
+            <Button
+              asChild
+              size="lg"
+              className="bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-10 py-7 text-lg font-semibold"
+            >
+              <a
+                href="https://wa.me/525523995604?text=Hola%2C%20quisiera%20platicar%20sobre%20mi%20proyecto"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <SiWhatsapp className="mr-2 w-5 h-5" />
+                Contactar por WhatsApp
+              </a>
             </Button>
           </div>
         </div>

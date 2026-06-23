@@ -21,7 +21,11 @@ export function Footer() {
           <p className="mt-2 text-secondary-foreground/80">
             Contáctanos y hagamos realidad tu siguiente proyecto digital.
           </p>
-          <Button size="lg" className="mt-6 bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+          <Button
+            size="lg"
+            className="mt-6 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-[0_0_30px_rgba(220,38,38,0.6)] hover:shadow-[0_0_45px_rgba(220,38,38,0.8)] transition-shadow"
+            asChild
+          >
             <Link href="/outsourcing">Contactar Ahora</Link>
           </Button>
         </div>

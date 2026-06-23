@@ -1,24 +1,63 @@
 import Image from "next/image";
 import {
-  Code,
-  MessageCircle,
-  ArrowRight,
+  Award,
+  CircleCheckBig,
+  ShieldCheck,
+  Code2,
   Building,
   Users,
   Infinity as InfinityIcon,
-  Brain,
-  Target,
+  Search,
+  Palette,
   Rocket,
-  Shield,
-  CircleCheckBig,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 
-const techStack = [
-  { logo: "/images/tech/laravel.png", name: "Laravel" },
-  { logo: "/images/tech/react.png", name: "React" },
-  { logo: "/images/tech/supabase.png", name: "Supabase" },
-  { logo: "/images/tech/typescript.png", name: "TypeScript" },
+export const metadata = {
+  title: "CMS Personalizado / Desarrollo a Medida | Marmo Creativo",
+  description:
+    "Sistemas de gestión de contenido construidos a la medida de tu negocio, con tecnologías modernas como Laravel, React y Supabase. Cotización a medida según tu proyecto.",
+  keywords: [
+    "CMS personalizado México",
+    "desarrollo de software a medida",
+    "sistema de gestión de contenido custom",
+    "desarrollo Laravel React México",
+    "software empresarial a medida CDMX",
+  ],
+  openGraph: {
+    title: "CMS Personalizado / Desarrollo a Medida | Marmo Creativo",
+    description:
+      "Sistemas de gestión de contenido construidos a la medida de tu negocio, con tecnologías modernas.",
+    url: "https://marmocreativo.com/paginas-web/cms-custom",
+    siteName: "Marmo Creativo",
+    locale: "es_MX",
+    type: "website",
+    images: [
+      {
+        url: "/images/custom/og-cms-custom.jpg",
+        width: 1200,
+        height: 630,
+        alt: "CMS Personalizado / Desarrollo a Medida - Marmo Creativo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CMS Personalizado / Desarrollo a Medida",
+    description:
+      "Cada línea de código a tu medida. Cotización según tu proyecto.",
+  },
+  alternates: {
+    canonical: "https://marmocreativo.com/paginas-web/cms-custom",
+  },
+};
+
+const stats = [
+  { value: "100%", title: "A Tu Medida", description: "Cada funcionalidad pensada para tu proceso real" },
+  { value: "12", title: "Meses de Soporte sin Costo", description: "Acompañamiento extendido después de la entrega" },
+  { value: "4", title: "Tecnologías de Vanguardia", description: "Laravel, React, Supabase y TypeScript" },
 ];
 
 const whenYouNeedIt = [
@@ -27,254 +66,350 @@ const whenYouNeedIt = [
   { icon: InfinityIcon, title: "Escalabilidad Extrema", description: "Una base sólida para crecer significativamente" },
 ];
 
-const advantages = [
-  { icon: Target, title: "100% Personalizado", description: "Cada línea de código a tu medida" },
-  { icon: Rocket, title: "Tecnologías Modernas", description: "Stack de vanguardia para máximo rendimiento" },
-  { icon: Shield, title: "Seguridad Empresarial", description: "Protocolos de nivel enterprise" },
-];
-
 const process = [
-  { step: "1", title: "Descubrimiento", description: "Análisis profundo de requisitos y arquitectura" },
-  { step: "2", title: "Diseño & Planificación", description: "Arquitectura del sistema y especificaciones" },
-  { step: "3", title: "Desarrollo", description: "Construcción con metodología ágil" },
-  { step: "4", title: "Entrega & Soporte", description: "Implementación, capacitación y soporte 12 meses" },
+  { step: "1", title: "Descubrimiento y análisis de requisitos", day: "Fase 1", icon: Search },
+  { step: "2", title: "Arquitectura y planificación del sistema", day: "Fase 2", icon: Palette },
+  { step: "3", title: "Desarrollo con metodología ágil", day: "Fase 3", icon: Code2 },
+  { step: "4", title: "Entrega, capacitación y 12 meses de soporte", day: "Fase 4", icon: Rocket },
 ];
 
 const examples = [
-  { image: "/images/custom/custom-1.png", title: "Review Quality", description: "Gestión de citas y exámenes de certificación" },
-  { image: "/images/custom/custom-2.png", title: "P-Learning", description: "Capacitación continua con gamificación" },
-  { image: "/images/custom/custom-3.png", title: "HEMA", description: "CRM para llamadas y citas médicas" },
+  { image: "/images/custom/fitbyblue.png", tag: "Fitness", title: "Fit by Blue", description: "Plataforma a medida para gestionar usuarios y procesos propios del negocio", url: "https://fitbyblue.mx" },
+  { image: "/images/custom/review.png", tag: "Certificaciones", title: "TOEIC MX", description: "Sistema de gestión de citas y exámenes de certificación construido desde cero", url: "https://toeic.mx" },
+  { image: "/images/custom/diahmoes.png", tag: "Negocio a Medida", description: "Diah Moes", title: "Diah Moes", url: "https://www.diahmoes.com.mx" },
+];
+
+const includedFeatures = [
+  { icon: Code2, title: "100% personalizado", description: "Cada línea de código construida para tu proceso, no una plantilla" },
+  { icon: Rocket, title: "Tecnologías modernas", description: "Stack de vanguardia para máximo rendimiento y escalabilidad" },
+  { icon: ShieldCheck, title: "Seguridad de nivel empresarial", description: "Protocolos pensados para proteger tu información" },
+  { icon: Award, title: "12 meses de soporte después de la entrega", description: "Acompañamiento extendido, sin costo extra" },
 ];
 
 export default function Page() {
   return (
     <>
       {/* Hero */}
-      <section className="relative -mt-20 pt-20 flex items-center text-secondary-foreground overflow-hidden py-24">
+      <section className="relative -mt-20 pt-20 min-h-screen flex items-center text-secondary-foreground overflow-hidden">
         <div
           className="fixed inset-0 -z-20 bg-cover bg-center"
           style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
         />
         <div className="fixed inset-0 bg-black/50 -z-10" />
 
-        <div className="relative max-w-6xl mx-auto px-6 text-center w-full">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <Code className="w-4 h-4" />
-            Desarrollo Personalizado
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            CMS Personalizado
-            <span className="text-accent block">Para Tu Negocio Único</span>
-          </h1>
-
-          <p className="text-xl text-secondary-foreground/80 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Desarrollamos sistemas de gestión de contenido con tecnologías
-            modernas. Laravel, React, Supabase y más.
-          </p>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-10">
-            {techStack.map((tech) => (
-              <div
-                key={tech.name}
-                className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4 text-center"
-              >
-                <Image
-                  src={tech.logo}
-                  alt={tech.name}
-                  width={48}
-                  height={48}
-                  className="w-12 h-12 mx-auto mb-2"
-                />
-                <h3 className="font-semibold text-sm">{tech.name}</h3>
+        <div className="relative max-w-6xl mx-auto px-6 w-full">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div>
+              <div className="hidden sm:inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Code2 className="w-4 h-4 shrink-0" />
+                Para negocios cuyos procesos no caben en una solución estándar
               </div>
-            ))}
-          </div>
 
-          <Button size="lg">
-            Platiquemos Tu Idea
-            <MessageCircle className="ml-2 w-5 h-5" />
-          </Button>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                Un CMS Construido
+                <span className="text-accent block">
+                  para tu Negocio Único
+                </span>
+              </h1>
+
+              <p className="text-base sm:text-lg md:text-xl text-secondary-foreground/80 mb-8 leading-relaxed">
+                Cuando las soluciones estándar no cubren lo que tu negocio
+                necesita, construimos un sistema a la medida, con tecnologías
+                modernas como Laravel, React y Supabase.
+              </p>
+
+              <div className="space-y-3 mb-8">
+                <div className="flex items-center gap-3">
+                  <CircleCheckBig className="w-5 h-5 text-green-400 shrink-0" />
+                  <span className="text-sm sm:text-base">Cada funcionalidad pensada para tu proceso real</span>
+                </div>
+                <div className="hidden sm:flex items-center gap-3">
+                  <CircleCheckBig className="w-5 h-5 text-green-400 shrink-0" />
+                  <span className="text-sm sm:text-base">12 meses de soporte incluido después de la entrega</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
+              <div className="text-center">
+                <h3 className="text-lg sm:text-xl font-bold mb-2">
+                  CMS Personalizado
+                </h3>
+                <p className="hidden sm:block text-sm text-secondary-foreground/60 mb-6">
+                  Construido desde cero, a la medida de tu negocio
+                </p>
+
+                <div className="mb-6">
+                  <div className="text-sm text-secondary-foreground/60 mb-1">
+                    Inversión
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-bold mb-2 text-accent">
+                    Cotización a Medida
+                  </div>
+                  <div className="text-sm text-secondary-foreground/60">
+                    Cada proyecto es distinto, lo cotizamos según tu alcance
+                  </div>
+                </div>
+
+                <div className="hidden sm:block text-xs text-secondary-foreground/50 mb-6">
+                  Consulta inicial sin costo · Incluye 12 meses de soporte
+                </div>
+                <Button
+                  asChild
+                  className="w-full rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white px-6 sm:px-10 py-6 sm:py-7 text-base sm:text-lg font-semibold hover:opacity-90 transition-opacity mt-2 sm:mt-0"
+                  size="lg"
+                >
+                  <a
+                    href="https://wa.me/525523995604?text=Hola%2C%20quisiera%20platicar%20sobre%20un%20CMS%20personalizado"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <SiWhatsapp className="w-5 h-5 mr-2" />
+                    Platícanos tu Proyecto
+                  </a>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a
+          id="siguiente-seccion"
+          href="#siguiente-seccion"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/80 hover:text-white transition-colors"
+        >
+          <span className="text-sm font-medium">Leer más</span>
+          <ChevronDown className="w-6 h-6 animate-bounce" />
+        </a>
+      </section>
+
+      {/* Cuándo lo necesitas */}
+      <section
+        className="relative py-16 bg-background bg-cover bg-center bg-fixed overflow-hidden"
+        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
+      >
+        <div className="relative max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-[1fr_1.6fr] gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
+                ¿Cuándo Necesitas algo Hecho a tu Medida?
+              </h2>
+              <p className="text-xl text-muted-foreground">
+                Las soluciones estándar no siempre cubren las necesidades
+                específicas de cada empresa.
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-3 gap-6">
+              {whenYouNeedIt.map((item) => (
+                <div
+                  key={item.title}
+                  className="rounded-2xl border border-primary/20 bg-white/40 backdrop-blur-xl p-6 shadow-xl"
+                >
+                  <div className="w-12 h-12 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center mb-3">
+                    <item.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-primary">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Cuándo lo necesitas + Ventajas */}
-      <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
-        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
-      >
+      {/* Stats */}
+      <section className="relative py-16 bg-neutral-100 overflow-hidden">
         <div className="relative max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              ¿Cuándo Necesitas un CMS Personalizado?
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Las soluciones estándar no siempre cubren las necesidades
-              específicas de cada empresa
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-16">
-            {whenYouNeedIt.map((item) => (
+          <div className="grid sm:grid-cols-3 gap-6">
+            {stats.map((stat) => (
               <div
-                key={item.title}
-                className="rounded-2xl border border-primary/20 bg-white/40 backdrop-blur-xl p-6 shadow-xl"
+                key={stat.title}
+                className="relative overflow-hidden text-center rounded-2xl bg-gradient-to-br from-secondary to-primary p-6 aspect-square flex flex-col items-center justify-center shadow-xl"
               >
-                <div className="w-12 h-12 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center mb-3">
-                  <item.icon className="w-6 h-6 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold mb-2 text-primary">
-                  {item.title}
+                <span className="absolute inset-0 flex items-center justify-center text-[10rem] font-bold text-white/10 select-none leading-none">
+                  {stat.value}
+                </span>
+
+                <h3 className="relative text-lg font-bold mb-2 text-white">
+                  {stat.title}
                 </h3>
-                <p className="text-muted-foreground text-sm">
-                  {item.description}
+                <p className="relative text-white/80 text-sm">
+                  {stat.description}
                 </p>
               </div>
             ))}
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {advantages.map((item) => (
-              <div
-                key={item.title}
-                className="text-center rounded-2xl border border-primary/20 bg-white/40 backdrop-blur-xl p-6 shadow-xl"
-              >
-                <div className="w-14 h-14 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <item.icon className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="text-lg font-bold mb-2 text-primary">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button size="lg">
-              Analicemos Tu Caso
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
           </div>
         </div>
       </section>
 
       {/* Proceso */}
-      <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
-        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
-      >
+      <section className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden" style={{ backgroundImage: "url('/images/body_bg.jpg')" }}>
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
               Nuestro Proceso de Desarrollo
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Metodología probada que garantiza resultados exitosos
+            <p className="text-xl text-muted-foreground">
+              Metodología ágil, pensada para llegar a un resultado sólido
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-4 gap-6">
             {process.map((item) => (
               <div
                 key={item.step}
-                className="rounded-2xl border border-primary/20 bg-white/40 backdrop-blur-xl p-6 shadow-xl"
+                className="relative overflow-hidden rounded-3xl p-8 flex flex-col gap-6 bg-white border-2 border-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:bg-gradient-to-br hover:from-accent hover:to-white hover:border-accent/30"
               >
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-3">
-                  <span className="text-primary-foreground font-bold">
-                    {item.step}
-                  </span>
+                <span className="absolute top-2 right-4 text-7xl font-bold text-primary/10 select-none leading-none">
+                  {item.step}
+                </span>
+
+                <item.icon className="relative w-10 h-10 text-primary" />
+
+                <div className="relative">
+                  <h3 className="text-lg font-bold mb-2 text-primary">
+                    {item.title}
+                  </h3>
+                  <div className="text-sm text-muted-foreground">
+                    {item.day}
+                  </div>
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-primary">
-                  {item.title}
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  {item.description}
-                </p>
               </div>
             ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <Button size="lg">
-              Iniciar Mi Proyecto
-              <Rocket className="ml-2 w-5 h-5" />
-            </Button>
           </div>
         </div>
       </section>
 
-      {/* Ejemplos */}
-      <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
-        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
-      >
+      {/* Casos reales */}
+      <section className="relative py-20 bg-neutral-100 overflow-hidden">
         <div className="relative max-w-6xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              Proyectos que Hemos Desarrollado
+              Proyectos Reales. Sistemas a la Medida.
             </h2>
+            <p className="text-xl text-muted-foreground">
+              No son maquetas ni plantillas de muestra. Son sistemas
+              construidos desde cero para necesidades específicas.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {examples.map((example) => (
-              <div
+              <a
                 key={example.title}
-                className="rounded-2xl border border-primary/20 bg-white/40 backdrop-blur-xl overflow-hidden shadow-xl"
+                href={example.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative rounded-2xl overflow-hidden shadow-xl aspect-[3/4] block transition-transform duration-300 hover:scale-105 hover:z-10"
               >
                 <Image
                   src={example.image}
                   alt={example.title}
-                  width={400}
-                  height={300}
-                  className="w-full h-48 object-cover"
+                  fill
+                  className="object-contain transition-transform duration-300"
                 />
-                <div className="p-5">
-                  <h3 className="text-lg font-bold mb-1 text-primary">
+
+                <div className="absolute inset-0 bg-black/40 transition-opacity duration-300 group-hover:opacity-0" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:opacity-0" />
+
+                <div className="absolute top-3 left-3 transition-opacity duration-300 group-hover:opacity-0">
+                  <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                    {example.tag}
+                  </span>
+                </div>
+
+                <div className="absolute bottom-0 left-0 right-0 p-5 transition-opacity duration-300 group-hover:opacity-0">
+                  <h3 className="font-semibold text-white mb-1">
                     {example.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-white/80">
                     {example.description}
                   </p>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="text-center mt-12">
-            <Button size="lg">
-              Cuéntanos Tu Idea
-              <Brain className="ml-2 w-5 h-5" />
-            </Button>
+      {/* Lo que incluye */}
+      <section className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden" style={{ backgroundImage: "url('/images/body_bg.jpg')" }}>
+        <div className="relative max-w-5xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
+              Lo que Incluye tu Proyecto
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Cotización a medida · Consulta inicial sin costo
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 pt-8">
+            {includedFeatures.map((feature) => (
+              <div
+                key={feature.title}
+                className="relative rounded-2xl bg-gradient-to-br from-secondary to-primary p-6 pt-12 text-center shadow-lg transition-transform duration-300 hover:-translate-y-1"
+              >
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-16 bg-white border border-primary/20 rounded-full flex items-center justify-center shadow-md">
+                  <feature.icon className="w-7 h-7 text-primary" />
+                </div>
+
+                <h3 className="font-semibold text-sm mb-2 text-white">
+                  {feature.title}
+                </h3>
+                <p className="text-xs text-white/80">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA final */}
-      <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
-        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
-      >
-        <div className="relative max-w-4xl mx-auto px-6 text-center">
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              ¿Listo para Revolucionar tu Negocio?
-            </h2>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              Platiquemos sin compromiso sobre tu proyecto.
-            </p>
+      <section className="relative py-20 bg-neutral-100 overflow-hidden">
+        <div className="relative max-w-6xl mx-auto px-6">
+          <div className="rounded-2xl border border-neutral-300 bg-white/60 backdrop-blur-xl p-8 md:p-10 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-center md:text-left">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
+                ¿Listo para Resolver tu Proceso Único?
+              </h2>
+              <p className="text-muted-foreground max-w-xl">
+                Cuéntanos qué necesita tu negocio. Analizamos tu caso y te
+                cotizamos el alcance correcto para tu proyecto.
+              </p>
+            </div>
 
-            <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-              ¡Platiquemos Tu Idea!
-              <MessageCircle className="ml-3 w-6 h-6" />
-            </Button>
+            <div className="flex flex-col items-center gap-4 shrink-0">
+              <div className="text-center">
+                <div className="text-sm text-muted-foreground mb-1">
+                  Inversión
+                </div>
+                <div className="text-3xl font-bold text-primary">
+                  Cotización a Medida
+                </div>
+              </div>
 
-            <p className="text-sm text-muted-foreground mt-4">
-              📞 Respuesta en 2 horas • 💡 Consulta gratuita • 🚀 Sin
-              compromiso
-            </p>
+              <Button
+                asChild
+                className="rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white px-10 py-7 text-lg font-semibold hover:opacity-90 transition-opacity"
+                size="lg"
+              >
+                <a
+                  href="https://wa.me/525523995604?text=Hola%2C%20quisiera%20platicar%20sobre%20un%20CMS%20personalizado"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <SiWhatsapp className="w-5 h-5 mr-2" />
+                  Platícanos tu Proyecto
+                </a>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
