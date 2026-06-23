@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-home.jpg",
+        url: "/og-main.jpg",
         width: 1200,
         height: 630,
         alt: "Marmo Creativo | Agencia Digital",
