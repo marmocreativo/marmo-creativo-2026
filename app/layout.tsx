@@ -19,6 +19,38 @@ const fontMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Marmo Creativo | Agencia Digital",
   description: "Desarrollo web, software a medida, diseño gráfico y outsourcing creativo.",
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  manifest: "/site.webmanifest",
+  openGraph: {
+    title: "Marmo Creativo | Agencia Digital",
+    description: "Desarrollo web, software a medida, diseño gráfico y outsourcing creativo.",
+    url: "https://marmo-creativo.com",
+    siteName: "Marmo Creativo",
+    locale: "es_MX",
+    type: "website",
+    images: [
+      {
+        url: "/og-home.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Marmo Creativo | Agencia Digital",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Marmo Creativo | Agencia Digital",
+    description: "Desarrollo web, software a medida, diseño gráfico y outsourcing creativo.",
+    images: ["/og-home.jpg"],
+  },
 };
 
 export default function RootLayout({
