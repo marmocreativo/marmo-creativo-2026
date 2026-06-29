@@ -6,6 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     "",
     "/paginas-web",
+    "/paginas-web/para-emprendedores",
     "/paginas-web/landing-pages",
     "/paginas-web/sitio-corporativo",
     "/paginas-web/wordpress",
