@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { JsonLd } from "@/components/seo/json-ld";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'})
 
@@ -54,6 +55,20 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": ["Organization", "ProfessionalService"],
+  name: "Marmo Creativo",
+  url: "https://marmo-creativo.com",
+  logo: "https://marmo-creativo.com/images/logo.svg",
+  image: "https://marmo-creativo.com/og-main.jpg",
+  telephone: "+52 55 2399 5604",
+  email: "marmocreativo@gmail.com",
+  areaServed: "MX",
+  founder: { "@type": "Person", name: "Manuel Marmolejo Martínez" },
+  sameAs: ["https://www.facebook.com/profile.php?id=61578199775997"],
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -62,6 +77,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={cn(inter.variable, fontMono.variable, "antialiased bg-cover bg-center bg-fixed")}>
+        <JsonLd data={organizationJsonLd} />
         <Header />
         {children}
         <Footer />

@@ -1,72 +1,131 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { SiFacebook } from "@icons-pack/react-simple-icons";
+import { ChevronRight } from "lucide-react";
+import { SiFacebook, SiWhatsapp } from "@icons-pack/react-simple-icons";
+import { giros } from "@/lib/seo/giros";
+import { ciudades } from "@/lib/seo/ciudades";
+import { whatsappLink } from "@/lib/seo/oferta";
+
+const columnas = [
+  {
+    title: "Páginas web",
+    links: [
+      { label: "Página Express en 72 h", href: "/empezar" },
+      { label: "Precios", href: "/precios" },
+      { label: "Landing pages", href: "/paginas-web/landing-pages" },
+      { label: "Sitio corporativo", href: "/paginas-web/sitio-corporativo" },
+      { label: "WordPress", href: "/paginas-web/wordpress" },
+      { label: "E-commerce", href: "/paginas-web/ecommerce" },
+      { label: "CMS a medida", href: "/paginas-web/cms-custom" },
+      { label: "Mantenimiento", href: "/paginas-web/mantenimiento" },
+    ],
+  },
+  {
+    title: "Servicios",
+    links: [
+      { label: "Desarrollo de software", href: "/desarrollo-software" },
+      { label: "Diseño gráfico", href: "/diseno-grafico" },
+      { label: "Outsourcing creativo", href: "/outsourcing" },
+      { label: "Para emprendedores", href: "/para-emprendedores" },
+    ],
+  },
+  {
+    title: "Página web para",
+    links: giros.map((g) => ({ label: g.titulo, href: `/pagina-web-para/${g.slug}` })),
+  },
+  {
+    title: "Atendemos",
+    links: ciudades.map((c) => ({ label: c.nombre, href: `/pagina-web/${c.slug}` })),
+  },
+];
 
 export function Footer() {
   return (
-    <footer className="relative w-full text-secondary-foreground overflow-hidden">
-      <div
-        className="absolute inset-0 -z-20 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/footer_bg.jpg')" }}
-      />
-      <div className="absolute inset-0 bg-black/50 -z-10" />
-
+    <footer className="w-full bg-black text-white">
       {/* CTA */}
-      <div className="relative container mx-auto px-4 py-12">
-        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-8 py-10 text-center shadow-2xl">
-          <h3 className="text-2xl font-bold">
-            ¿Listo para impulsar tu proyecto?
-          </h3>
-          <p className="mt-2 text-secondary-foreground/80">
-            Contáctanos y hagamos realidad tu siguiente proyecto digital.
-          </p>
-          <Button
-            size="lg"
-            className="mt-6 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-[0_0_30px_rgba(220,38,38,0.6)] hover:shadow-[0_0_45px_rgba(220,38,38,0.8)] transition-shadow"
-            asChild
+      <div className="max-w-7xl mx-auto px-6 pt-20 md:pt-28 pb-16 md:pb-24 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+        <h2 className="text-3xl md:text-5xl font-light leading-tight max-w-2xl">
+          Lleva tu negocio a Google en 72 horas.
+        </h2>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link
+            href="/empezar"
+            className="inline-flex items-center justify-center gap-3 bg-white text-black px-6 py-4 text-sm font-medium hover:bg-white/90 transition-colors"
           >
-            <a
-              href="https://wa.me/525523995604?text=Hola%2C%20me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20servicios."
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Contactar Ahora
-            </a>
-          </Button>
+            Empezar mi página
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+          <a
+            href={whatsappLink("Hola, me gustaría obtener más información sobre sus servicios.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 border border-white/70 px-6 py-4 text-sm font-medium hover:bg-white hover:text-black transition-colors"
+          >
+            <SiWhatsapp className="w-4 h-4" />
+            Escríbenos por WhatsApp
+          </a>
         </div>
       </div>
 
-      {/* Footer content */}
-      <div className="relative container mx-auto px-4 py-8 border-t border-accent/20">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-          <div className="flex flex-col gap-3">
-            <Image
-              src="/images/logo.svg"
-              alt="Marmo Creativo"
-              width={140}
-              height={40}
-              className="h-10 w-auto"
-            />
-            <p className="text-sm text-secondary-foreground/70 max-w-sm">
-              Transformamos empresas a través de soluciones digitales
-              estratégicas que generan resultados medibles.
-            </p>
-          </div>
+      {/* Contenido */}
+      <div className="max-w-7xl mx-auto px-6 pb-16 grid gap-12 lg:grid-cols-[minmax(0,3fr)_repeat(4,minmax(0,2fr))]">
+        <div>
+          <Image src="/images/logo.svg" alt="Marmo Creativo" width={140} height={40} className="h-10 w-auto" />
+          <p className="mt-5 text-sm leading-relaxed text-white/60 max-w-xs">
+            Estudio digital mexicano: páginas web, software a medida y diseño gráfico para negocios de todo el país.
+          </p>
 
-          <div className="flex flex-col items-start md:items-end gap-3">
+          <div className="mt-8 space-y-3 text-sm">
+            <p className="text-white/40 uppercase tracking-[0.15em] text-xs">Contacto</p>
             <a
-              href="https://www.facebook.com/profile.php?id=61578199775997"
+              href="https://wa.me/525523995604"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full bg-accent/10 border border-accent/30 flex items-center justify-center hover:bg-accent/20 transition-colors"
+              className="block text-white/80 hover:text-white transition-colors"
             >
-              <SiFacebook className="w-5 h-5 text-accent" />
+              WhatsApp: +52 55 2399 5604
             </a>
-            <div className="text-sm text-secondary-foreground/70">
-              © 2026 Marmo Creativo. Todos los derechos reservados.
-            </div>
+            <a
+              href="mailto:marmocreativo@gmail.com"
+              className="block text-white/80 hover:text-white transition-colors"
+            >
+              marmocreativo@gmail.com
+            </a>
+            <p className="text-white/50">Lunes a viernes · Atención 100% en línea</p>
           </div>
+
+          <a
+            href="https://www.facebook.com/profile.php?id=61578199775997"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook de Marmo Creativo"
+            className="mt-8 inline-flex text-white/60 hover:text-white transition-colors"
+          >
+            <SiFacebook className="w-5 h-5" />
+          </a>
+        </div>
+
+        {columnas.map((col) => (
+          <div key={col.title}>
+            <h3 className="text-sm text-white mb-5">{col.title}</h3>
+            <ul className="space-y-3">
+              {col.links.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="text-sm text-white/60 hover:text-white transition-colors">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {/* Barra inferior */}
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-white/50">
+          <span>© 2026 Marmo Creativo. Todos los derechos reservados.</span>
+          <span>Hecho en México por L.D.G. Manuel Marmolejo Martínez</span>
         </div>
       </div>
     </footer>

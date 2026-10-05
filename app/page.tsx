@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   Globe,
   Smartphone,
@@ -8,38 +9,145 @@ import {
   MessageCircle,
   Mail,
   Quote,
+  Clock,
+  ShieldCheck,
+  MapPin,
+  ListChecks,
+  FileText,
+  Check,
+  Rocket,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SiWhatsapp } from "@icons-pack/react-simple-icons";
+import { HeroVideo } from "@/components/home/hero-video";
+import { Faq } from "@/components/seo/faq";
+import { TestimonialsSlider } from "@/components/home/testimonials-slider";
+import { faqsOferta, whatsappLink } from "@/lib/seo/oferta";
+import { giros } from "@/lib/seo/giros";
+import { ciudades } from "@/lib/seo/ciudades";
 
-const heroCards = [
+export const metadata: Metadata = {
+  title: "Página Web en 72 Horas desde $3,500 MXN | Marmo Creativo",
+  description:
+    "Tu página web profesional + perfil de Google Maps, lista en 72 horas. Precio fijo desde $3,500 MXN, hosting y dominio el primer año incluidos. Todo México.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Página Web en 72 Horas desde $3,500 MXN | Marmo Creativo",
+    description:
+      "Tu página web profesional + perfil de Google Maps, lista en 72 horas. Precio fijo desde $3,500 MXN.",
+    url: "/",
+  },
+};
+
+const beneficios = [
+  { icon: Globe, title: "Página profesional", description: "Diseño adaptado a tu giro y a tu marca, optimizado para celular." },
+  { icon: MapPin, title: "Google Maps incluido", description: "Alta u optimización de tu perfil para que te encuentren por zona." },
+  { icon: MessageCircle, title: "WhatsApp y formulario", description: "Tus clientes te escriben con un toque, sin perder mensajes." },
+  { icon: ShieldCheck, title: "Hosting, dominio y SSL", description: "El primer año va incluido. Renovación: $1,500 MXN al año." },
+  { icon: Clock, title: "Garantía de 72 horas", description: "Si no está lista en 72 horas hábiles, no la pagas." },
+  { icon: Rocket, title: "Una ronda de cambios", description: "Ajustamos lo que necesites antes de publicar, sin costo extra." },
+];
+
+const condiciones = [
   {
-    icon: Globe,
-    title: "Páginas Web",
-    description: "Sitios optimizados para conversión, diseño UX/UI y rendimiento real.",
-    href: "/paginas-web",
+    title: "Información completa desde el inicio",
+    description: "Logo, textos, fotos, horarios y datos de contacto, todo en el formulario de brief. Es lo que más tiempo ahorra.",
   },
   {
-    icon: Smartphone,
-    title: "Desarrollo de Software",
-    description: "Apps, automatizaciones y sistemas a medida que crecen con tu negocio.",
-    href: "/desarrollo-software",
+    title: "Plantilla probada por giro",
+    description: "No diseñamos desde cero: adaptamos una estructura que ya funciona para tu tipo de negocio.",
   },
   {
-    icon: Palette,
-    title: "Diseño Gráfico",
-    description: "Identidad visual y contenido que hace que tu marca destaque.",
-    href: "/diseno-grafico",
+    title: "Pago confirmado",
+    description: "El reloj de las 72 horas hábiles arranca cuando recibimos tu pago, para dedicarte el tiempo completo.",
+  },
+  {
+    title: "Una persona al frente de tu proyecto",
+    description: "Hablas directo con quien diseña y publica tu página. Sin intermediarios ni juntas de más.",
+  },
+  {
+    title: "Respuestas ágiles de tu parte",
+    description: "Si necesitamos aclarar algo, tu respuesta en el mismo día mantiene el plazo. Te avisamos de inmediato si falta algo.",
+  },
+  {
+    title: "Una sola ronda de cambios",
+    description: "Revisas la propuesta, nos mandas tus ajustes juntos y los aplicamos antes de publicar.",
   },
 ];
 
-const aboutChecklist = [
-  "Trato personalizado y directo",
-  "Diseño a medida para cada cliente",
-  "Equipo especializado y talentoso",
-  "Soluciones escalables y modernas",
+const tablaPrecios = [
+  {
+    name: "Express",
+    badge: "Más popular",
+    price: "$3,500",
+    note: "Pago único · incluye hosting y dominio .com el primer año",
+    lead: "Qué incluye:",
+    items: [
+      "1 página con plantilla de tu giro",
+      "Entrega en 72 horas hábiles",
+      "Alta u optimización de Google Maps",
+      "Botón de WhatsApp y formulario",
+      "Hosting + dominio .com el primer año",
+      "Certificado SSL",
+      "1 ronda de cambios",
+    ],
+    cta: "Empezar con Express",
+    href: "/empezar",
+  },
+  {
+    name: "Express Plus",
+    price: "$5,000",
+    note: "Pago único · incluye hosting y dominio .com el primer año",
+    lead: "Todo lo de Express, más:",
+    items: [
+      "Hasta 5 secciones",
+      "Galería de fotos",
+      "Blog básico",
+      "SEO local básico",
+      "Entrega en 5 días",
+    ],
+    cta: "Quiero Express Plus",
+    href: "/empezar",
+  },
+  {
+    name: "Sitio Corporativo",
+    price: "$7,000",
+    note: "Pago único · hosting y dominio se cotizan aparte",
+    lead: "Diseño a la medida:",
+    items: [
+      "Varias secciones con diseño propio",
+      "Estructura sólida para tu empresa",
+      "Optimización de velocidad",
+      "Entrega en 3-4 semanas",
+    ],
+    cta: "Ver Sitio Corporativo",
+    href: "/paginas-web/sitio-corporativo",
+  },
+  {
+    name: "Proyectos a medida",
+    price: "$8,000+",
+    note: "Se cotiza según el alcance",
+    lead: "Para necesidades específicas:",
+    items: [
+      "WordPress",
+      "Tienda en línea (e-commerce)",
+      "CMS y sistemas a medida",
+      "Mantenimiento web",
+      "Entrega en 4-6 semanas",
+    ],
+    cta: "Ver todos los servicios",
+    href: "/paginas-web",
+  },
+];
+
+
+
+const statsAbout = [
+  { value: "15+", unit: "años", description: "De experiencia en diseño gráfico y desarrollo web fullstack." },
+  { value: "140+", unit: "clientes", description: "Negocios y empresas de todo México que ya confiaron en nosotros." },
+  { value: "420+", unit: "proyectos", description: "Sitios, sistemas y materiales de diseño entregados." },
 ];
 
 const stats = [
@@ -48,52 +156,15 @@ const stats = [
   { value: "420+", label: "Proyectos Completados" },
 ];
 
-const services = [
-  {
-    icon: Globe,
-    title: "Páginas Web",
-    description:
-      "Sitios web profesionales con diseño UX/UI optimizado, responsivos y enfocados en conversiones",
-    items: [
-      "Landing Pages efectivas",
-      "Sitios corporativos completos",
-      "WordPress y E-commerce",
-      "CMS personalizado a medida",
-      "Optimización SEO",
-      "Mantenimiento técnico",
-    ],
-    href: "/paginas-web",
-  },
-  {
-    icon: Smartphone,
-    title: "Desarrollo de Software",
-    description:
-      "Aplicaciones web y móviles personalizadas que automatizan y optimizan tus procesos de negocio",
-    items: [
-      "Apps móviles multiplataforma",
-      "Aplicaciones de escritorio",
-      "Sistemas web complejos",
-      "Automatización de procesos",
-      "Integración de APIs",
-      "Consultoría técnica",
-    ],
-    href: "/desarrollo-software",
-  },
-  {
-    icon: Palette,
-    title: "Diseño Gráfico",
-    description:
-      "Branding completo, identidad visual consistente y materiales promocionales que destacan tu marca",
-    items: [
-      "Identidad corporativa",
-      "Material publicitario",
-      "Contenido para redes sociales",
-      "Packaging y editorial",
-      "Outsourcing creativo",
-      "Impresión especializada",
-    ],
-    href: "/diseno-grafico",
-  },
+const serviciosLista = [
+  { label: "Sitios corporativos", href: "/paginas-web/sitio-corporativo" },
+  { label: "Tiendas en línea (e-commerce)", href: "/paginas-web/ecommerce" },
+  { label: "Sitios en WordPress", href: "/paginas-web/wordpress" },
+  { label: "CMS y sistemas web a medida", href: "/paginas-web/cms-custom" },
+  { label: "Software y apps a la medida", href: "/desarrollo-software" },
+  { label: "Diseño gráfico e identidad", href: "/diseno-grafico" },
+  { label: "Outsourcing creativo", href: "/outsourcing" },
+  { label: "Mantenimiento web", href: "/paginas-web/mantenimiento" },
 ];
 
 const testimonials = [
@@ -121,344 +192,367 @@ export default function Page() {
   return (
     <>
       {/* Hero */}
-      <section className="relative -mt-20 min-h-screen pt-20 flex items-center text-secondary-foreground overflow-hidden">
+      <section className="relative -mt-20 min-h-screen flex flex-col text-white overflow-hidden">
         <div
-          className="fixed inset-0 -z-20 bg-cover bg-center"
+          className="absolute inset-0 -z-20 bg-cover bg-center"
           style={{ backgroundImage: "url('/images/hero_bg.jpg')" }}
         />
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="/images/hero_bg.jpg"
-          className="fixed inset-0 -z-20 w-full h-full object-cover"
-        >
-          <source src="/images/hero_video.mp4" type="video/mp4" />
-        </video>
-        <div className="fixed inset-0 bg-black/50 -z-10" />
+        <HeroVideo />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 -z-10 bg-gradient-to-t from-black/70 to-transparent" />
 
-        <div className="max-w-6xl mx-auto px-6 text-center space-y-6 sm:space-y-8 w-full">
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold leading-tight">
-            Impulsamos tu Negocio
-            <span className="block text-accent">Hasta las Estrellas</span>
-          </h1>
+        <div className="flex-1 flex items-center pt-28 pb-12">
+          <div className="max-w-7xl mx-auto px-6 w-full">
+            <p className="text-xs sm:text-sm font-medium tracking-wide text-white/80 mb-4 sm:mb-6">
+              Hosting y dominio el primer año incluidos · Garantía de 72 horas
+            </p>
 
-          <p className="text-base sm:text-xl md:text-2xl text-secondary-foreground/80 max-w-3xl mx-auto leading-relaxed">
-            Desarrollo web, software a la medida y diseño gráfico
-            para empresas listas para despegar en el universo digital.
-          </p>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-semibold leading-[1.02] tracking-tight max-w-4xl">
+              Tu página web lista en 72 horas.
+            </h1>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              asChild
-              className="rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white px-6 sm:px-10 py-5 sm:py-7 text-sm sm:text-lg font-semibold hover:opacity-90 transition-opacity w-full sm:w-auto"
-              size="lg"
-            >
-              <a href="#servicios" className="flex items-center justify-center gap-2 whitespace-nowrap">
-                Ver Servicios
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-              </a>
-            </Button>
-            <Button
-              asChild
-              className="rounded-full bg-gradient-to-r from-secondary to-neutral-800 text-white px-6 sm:px-10 py-5 sm:py-7 text-sm sm:text-lg font-semibold hover:opacity-90 transition-opacity w-full sm:w-auto"
-              size="lg"
-            >
+            <p className="mt-6 sm:mt-8 text-lg sm:text-xl text-white/85 max-w-xl leading-relaxed">
+              Desde <strong className="text-white">$3,500 MXN</strong>, con alta en Google Maps.
+              Si no está lista en 72 horas hábiles, no la pagas.
+            </p>
+
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+              <Link
+                href="/empezar"
+                className="inline-flex items-center justify-center gap-3 bg-white text-black px-7 py-4 text-base font-medium hover:bg-white/90 transition-colors w-full sm:w-auto"
+              >
+                Empezar mi página
+                <ChevronRight className="w-4 h-4" />
+              </Link>
               <a
-                href="https://wa.me/525523995604"
+                href={whatsappLink("Hola, quiero mi página web en 72 horas")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 whitespace-nowrap"
+                className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors"
               >
-                <SiWhatsapp className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
-                Consulta Gratis
+                <SiWhatsapp className="w-4 h-4" />
+                O escríbenos por WhatsApp
               </a>
-            </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Franja de confianza */}
+        <div className="border-t border-white/15 bg-black/30 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 text-xs font-medium tracking-[0.2em] uppercase text-white/70">
+              <span>Con la confianza de 140+ clientes en todo México</span>
+              <span>15+ años de experiencia</span>
+            </div>
+            <a
+              href="#testimonios"
+              className="inline-flex items-center justify-center border border-white/70 px-5 py-3 text-sm font-medium hover:bg-white hover:text-black transition-colors"
+            >
+              Nuestros clientes
+            </a>
+          </div>
+        </div>
+      </section>
+
+            {/* Oferta */}
+      <section id="oferta" className="relative py-20 md:py-28 bg-neutral-100 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 lg:gap-16 items-start">
+          {/* Columna izquierda */}
+          <div className="lg:sticky lg:top-28">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5">
+              <MapPin className="w-5 h-5 text-primary" />
+              Tu negocio en Google
+            </div>
+            <h2 className="text-4xl md:text-5xl font-light leading-tight text-foreground mb-6">
+              Tu negocio en Google
+              <br />
+              en 72 horas
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+              Tus clientes te buscan en Google antes de llamar. Te entregamos una página web
+              profesional y tu perfil de Google Maps listos en 72 horas, por un precio fijo.
+            </p>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+              <strong className="text-foreground font-semibold">$3,500 MXN</strong> pago único, con el
+              primer año de hosting y dominio incluidos.
+            </p>
+            <Link
+              href="/empezar"
+              className="inline-flex items-center gap-3 bg-foreground text-background px-7 py-4 text-base font-medium hover:opacity-90 transition-opacity"
+            >
+              Empezar mi página
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+            <p className="mt-4 text-sm text-muted-foreground">
+              El reloj de las 72 horas empieza con tu pago y tu información completa.
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto mt-8 sm:mt-16 text-left">
-            {heroCards.map((card, index) => (
-              <Link
-                key={card.title}
-                href={card.href}
-                className={`relative rounded-2xl border border-primary/30 bg-secondary/50 backdrop-blur p-4 sm:p-6 shadow-2xl shadow-primary/20 overflow-hidden transition-transform duration-300 hover:-translate-y-1 ${
-                  index === 0 ? "col-span-2 md:col-span-1" : ""
-                }`}
+          {/* Columna derecha: cards */}
+          <div className="grid sm:grid-cols-2 gap-5">
+            {beneficios.map((b) => (
+              <div
+                key={b.title}
+                className="rounded-xl border border-border bg-white p-6 md:p-7 hover:shadow-lg hover:-translate-y-0.5 transition-all"
               >
-                {/* Spotlight cónico desde arriba */}
-                <div
-                  className="absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 sm:w-72 sm:h-72 opacity-70"
-                  style={{
-                    background:
-                      "conic-gradient(from 180deg at 50% 0%, transparent 0deg, rgba(232,212,184,0.35) 90deg, rgba(139,46,46,0.45) 180deg, rgba(232,212,184,0.35) 270deg, transparent 360deg)",
-                    filter: "blur(20px)",
-                  }}
-                />
-
-                {/* Glow ambiental detrás del ícono */}
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-24 bg-accent/30 rounded-full blur-2xl" />
-
-                {/* Viñeta para fundir el spotlight hacia el fondo de la card */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-secondary/40 to-secondary" />
-
-                <div className="relative flex flex-col items-center text-center pt-4 sm:pt-6">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/5 border border-accent/30 flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(232,212,184,0.3)]">
-                    <card.icon className="w-6 h-6 sm:w-7 sm:h-7 text-accent" strokeWidth={1.5} />
-                  </div>
-                  <h3 className="font-semibold mb-2 text-sm sm:text-base">{card.title}</h3>
-                  <p className="hidden sm:block text-sm text-secondary-foreground/70">
-                    {card.description}
-                  </p>
-                </div>
-              </Link>
+                <b.icon className="w-6 h-6 text-primary mb-4" strokeWidth={1.5} />
+                <h3 className="text-xl font-light text-foreground mb-2">{b.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{b.description}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
+
+
+            {/* Cómo funciona */}
+      <section className="relative py-20 md:py-28 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-12 lg:gap-16 items-start">
+          {/* Columna izquierda */}
+          <div className="lg:sticky lg:top-28">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5">
+              <Clock className="w-5 h-5 text-primary" />
+              Cómo lo logramos
+            </div>
+            <h2 className="text-4xl md:text-5xl font-light leading-tight text-foreground mb-6">
+              72 horas es posible
+              <br />
+              cuando se cumplen
+              <br />
+              las condiciones
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+              No es magia ni prisa: es proceso. Trabajamos con plantillas probadas para cada giro
+              y un solo responsable por proyecto, así que tu página se arma sobre una base que ya
+              funciona en lugar de empezar de cero.
+            </p>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+              Lo único que necesitamos de ti es tu información completa y tu pago. En cuanto los
+              recibimos empiezan a correr las 72 horas hábiles: diseñamos, configuramos tu perfil
+              de Google Maps y te mandamos la propuesta para revisión.
+            </p>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Si todo está en orden, tu negocio sale en línea en tiempo récord. Y si por nuestra
+              parte no llegamos a tiempo, no la pagas.
+            </p>
+          </div>
+
+          {/* Columna derecha: cards */}
+          <div className="grid sm:grid-cols-2 gap-5">
+            {condiciones.map((c) => (
+              <div
+                key={c.title}
+                className="rounded-xl border border-border bg-white p-6 md:p-7 hover:shadow-lg hover:-translate-y-0.5 transition-all"
+              >
+                <ListChecks className="w-6 h-6 text-primary mb-4" strokeWidth={1.5} />
+                <h3 className="text-xl font-light text-foreground mb-2">{c.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{c.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+            {/* Precios resumen */}
+      <section className="relative py-20 md:py-28 bg-neutral-100 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 mb-12 items-end">
+            <div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5">
+                <FileText className="w-5 h-5 text-primary" />
+                Precios claros
+              </div>
+              <h2 className="text-4xl md:text-5xl font-light leading-tight text-foreground">
+                Un precio fijo, sin
+                <br />
+                mensualidades ocultas
+              </h2>
+            </div>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Pagas una vez y el primer año de hosting y dominio .com viene incluido en Express y
+              Express Plus. Después solo renuevas cada año: $1,500 MXN con .com o $2,000 MXN con
+              .com.mx o .mx. Y si tu proyecto es más grande, tienes un paquete para cada etapa de tu
+              negocio.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 rounded-xl border border-foreground/80 bg-white overflow-hidden divide-y md:divide-y-0 md:divide-x divide-foreground/80 [&>*:nth-child(n+3)]:md:border-t [&>*:nth-child(n+3)]:md:border-foreground/80 lg:[&>*:nth-child(n+3)]:border-t-0">
+            {tablaPrecios.map((p) => (
+              <div key={p.name} className="flex flex-col">
+                <div className="flex items-center gap-3 bg-neutral-100 border-b border-foreground/80 px-6 py-5 min-h-[76px]">
+                  <h3 className="text-xl font-light text-foreground">{p.name}</h3>
+                  {p.badge && (
+                    <span className="rounded-full bg-primary text-white text-xs font-semibold px-3 py-1">
+                      {p.badge}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex flex-col flex-1 px-6 py-6">
+                  <div className="text-5xl font-light text-foreground">
+                    {p.price}
+                    <span className="ml-2 text-base text-muted-foreground">MXN</span>
+                  </div>
+                  <p className="mt-2 text-xs text-muted-foreground min-h-[32px]">{p.note}</p>
+
+                  <p className="mt-6 mb-4 text-sm text-foreground">{p.lead}</p>
+                  <ul className="space-y-3 flex-1">
+                    {p.items.map((item) => (
+                      <li key={item} className="flex items-start gap-3 text-sm text-muted-foreground">
+                        <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" strokeWidth={2.5} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href={p.href}
+                    className={`mt-8 inline-flex items-center justify-center gap-2 px-5 py-3 text-sm font-medium transition-colors ${
+                      p.badge
+                        ? "bg-foreground text-background hover:opacity-90"
+                        : "border border-foreground/70 text-foreground hover:bg-foreground hover:text-background"
+                    }`}
+                  >
+                    {p.cta}
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-6 text-sm text-muted-foreground">
+            Renovación anual de hosting + dominio: $1,500 MXN (.com) · $2,000 MXN (.com.mx / .mx).{" "}
+            <Link href="/precios" className="text-primary underline underline-offset-4">
+              Ver comparativa completa y preguntas frecuentes
+            </Link>
+          </p>
+        </div>
+      </section>
+
 
       {/* Acerca de */}
-      <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
-        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
-      >
-        <div className="relative max-w-6xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="rounded-2xl border border-border bg-white/40 backdrop-blur-xl p-8 shadow-xl">
-              <h2 className="text-3xl md:text-4xl text-primary font-bold mb-6">
-                Acerca de Marmo Creativo
-              </h2>
-              <div className="space-y-4 text-muted-foreground text-lg leading-relaxed">
-                <p>
-                  <strong className="text-foreground">
-                    L.D.G. Manuel Marmolejo Martínez (Marmo)
-                  </strong>{" "}
-                  es diseñador gráfico y desarrollador web fullstack con más
-                  de 15 años de experiencia trabajando con empresas de todos
-                  los tamaños.
-                </p>
-                <p>
-                  En 2025 echa a andar{" "}
-                  <strong className="text-foreground">
-                    "Marmo Creativo"
-                  </strong>
-                  , un estudio creativo que combina experiencia y talento
-                  joven para ofrecer soluciones digitales personalizadas.
-                </p>
-                <p>
-                  Mantenemos un equipo pequeño que garantiza trato personal y
-                  diseño a medida, aprovechando las habilidades de
-                  diseñadores talentosos para potenciar tu negocio.
-                </p>
-              </div>
-            </div>
+      <section className="relative py-20 md:py-28 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6">
+          <p className="text-3xl md:text-5xl font-light leading-[1.2] max-w-4xl">
+            <span className="text-foreground">
+              Marmo Creativo es un estudio digital creado por L.D.G. Manuel Marmolejo (Marmo).{" "}
+            </span>
+            <span className="text-foreground/40">
+              Diseñador gráfico y desarrollador fullstack con más de 15 años trabajando con empresas
+              de todos los tamaños. Un equipo pequeño que te da trato directo y diseño a medida.
+            </span>
+          </p>
 
-            <div className="rounded-2xl border border-primary/30 bg-primary/10 backdrop-blur-xl p-8 shadow-xl shadow-primary/10 space-y-5">
-              {aboutChecklist.map((text) => (
-                <div key={text} className="flex items-center gap-4">
-                  <CircleCheckBig className="w-8 h-8 text-primary flex-shrink-0" />
-                  <span className="text-lg text-foreground">{text}</span>
-                </div>
-              ))}
-            </div>
+          <div className="mt-16 md:mt-24 flex flex-col sm:flex-row sm:justify-between gap-2 text-xs tracking-[0.15em] uppercase text-muted-foreground">
+            <span>Trato personal · Diseño a medida · Soluciones modernas</span>
+            <span>Desde 2025 como Marmo Creativo</span>
           </div>
+          <div className="mt-4 border-t border-border" />
 
-          <div className="grid lg:grid-cols-3 gap-6 mt-8">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="relative overflow-hidden text-center rounded-2xl bg-gradient-to-br from-secondary to-primary p-6 aspect-square flex flex-col items-center justify-center shadow-xl"
-              >
-                <span className="absolute inset-0 flex items-center justify-center text-[8rem] font-bold text-white/10 select-none leading-none">
-                  {stat.value}
-                </span>
-                <div className="relative text-4xl md:text-5xl font-bold mb-2 text-white">
-                  {stat.value}
+          <div className="grid md:grid-cols-3 md:divide-x divide-border">
+            {statsAbout.map((s, i) => (
+              <div key={s.value} className="py-10 md:px-8 first:md:pl-0 last:md:pr-0">
+                <span className="text-xs text-muted-foreground">0{i + 1}</span>
+                <div className="mt-10 md:mt-16 text-6xl md:text-7xl font-light text-foreground">
+                  {s.value}
+                  <span className="ml-3 text-lg text-muted-foreground">{s.unit}</span>
                 </div>
-                <div className="relative text-sm text-white/80">
-                  {stat.label}
-                </div>
+                <p className="mt-4 text-sm text-muted-foreground max-w-xs">{s.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
+
 
       {/* Servicios */}
-      <section id="servicios" className="relative py-20 bg-neutral-100 overflow-hidden">
-        <div className="relative max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              Nuestros Servicios
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Soluciones integrales de diseño y desarrollo para potenciar tu
-              presencia digital y hacer crecer tu negocio con tecnología de
-              vanguardia
-            </p>
-          </div>
+      <section id="servicios" className="relative py-24 md:py-32 bg-stone-100 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-[minmax(0,2fr)_minmax(0,7fr)_minmax(0,2fr)] gap-10 lg:gap-12 items-center">
+          <p className="text-sm text-muted-foreground max-w-[14rem]">
+            ¿Y si necesitas algo más grande? Para proyectos de mayor alcance, también hacemos
+          </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {services.map((service) => (
-              <div
-                key={service.title}
-                className="rounded-2xl border border-primary/20 bg-white p-8 shadow-xl"
-              >
-                <div className="text-center mb-6">
-                  <div className="w-20 h-20 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <service.icon className="w-10 h-10 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-primary">
-                    {service.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    {service.description}
-                  </p>
-                </div>
-
-                <ul className="space-y-3 mb-6">
-                  {service.items.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center text-sm text-muted-foreground"
-                    >
-                      <span className="w-2 h-2 bg-accent rounded-full mr-3" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  asChild
-                  className="w-full rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white py-6 text-base font-semibold hover:opacity-90 transition-opacity"
+          <ul className="space-y-1 md:space-y-2">
+            {serviciosLista.map((s) => (
+              <li key={s.href}>
+                <Link
+                  href={s.href}
+                  className="block text-3xl md:text-5xl font-light leading-tight tracking-tight text-foreground md:text-foreground/30 hover:text-foreground transition-colors"
                 >
-                  <Link href={service.href}>
-                    Ver Detalles
-                    <ChevronRight className="ml-2 w-4 h-4" />
-                  </Link>
-                </Button>
-              </div>
+                  {s.label}
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
 
-          <div className="mt-16 text-center">
-            <div className="rounded-2xl border border-primary/30 bg-white/60 backdrop-blur-xl p-8 shadow-xl max-w-2xl mx-auto">
-              <h3 className="text-2xl font-bold mb-4 text-primary">
-                ¿No Encuentras lo que Buscas?
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                Cada proyecto es único. Cuéntanos qué necesita tu negocio y
-                creemos una solución a tu medida.
-              </p>
-              <Button
-                asChild
-                className="rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white px-10 py-7 text-lg font-semibold hover:opacity-90 transition-opacity"
-                size="lg"
-              >
-                <a
-                  href="https://wa.me/525523995604?text=Hola%2C%20quisiera%20una%20consulta%20gratuita"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <SiWhatsapp className="mr-2 w-5 h-5" />
-                  Consulta Gratuita
-                </a>
-              </Button>
-            </div>
+          <div className="lg:self-end">
+            <Link
+              href="/paginas-web"
+              className="inline-flex items-center gap-3 border border-foreground/60 px-5 py-3 text-sm font-medium hover:bg-foreground hover:text-background transition-colors"
+            >
+              Ver todos los servicios
+              <ChevronRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
+
 
       {/* Testimonios */}
-      <section
-        className="relative py-20 bg-background bg-cover bg-center bg-fixed overflow-hidden"
-        style={{ backgroundImage: "url('/images/body_bg.jpg')" }}
-      >
-        <div className="relative max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              Empresas que Ya Confiaron en Nosotros
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              No son maquetas ni casos hipotéticos. Son resultados reales de
-              negocios reales.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.company} className="flex items-start gap-4 p-4">
-                <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0 border border-primary/20">
-                  <Image
-                    src={testimonial.image}
-                    alt={testimonial.company}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-
-                <div>
-                  <Quote className="w-5 h-5 text-primary/40 mb-2" />
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {testimonial.quote}
-                  </p>
-                  <div className="text-sm font-semibold text-primary">
-                    {testimonial.name}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {testimonial.company}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Contacto */}
-      <section className="relative py-20 bg-neutral-100 overflow-hidden">
+      <section id="testimonios" className="relative py-20 md:py-28 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-primary">
-              Hablemos de tu Proyecto
+          <div className="mb-12 md:mb-16 max-w-3xl">
+            <h2 className="text-4xl md:text-5xl font-light leading-tight text-foreground mb-4">
+              Empresas que ya confiaron en nosotros
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              ¿Listo para llevar tu negocio al siguiente nivel? Contáctanos y
-              hagamos realidad tu proyecto digital. Respuesta garantizada en
-              menos de 24 horas.
+            <p className="text-lg text-muted-foreground">
+              No son maquetas ni casos hipotéticos. Son resultados reales de negocios reales.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <a
-              href="https://wa.me/525523995604"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative overflow-hidden rounded-2xl border border-green-500/40 bg-white p-8 shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300"
-            >
-              <MessageCircle className="absolute -right-6 -bottom-6 w-40 h-40 text-green-500/15 rotate-12" />
-              <div className="relative">
-                <h3 className="text-2xl font-bold mb-1 text-green-600">WhatsApp</h3>
-                <p className="text-muted-foreground mb-3">Respuesta inmediata</p>
-                <p className="font-semibold text-lg text-green-600">+52 55 2399 5604</p>
-              </div>
-            </a>
-            <a
-              href="mailto:marmocreativo@gmail.com"
-              className="group relative overflow-hidden rounded-2xl border border-primary/40 bg-white p-8 shadow-lg hover:shadow-2xl hover:scale-[1.02] transition-all duration-300"
-            >
-              <Mail className="absolute -right-6 -bottom-6 w-40 h-40 text-primary/15 rotate-12" />
-              <div className="relative">
-                <h3 className="text-2xl font-bold mb-1 text-primary">Email</h3>
-                <p className="text-muted-foreground mb-3">
-                  Respuesta profesional
-                </p>
-                <p className="font-semibold text-lg text-primary">marmocreativo@gmail.com</p>
-              </div>
-            </a>
-          </div>
+          <TestimonialsSlider items={testimonials} />
         </div>
       </section>
+
+
+      <section className="relative py-20 md:py-28 bg-neutral-100 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10">
+          {[
+            {
+              title: "Página web para tu giro",
+              rows: giros.map((g) => ({ label: g.titulo, href: `/pagina-web-para/${g.slug}` })),
+            },
+            {
+              title: "Atendemos tu ciudad",
+              rows: ciudades.map((c) => ({ label: c.nombre, href: `/pagina-web/${c.slug}` })),
+            },
+          ].map((table) => (
+            <div key={table.title} className="rounded-xl border border-foreground/80 bg-white overflow-hidden">
+              <div className="bg-neutral-100 border-b border-foreground/80 px-6 py-5">
+                <h2 className="text-xl font-light text-foreground">{table.title}</h2>
+              </div>
+              <ul className="divide-y divide-border">
+                {table.rows.map((r) => (
+                  <li key={r.href}>
+                    <Link
+                      href={r.href}
+                      className="group flex items-center justify-between px-6 py-4 text-foreground hover:bg-neutral-50 transition-colors"
+                    >
+                      <span>{r.label}</span>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
+      <Faq items={faqsOferta} />
+
     </>
   );
 }

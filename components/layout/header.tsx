@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
-import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -16,6 +15,7 @@ import {
 import { NavDropdown } from "./nav-dropdown";
 
 const paginasWebItems = [
+  { label: "Página Express en 72 h", href: "/empezar" },
   { label: "Todos los paquetes", href: "/paginas-web" },
   { label: "Landing Pages", href: "/paginas-web/landing-pages" },
   { label: "Sitio Corporativo", href: "/paginas-web/sitio-corporativo" },
@@ -25,16 +25,11 @@ const paginasWebItems = [
   { label: "Mantenimiento", href: "/paginas-web/mantenimiento" },
 ];
 
-const herramientasItems = [
-  { label: "Generador QR", href: "/herramientas/generador-qr" },
-  { label: "Botón WhatsApp", href: "/herramientas/boton-whatsapp" },
-  { label: "Paleta de colores", href: "/herramientas/paleta-colores" },
-];
-
 const navLinks = [
+  { label: "Precios", href: "/precios" },
   { label: "Desarrollo de Software", href: "/desarrollo-software" },
   { label: "Diseño Gráfico", href: "/diseno-grafico" },
-  { label: "Outsourcing Creativo", href: "/outsourcing" },
+  { label: "Outsourcing", href: "/outsourcing" },
 ];
 
 export function Header() {
@@ -52,56 +47,55 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 w-full transition-colors duration-300 ${
         scrolled
-          ? "bg-secondary text-secondary-foreground border-b shadow-sm"
-          : "bg-transparent text-secondary-foreground"
+          ? "bg-black/90 backdrop-blur text-white border-b border-white/10"
+          : "bg-transparent text-white"
       }`}
     >
-      <div className="container mx-auto grid grid-cols-2 lg:grid-cols-[auto_1fr_auto] items-center h-20 px-4 gap-4">
-        {/* Columna 1: Logo */}
-        <div className="flex items-center">
+      <div className="max-w-7xl mx-auto flex items-center justify-between h-20 px-6 gap-6">
+        {/* Izquierda: logo + navegación */}
+        <div className="flex items-center gap-10">
           <Link href="/" className="flex items-center">
             <Image
               src="/images/logo.svg"
               alt="Marmo Creativo"
               width={140}
               height={40}
-              className="h-10 w-auto"
+              className="h-9 w-auto"
               priority
             />
           </Link>
+
+          <nav className="hidden lg:flex items-center gap-7">
+            <NavDropdown label="Páginas Web" items={paginasWebItems} />
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-white/90 hover:text-white transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
 
-        {/* Columna 2: Nav centrado (desktop) */}
-        <nav className="hidden lg:flex items-center justify-center gap-6">
-          <NavDropdown label="Páginas Web" items={paginasWebItems} />
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-accent hover:text-accent/80 transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Columna 3: Login (desktop) + hamburguesa (móvil) */}
+        {/* Derecha: WhatsApp + CTA (desktop) y hamburguesa (móvil) */}
         <div className="flex items-center justify-end gap-2">
-          <div className="hidden lg:flex items-center gap-2">
-            <Button
-              asChild
-              className="rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white"
-              size="sm"
+          <div className="hidden lg:flex items-center gap-6">
+            <a
+              href="https://wa.me/525523995604"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-white/90 hover:text-white transition-colors"
             >
-              <a
-                href="https://wa.me/525523995604"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <SiWhatsapp className="w-4 h-4 mr-2" />
-                WhatsApp
-              </a>
-            </Button>
+              WhatsApp
+            </a>
+            <Link
+              href="/empezar"
+              className="bg-white text-black px-5 py-2.5 text-sm font-medium hover:bg-white/90 transition-colors"
+            >
+              Mi página en 72 h
+            </Link>
           </div>
 
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -155,20 +149,22 @@ export function Header() {
                 <div className="h-px bg-border my-2" />
 
                 <div className="flex flex-col gap-2 mt-2">
-                  <Button
-                    asChild
-                    className="w-full rounded-full bg-gradient-to-r from-primary to-red-600 border-2 border-primary/40 text-white"
+                  <Link
+                    href="/empezar"
+                    onClick={() => setMobileOpen(false)}
+                    className="bg-black text-white px-5 py-3 text-sm font-medium text-center hover:bg-black/90 transition-colors"
                   >
-                    <a
-                      href="https://wa.me/525523995604"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      <SiWhatsapp className="w-4 h-4 mr-2" />
-                      WhatsApp
-                    </a>
-                  </Button>
+                    Mi página en 72 h
+                  </Link>
+                  <a
+                    href="https://wa.me/525523995604"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileOpen(false)}
+                    className="border border-black/60 px-5 py-3 text-sm font-medium text-center hover:bg-black hover:text-white transition-colors"
+                  >
+                    WhatsApp
+                  </a>
                 </div>
               </nav>
             </SheetContent>
