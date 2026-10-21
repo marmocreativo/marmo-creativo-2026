@@ -40,6 +40,7 @@ export const metadata = {
 };
 
 const config: ServicePageConfig = {
+  portafolio: "ecommerce",
   heroBg: "/images/ecommerce_bg.jpg",
   eyebrow: "Para negocios listos para vender en línea, no solo mostrarse",
   title: "Una tienda online que vende las 24 horas",

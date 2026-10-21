@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CarruselPortafolio } from "@/components/portafolio/carrusel";
 import { Cog, Code, Globe, Monitor, Rocket, Settings, Smartphone, Target, Workflow, Zap } from "lucide-react";
 import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { PageHero } from "@/components/site/service-page";
@@ -178,6 +179,7 @@ export default function Page() {
           text="Soluciones tecnológicas a la medida de cada necesidad de tu empresa."
         />
         <PlansTable plans={services} cols={4} />
+        <CarruselPortafolio categoria="desarrollo-software" className="mt-16" />
       </Section>
 
       <CtaBand

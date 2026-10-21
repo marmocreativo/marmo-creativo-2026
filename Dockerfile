@@ -21,6 +21,12 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
+# Carpeta de imágenes subidas: en producción se monta como volumen (ver docker-compose.yml)
+ENV UPLOAD_DIR=/app/uploads
+RUN mkdir -p /app/uploads && chown nextjs:nodejs /app/uploads
+
+# Scripts SQL del proyecto: se cargan desde Admin > Configuración > Consulta SQL
+COPY --from=builder /app/database ./database
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static

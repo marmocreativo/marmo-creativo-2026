@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { JsonLd } from "@/components/seo/json-ld";
+import { AuthProvider } from "@/components/auth/session-provider";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'})
 
@@ -78,9 +79,11 @@ export default function RootLayout({
     <html lang="es">
       <body className={cn(inter.variable, fontMono.variable, "antialiased bg-cover bg-center bg-fixed")}>
         <JsonLd data={organizationJsonLd} />
-        <Header />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <Header />
+          {children}
+          <Footer />
+        </AuthProvider>
       </body>
       <GoogleAnalytics gaId="G-QTEDWT40GE" />
     </html>

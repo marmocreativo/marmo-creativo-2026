@@ -5,3 +5,7 @@ node_modules
 *.md
 .vscode
 npm-debug.log
+uploads
+
+# datos reales de clientes (seed) y scripts locales: nunca dentro de la imagen
+database/seed-*.sql

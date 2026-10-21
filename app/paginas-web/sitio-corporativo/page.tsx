@@ -40,6 +40,7 @@ export const metadata = {
 };
 
 const config: ServicePageConfig = {
+  portafolio: "sitio-corporativo",
   heroBg: "/images/corporativo_bg.jpg",
   eyebrow: "Para empresas que necesitan una estructura sólida, no una sola página",
   title: "Un sitio web a la altura de tu empresa",

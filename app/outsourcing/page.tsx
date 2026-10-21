@@ -1,4 +1,5 @@
 import { Award, Briefcase, Check, ChevronRight, Clock, Code, DollarSign, Monitor, Shield, Smartphone, Users, X, Zap } from "lucide-react";
+import { CarruselPortafolio } from "@/components/portafolio/carrusel";
 import { PageHero } from "@/components/site/service-page";
 import { btnLight, btnOutlineLight, CtaBand, cardClass, IconCard, PlansTable, Section, SectionHeader, type Plan } from "@/components/site/blocks";
 import { Faq } from "@/components/seo/faq";
@@ -158,6 +159,7 @@ export default function Page() {
           text="Diferentes opciones para diferentes volúmenes y necesidades de tu agencia de diseño."
         />
         <PlansTable plans={partnerships} />
+        <CarruselPortafolio categoria="outsourcing" className="mt-16" />
       </Section>
 
       <Faq items={faqs} title="Preguntas de agencias antes de ser partners" />

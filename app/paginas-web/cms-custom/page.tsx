@@ -40,6 +40,7 @@ export const metadata = {
 };
 
 const config: ServicePageConfig = {
+  portafolio: "cms-custom",
   heroBg: "/images/custom_bg.jpg",
   eyebrow: "Para negocios cuyos procesos no caben en una solución estándar",
   title: "Un CMS construido para tu negocio único",

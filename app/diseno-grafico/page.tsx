@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CarruselPortafolio } from "@/components/portafolio/carrusel";
 import { Award, Briefcase, Globe, Package, Printer, Target } from "lucide-react";
 import { SiInstagram } from "@icons-pack/react-simple-icons";
 import { PageHero } from "@/components/site/service-page";
@@ -136,28 +137,7 @@ export default function Page() {
           title="Nuestros trabajos de diseño"
           text="Una muestra de proyectos reales que reflejan la calidad de nuestros diseños."
         />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {gallery.map((g) => (
-            <div
-              key={g.title}
-              className="rounded-xl border border-border bg-white overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all"
-            >
-              <div className="relative aspect-[4/3] bg-neutral-100">
-                <Image
-                  src={g.image}
-                  alt={g.title}
-                  fill
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <span className="text-xs tracking-[0.15em] uppercase text-muted-foreground">{g.tag}</span>
-                <h3 className="mt-2 text-xl font-light text-foreground">{g.title}</h3>
-              </div>
-            </div>
-          ))}
-        </div>
+        <CarruselPortafolio categoria="diseno-grafico" className="mt-16" />
       </Section>
 
       <SplitSection

@@ -1,4 +1,5 @@
 import { Database, RefreshCw, Search, Shield, Zap } from "lucide-react";
+import { CarruselPortafolio } from "@/components/portafolio/carrusel";
 import { TestimonialsSlider } from "@/components/home/testimonials-slider";
 import { PageHero } from "@/components/site/service-page";
 import { CtaBand, IconCard, PlansTable, Section, SectionHeader, SplitSection, StatCard, type Plan } from "@/components/site/blocks";
@@ -176,6 +177,7 @@ export default function Page() {
       <Section bg="bg-neutral-100">
         <SectionHeader title="Planes de mantenimiento mensual" text="Sin compromisos largos. Cancela cuando quieras." />
         <PlansTable plans={plans} />
+        <CarruselPortafolio categoria="mantenimiento" className="mt-16" />
       </Section>
 
       <CtaBand

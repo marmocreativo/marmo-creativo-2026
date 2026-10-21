@@ -3,8 +3,10 @@ import type { LucideIcon } from "lucide-react";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { whatsappLink } from "@/lib/seo/oferta";
+import { CarruselPortafolio } from "@/components/portafolio/carrusel";
 
 export type ServicePageConfig = {
+  portafolio?: string; // categoría del portafolio cuyo carrusel se muestra en "Casos"
   heroBg: string;
   eyebrow: string;
   title: string;
@@ -210,38 +212,7 @@ export function ServicePage({ c }: { c: ServicePageConfig }) {
             <h2 className="text-4xl md:text-5xl font-light leading-tight text-foreground">{c.cases.title}</h2>
             <p className="text-lg text-muted-foreground leading-relaxed">{c.cases.text}</p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {c.cases.items.map((it) => (
-              <a
-                key={it.title}
-                href={it.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex flex-col rounded-xl border border-border bg-white overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all"
-              >
-                <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
-                  <Image
-                    src={it.image}
-                    alt={it.title}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover object-top"
-                  />
-                </div>
-                <div className="p-6 md:p-7 flex-1 flex flex-col">
-                  <span className="text-xs tracking-[0.15em] uppercase text-muted-foreground">{it.tag}</span>
-                  <h3 className="mt-3 text-xl font-light text-foreground">{it.title}</h3>
-                  {it.description && (
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">{it.description}</p>
-                  )}
-                  <span className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary">
-                    Ver sitio
-                    <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
-                </div>
-              </a>
-            ))}
-          </div>
+          {c.portafolio && <CarruselPortafolio categoria={c.portafolio} className="mt-16" />}
         </div>
       </section>
 

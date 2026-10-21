@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { NavDropdown } from "./nav-dropdown";
+import { UserAccess } from "./user-access";
 
 const paginasWebItems = [
   { label: "Página Express en 72 h", href: "/empezar" },
@@ -30,6 +31,7 @@ const navLinks = [
   { label: "Desarrollo de Software", href: "/desarrollo-software" },
   { label: "Diseño Gráfico", href: "/diseno-grafico" },
   { label: "Outsourcing", href: "/outsourcing" },
+  { label: "Portafolio", href: "/portafolio" },
 ];
 
 export function Header() {
@@ -90,6 +92,7 @@ export function Header() {
             >
               WhatsApp
             </a>
+            <UserAccess className="text-sm font-medium text-white/90 hover:text-white transition-colors" />
             <Link
               href="/empezar"
               className="bg-white text-black px-5 py-2.5 text-sm font-medium hover:bg-white/90 transition-colors"
@@ -156,6 +159,10 @@ export function Header() {
                   >
                     Mi página en 72 h
                   </Link>
+                  <UserAccess
+                    onClick={() => setMobileOpen(false)}
+                    className="border border-black/60 px-5 py-3 text-sm font-medium text-center hover:bg-black hover:text-white transition-colors"
+                  />
                   <a
                     href="https://wa.me/525523995604"
                     target="_blank"

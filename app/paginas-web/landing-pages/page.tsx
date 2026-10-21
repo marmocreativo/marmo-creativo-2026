@@ -41,6 +41,7 @@ export const metadata = {
 };
 
 const config: ServicePageConfig = {
+  portafolio: "landing-pages",
   heroBg: "/images/landing_bg.jpg",
   eyebrow: "Para empresas que necesitan resolver esto simple y directo",
   title: "¿Tu negocio no tiene presencia en línea, o la que tiene está vieja?",

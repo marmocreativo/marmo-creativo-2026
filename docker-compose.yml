@@ -1,0 +1,49 @@
+# Producción en Dokploy: sitio + base de datos MySQL en contenedores.
+#
+# En Dokploy:
+#   1. Crea un servicio de tipo "Compose" desde el repositorio (ruta ./docker-compose.yml).
+#   2. En la pestaña Environment pon las variables de .env.example (DB_*, AUTH_*). Dokploy las guarda en
+#      un .env junto a este archivo, que es el que leen "env_file" y las referencias ${...} de abajo.
+#   3. En Advanced activa "Isolated Deployments" (así Traefik y la base de datos comparten red).
+#   4. En Domains agrega tu dominio: servicio "app", puerto 3000, HTTPS con Let's Encrypt.
+#      Dokploy agrega solo las etiquetas de Traefik: por eso aquí NO se publica ningún puerto (solo "expose").
+#
+# Fuera de Dokploy (pruebas en un servidor propio) este archivo no abre el puerto 3000 al exterior:
+# pon un proxy delante o agrega temporalmente  ports: ["3000:3000"]  en el servicio app.
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "3000" # el dominio se enruta desde Dokploy (Domains), no por un puerto del servidor
+    env_file: .env
+    environment:
+      DB_HOST: db
+    volumes:
+      - uploads:/app/uploads # imágenes subidas (logos, portadas, galerías, fotos de perfil)
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME:-marmo_creativo}
+      MYSQL_USER: ${DB_USER:-marmo}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+      # Se ejecuta solo la primera vez, cuando el volumen está vacío
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db_data:
+  uploads:

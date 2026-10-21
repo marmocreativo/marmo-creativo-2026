@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { CarruselPortafolio } from "@/components/portafolio/carrusel";
+import { CATEGORIAS_WEB } from "@/lib/portafolio-categorias";
 import {
   ArrowUpRight,
   ChevronRight,
@@ -169,6 +171,7 @@ export default function Page() {
           </Link>
           .
         </p>
+        <CarruselPortafolio categoria={CATEGORIAS_WEB} titulo="Proyectos de páginas web" className="mt-16" />
       </Section>
 
       <CtaBand

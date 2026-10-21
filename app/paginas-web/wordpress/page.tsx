@@ -40,6 +40,7 @@ export const metadata = {
 };
 
 const config: ServicePageConfig = {
+  portafolio: "wordpress",
   heroBg: "/images/wordpress_bg.jpg",
   eyebrow: "Para negocios que quieren actualizar su sitio sin depender de un programador",
   title: "WordPress profesional que tú mismo puedes gestionar",

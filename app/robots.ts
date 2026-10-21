@@ -5,6 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/admin", "/panel", "/login", "/registro", "/api/", "/archivos/"],
     },
     sitemap: "https://marmo-creativo.com/sitemap.xml",
   };
