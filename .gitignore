@@ -41,3 +41,6 @@ next-env.d.ts
 
 # imágenes subidas
 /uploads
+
+# exportaciones de datos reales de clientes
+/database/export-*.sql

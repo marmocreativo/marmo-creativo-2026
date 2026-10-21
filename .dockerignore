@@ -9,3 +9,4 @@ uploads
 
 # datos reales de clientes (seed) y scripts locales: nunca dentro de la imagen
 database/seed-*.sql
+database/export-*.sql
