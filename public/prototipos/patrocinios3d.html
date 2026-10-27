@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Catálogo de patrocinios 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E4E9ED; --panel:#F7F9FA; --ink:#12263A; --muted:#546676; --line:#CAD3DA;
+  --accent:#D8281E; --accent-ink:#FFFFFF; --sel:#FFD60A; --sel-ink:#12263A;
+  --stage:#CFD7DD; --stage-hi:#EDF1F4; color-scheme:light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1620; --panel:#14212C; --ink:#E6EDF2; --muted:#93A4B2; --line:#263748;
+    --accent:#FF5648; --accent-ink:#0E1821; --stage:#1A2833; --stage-hi:#2A3C4B; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1620; --panel:#14212C; --ink:#E6EDF2; --muted:#93A4B2; --line:#263748;
+  --accent:#FF5648; --accent-ink:#0E1821; --stage:#1A2833; --stage-hi:#2A3C4B; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.45}
+h1,h2,.display{font-family:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;font-weight:800;letter-spacing:.01em;margin:0}
+button{font:inherit;color:inherit}
+.app{height:100%;display:flex;flex-direction:column}
+.top{display:flex;gap:16px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;padding:16px 20px 12px;background:var(--panel)}
+.top h1{font-size:34px;line-height:1}
+.top p{margin:4px 0 0;color:var(--muted);max-width:60ch}
+.proto{font-size:13px;color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:3px}
+.kerb{height:8px;background:repeating-linear-gradient(135deg,var(--accent) 0 14px,#fff 14px 28px)}
+.main{flex:1;min-height:0;display:grid;grid-template-columns:250px minmax(0,1fr) 390px;grid-template-rows:minmax(0,1fr)}
+.rail,.panel{background:var(--panel);overflow:auto;min-height:0}
+.rail{border-right:1px solid var(--line);padding:16px 0}
+.panel{border-left:1px solid var(--line);display:flex;flex-direction:column}
+.rail h2,.panel h2{font-size:22px;padding:0 16px 8px}
+.rail ul,.panel ul{list-style:none;margin:0;padding:0}
+.ath{display:flex;width:100%;gap:12px;align-items:center;text-align:left;background:none;border:0;border-left:5px solid transparent;padding:10px 16px;cursor:pointer}
+.ath:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.ath[aria-pressed="true"]{border-left-color:var(--sel);background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.sw{width:30px;height:30px;border-radius:50%;flex:none;border:3px solid var(--sw2,#fff);outline:1px solid var(--line)}
+.ath b{display:block;font-weight:700}
+.ath small{color:var(--muted)}
+.rail .foot{padding:12px 16px 0;margin:0;font-size:13px;color:var(--muted)}
+.stage{position:relative;min-height:380px;overflow:hidden;background:radial-gradient(ellipse at 50% 72%,var(--stage-hi),var(--stage) 70%)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.stage-title{position:absolute;left:18px;top:14px;pointer-events:none}
+.stage-title .display{font-size:32px;line-height:1}
+.stage-title span{color:var(--muted)}
+.hud{position:absolute;left:14px;bottom:12px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.hud button{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:6px 12px;cursor:pointer}
+.hud label{display:flex;gap:6px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:6px 10px;cursor:pointer}
+.tip{position:absolute;right:14px;bottom:14px;font-size:13px;color:var(--muted);pointer-events:none;text-align:right;max-width:30ch}
+.dim{position:absolute;left:0;top:0;pointer-events:none;background:var(--sel);color:var(--sel-ink);font-weight:700;font-size:13px;padding:3px 8px;border-radius:3px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.panel .intro{margin:0;padding:0 16px 10px;color:var(--muted);font-size:14px}
+.status{margin:0;padding:0 16px;min-height:0;font-size:13px;color:var(--accent)}
+.panel-list{flex:1}
+.zone{border-top:1px solid var(--line);border-left:5px solid transparent}
+.zone.open{border-left-color:var(--sel);background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.zhead{width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center;text-align:left;background:none;border:0;padding:11px 16px 11px 11px;cursor:pointer}
+.zname{display:block;font-weight:700}
+.zmeta{display:block;font-size:13px;color:var(--muted)}
+.zr{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.zprice{font-family:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;font-weight:800;font-size:22px;line-height:1}
+.chip{font-size:12px;font-weight:700;background:var(--sel);color:var(--sel-ink);padding:1px 8px;border-radius:3px}
+.editor{padding:2px 16px 16px 11px}
+.zdesc{margin:0 0 10px;color:var(--muted);font-size:14px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.btn{display:inline-block;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:7px 12px;border-radius:3px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.btn.ghost{background:none}
+.ctrl{display:grid;grid-template-columns:130px 1fr;align-items:center;gap:8px;margin:6px 0}
+.ctrl label{font-size:14px}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{margin:10px 0 0;font-size:14px}
+.readout b{font-weight:700}
+.hint{margin:0;font-size:14px;color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sr:focus-visible + label{outline:3px solid var(--sel);outline-offset:2px}
+:focus-visible{outline:3px solid var(--sel);outline-offset:-2px;border-radius:3px}
+.summary{position:sticky;bottom:0;background:var(--panel);border-top:2px solid var(--ink);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;align-items:center;gap:12px}
+.summary .total{font-family:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;font-weight:800;font-size:30px;line-height:1}
+.summary small{display:block;color:var(--muted);font-size:13px}
+.summary .btn{padding:10px 14px}
+.summary .btn:disabled{opacity:.45;cursor:not-allowed}
+dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:4px;max-width:460px;width:calc(100% - 32px);padding:20px}
+dialog::backdrop{background:rgba(5,12,20,.6)}
+dialog h2{font-size:28px;margin-bottom:6px}
+dialog ul{list-style:none;padding:0;margin:12px 0}
+dialog li{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line)}
+dialog li small{display:block;color:var(--muted)}
+dialog .tot{display:flex;justify-content:space-between;font-weight:700;font-size:18px;margin-bottom:10px}
+dialog p{margin:8px 0;color:var(--muted);font-size:14px}
+@media (max-width:980px){
+  html,body{height:auto}
+  .app{height:auto;min-height:100%}
+  .main{display:block}
+  .rail{border-right:0;border-bottom:1px solid var(--line);padding:12px 0 8px}
+  .rail ul{display:flex;overflow-x:auto}
+  .ath{border-left:0;border-bottom:4px solid transparent;min-width:210px}
+  .ath[aria-pressed="true"]{border-bottom-color:var(--sel)}
+  .rail .foot{display:none}
+  .stage{height:58vh;min-height:340px}
+  .panel{border-left:0;overflow:visible}
+  .tip{display:none}
+  .top h1{font-size:28px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div>
+      <h1>Catálogo de patrocinios</h1>
+      <p>Elige a un representado, sube tu logo y revisa en qué parte y a qué tamaño se imprimiría.</p>
+    </div>
+    <span class="proto">Prototipo con modelos 3D simples</span>
+  </header>
+  <div class="kerb" aria-hidden="true"></div>
+  <main class="main">
+    <nav class="rail" aria-label="Representados">
+      <h2>Representados</h2>
+      <ul id="athletes"></ul>
+      <p class="foot">Nombres, precios y medidas son datos de ejemplo.</p>
+    </nav>
+    <section class="stage" id="stage">
+      <canvas id="c" role="img" aria-label="Visor 3D. Arrastra para girar, usa la rueda o pellizca para acercar."></canvas>
+      <div class="stage-title" id="stageTitle"></div>
+      <div class="dim" id="dim" hidden></div>
+      <div class="hud">
+        <button type="button" id="resetView">Vista completa</button>
+        <label><input type="checkbox" id="showZones" checked> Mostrar zonas libres</label>
+      </div>
+      <div class="tip">Arrastra para girar. Toca una zona para elegirla.</div>
+    </section>
+    <aside class="panel" aria-label="Posiciones de patrocinio">
+      <h2>Posiciones de patrocinio</h2>
+      <p class="intro">Precios por temporada. Elige una posición para colocar tu logo.</p>
+      <p class="status" id="status" role="status"></p>
+      <ul class="panel-list" id="zones"></ul>
+      <div class="summary">
+        <div>
+          <div class="total" id="sumTotal">$0</div>
+          <small id="sumCount">Aún no hay logos colocados</small>
+        </div>
+        <button type="button" class="btn primary" id="btnQuote" disabled>Solicitar propuesta</button>
+      </div>
+    </aside>
+  </main>
+  <dialog id="dlg">
+    <h2>Resumen de tu propuesta</h2>
+    <p id="dlgWho"></p>
+    <ul id="dlgList"></ul>
+    <div class="tot"><span>Total por temporada</span><span id="dlgTotal"></span></div>
+    <p>En la versión final, esta solicitud llegaría al promotor con tu logo y las posiciones elegidas. Aquí es solo una vista previa.</p>
+    <button type="button" class="btn primary" id="dlgClose">Cerrar</button>
+  </dialog>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+"use strict";
+const PI = Math.PI;
+const $ = s => document.querySelector(s);
+const fmt = new Intl.NumberFormat("es-MX",{style:"currency",currency:"MXN",maximumFractionDigits:0});
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const col = hex => new THREE.Color(hex).convertSRGBToLinear();
+const n1 = v => (Math.round(v*10)/10).toString();
+
+/* ---------- Datos de ejemplo ---------- */
+const ATHLETES = [
+  {id:"mateo", name:"Mateo Rivas", role:"Piloto de Fórmula 4", model:"f1", color:"#D6362B", accent:"#F2F2F0", mult:1, num:"7"},
+  {id:"sofia", name:"Sofía Brandt", role:"Piloto de Fórmula 3", model:"f1", color:"#1F4FA8", accent:"#F2F2F0", mult:1.7, num:"21"},
+  {id:"diego", name:"Diego Salcedo", role:"Delantero de fútbol", model:"kit", color:"#1E8F5A", accent:"#F4F4F2", mult:1.2, num:"9"},
+  {id:"camila", name:"Camila Duarte", role:"Mediocampista de fútbol femenil", model:"kit", color:"#3FA7E0", accent:"#12263A", mult:0.8, num:"10"}
+];
+
+/* Zonas del coche. Unidades 3D en metros; w y h en centímetros. */
+const F1_ZONES = [
+  {id:"nariz", name:"Nariz", desc:"Sobre el cono frontal, visible en tomas de frente.", pos:[0,0.503,2.0], rot:[-PI/2,0,PI], w:16, h:40, price:180000, view:[0,1,-0.5], dist:2.6},
+  {id:"ala-del", name:"Ala delantera", desc:"Superficie superior del ala delantera.", pos:[0,0.123,2.82], rot:[-PI/2,0,PI], w:80, h:18, price:95000, view:[0,1,0.6], dist:2.4},
+  {id:"placa-ala", name:"Placas del ala delantera", desc:"Cara exterior de las placas del ala delantera.", pos:[0.967,0.2,2.72], rot:[0,PI/2,0], w:30, h:14, price:60000, mirror:true, view:[1,0.3,0.4], dist:2.2},
+  {id:"ponton", name:"Costado (pontón)", desc:"El costado del coche, la zona más grande y visible.", pos:[0.752,0.36,-0.3], rot:[0,PI/2,0], w:70, h:25, price:240000, mirror:true, view:[1,0.25,0.3], dist:3.4},
+  {id:"airbox", name:"Toma de aire", desc:"Laterales de la toma de aire sobre el piloto.", pos:[0.1415,0.74,-0.4], rot:[0,PI/2,0], w:50, h:22, price:120000, mirror:true, view:[1,0.3,0.2], dist:2.6},
+  {id:"aleta", name:"Aleta dorsal", desc:"Aleta vertical sobre la cubierta del motor.", pos:[0.0115,0.78,-1.6], rot:[0,PI/2,0], w:80, h:25, price:75000, mirror:true, view:[1,0.3,-0.2], dist:3.2},
+  {id:"aleron", name:"Alerón trasero", desc:"Cara trasera del alerón, visible desde atrás.", pos:[0,0.95,-2.581], rot:[0,PI,0], w:80, h:25, price:110000, view:[0,0.4,-1], dist:3},
+  {id:"placa-aleron", name:"Placas del alerón trasero", desc:"Placas laterales del alerón trasero.", pos:[0.5325,0.88,-2.45], rot:[0,PI/2,0], w:40, h:25, price:50000, mirror:true, view:[1,0.3,-0.6], dist:2.6}
+];
+
+/* Superficie de la camiseta: torso de sección superelíptica */
+const TA = 0.27, TB = 0.13, TH = 0.72, TN = 4;
+function surf(x,y,side){
+  const t = y/TH, k = 1-0.07*t, a = TA*k, b = TB*k;
+  const q = Math.max(0, 1-Math.pow(Math.abs(x/a),TN));
+  const z = side*b*Math.pow(q,1/TN);
+  const fx = TN*Math.pow(Math.abs(x),TN-1)*Math.sign(x)/Math.pow(a,TN);
+  const fz = TN*Math.pow(Math.abs(z),TN-1)*Math.sign(z)/Math.pow(b,TN);
+  const yaw = Math.atan2(fx,fz), o = 0.003;
+  return {pos:[x+Math.sin(yaw)*o, y, z+Math.cos(yaw)*o], rot:[0,yaw,0]};
+}
+const sPecho = surf(0,0.47,1), sPechoD = surf(-0.13,0.56,1), sEsp1 = surf(0,0.60,-1), sEsp2 = surf(0,0.17,-1);
+const KIT_ZONES = [
+  {id:"pecho", name:"Pecho central", desc:"Frente de la camiseta, la posición principal.", pos:sPecho.pos, rot:sPecho.rot, w:24, h:14, price:450000, view:[0,0.1,1], dist:1.2},
+  {id:"pecho-der", name:"Pecho derecho", desc:"Pecho del lado derecho del jugador.", pos:sPechoD.pos, rot:sPechoD.rot, w:9, h:9, price:90000, view:[-0.3,0.1,1], dist:0.9},
+  {id:"mangas", name:"Mangas", desc:"Una marca en cada manga.", pos:[0.35,0.5935,0.0905], rot:[0,0,-0.436], w:8, h:8, price:160000, mirror:true, view:[0.9,0.2,1], dist:1.1},
+  {id:"espalda-alta", name:"Espalda alta", desc:"Arriba del número.", pos:sEsp1.pos, rot:sEsp1.rot, w:28, h:7, price:120000, view:[0,0.15,-1], dist:1.2},
+  {id:"espalda-baja", name:"Espalda baja", desc:"Debajo del número.", pos:sEsp2.pos, rot:sEsp2.rot, w:26, h:8, price:70000, view:[0,0.2,-1], dist:1.2}
+];
+
+/* ---------- Escena ---------- */
+const stage = $("#stage"), canvas = $("#c");
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.setClearColor(0x000000,0);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(35,1,0.05,100);
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = 0.08; controls.enablePan = false;
+controls.maxPolarAngle = PI*0.52; controls.autoRotateSpeed = 1.1;
+
+scene.add(new THREE.HemisphereLight(0xffffff,0x8896a3,0.85));
+const sun = new THREE.DirectionalLight(0xffffff,1.0);
+sun.position.set(4,9,5); sun.castShadow = true; sun.shadow.mapSize.set(2048,2048);
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff,0.55); fill.position.set(-5,4,-6); scene.add(fill);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(40,40), new THREE.ShadowMaterial({opacity:0.25}));
+ground.rotation.x = -PI/2; ground.receiveShadow = true; scene.add(ground);
+
+function mat(hex,rough,metal){ return new THREE.MeshStandardMaterial({color:col(hex),roughness:rough,metalness:metal}); }
+function add(parent,geo,m,pos,rot,scale){
+  const me = new THREE.Mesh(geo,m);
+  if(pos) me.position.set(pos[0],pos[1],pos[2]);
+  if(rot) me.rotation.set(rot[0],rot[1],rot[2]);
+  if(scale) me.scale.set(scale[0],scale[1],scale[2]);
+  me.castShadow = true; me.receiveShadow = true; parent.add(me); return me;
+}
+
+/* ---------- Modelo: coche de carreras (formas básicas) ---------- */
+function buildCar(){
+  const g = new THREE.Group();
+  const body = mat("#D6362B",0.35,0.25), trim = mat("#F2F2F0",0.4,0.1), dark = mat("#1B1F24",0.6,0.2),
+        carbon = mat("#2A2F36",0.5,0.3), tire = mat("#15171A",0.9,0), rim = mat("#9AA4AE",0.3,0.8);
+  g.userData.mats = {body, trim};
+  const cyl = (rt,rb,len,seg)=>{ const c = new THREE.CylinderGeometry(rt,rb,len,seg); c.rotateX(PI/2); return c; };
+  add(g,cyl(0.30,0.30,2.4,32),body,[0,0.38,0.2],null,[1,0.7,1]);
+  add(g,cyl(0.06,0.27,1.7,24),body,[0,0.36,2.05],null,[1,0.8,1]);
+  add(g,new THREE.BoxGeometry(0.05,0.15,0.16),carbon,[0,0.235,2.62]);
+  [1,-1].forEach(s=>{
+    add(g,new THREE.BoxGeometry(0.5,0.36,1.5),body,[s*0.5,0.36,-0.3]);
+    add(g,new THREE.BoxGeometry(0.4,0.22,0.02),dark,[s*0.5,0.36,0.452]);
+  });
+  add(g,new THREE.BoxGeometry(1.4,0.04,3.9),carbon,[0,0.12,0.05]);
+  add(g,cyl(0.22,0.05,1.8,24),body,[0,0.5,-1.5],null,[1,0.8,1]);
+  add(g,new THREE.BoxGeometry(0.28,0.34,0.7),body,[0,0.74,-0.4]);
+  add(g,new THREE.BoxGeometry(0.2,0.2,0.02),dark,[0,0.78,-0.049]);
+  add(g,new THREE.BoxGeometry(0.02,0.35,1.4),trim,[0,0.78,-1.6]);
+  add(g,new THREE.BoxGeometry(0.34,0.02,0.7),dark,[0,0.6,0.3]);
+  add(g,new THREE.SphereGeometry(0.12,24,16),trim,[0,0.67,0.3]);
+  const halo = new THREE.TorusGeometry(0.2,0.014,8,28,PI); halo.rotateY(PI/2);
+  add(g,halo,carbon,[0,0.6,0.3]);
+  add(g,new THREE.BoxGeometry(0.025,0.2,0.025),carbon,[0,0.7,0.5]);
+  /* ala delantera */
+  add(g,new THREE.BoxGeometry(1.9,0.04,0.3),carbon,[0,0.1,2.78]);
+  add(g,new THREE.BoxGeometry(1.5,0.03,0.22),carbon,[0,0.17,2.58]);
+  [1,-1].forEach(s=>add(g,new THREE.BoxGeometry(0.03,0.24,0.55),trim,[s*0.95,0.2,2.72]));
+  /* alerón trasero */
+  add(g,new THREE.BoxGeometry(1.0,0.38,0.06),trim,[0,0.95,-2.55]);
+  add(g,new THREE.BoxGeometry(1.0,0.12,0.2),carbon,[0,0.72,-2.45]);
+  add(g,new THREE.BoxGeometry(0.04,0.5,0.14),carbon,[0,0.6,-2.4]);
+  [1,-1].forEach(s=>add(g,new THREE.BoxGeometry(0.03,0.62,0.5),body,[s*0.515,0.88,-2.45]));
+  /* ruedas */
+  const wheel = (x,y,z,r,w)=>{
+    const t = new THREE.CylinderGeometry(r,r,w,32); t.rotateZ(PI/2);
+    const rm = new THREE.CylinderGeometry(r*0.62,r*0.62,w+0.012,24); rm.rotateZ(PI/2);
+    add(g,t,tire,[x,y,z]); add(g,rm,rim,[x,y,z]);
+    const ax = new THREE.CylinderGeometry(0.015,0.015,0.5,8); ax.rotateZ(PI/2);
+    add(g,ax,carbon,[x*0.62,y-0.04,z]);
+  };
+  [1,-1].forEach(s=>{ wheel(s*0.85,0.34,1.7,0.34,0.36); wheel(s*0.85,0.36,-1.6,0.36,0.45); });
+  return g;
+}
+
+/* ---------- Modelo: camiseta ---------- */
+function superTorso(){
+  const S=96, R=12, pos=[], idx=[];
+  for(let i=0;i<=R;i++){
+    const t=i/R, k=1-0.07*t, y=t*TH;
+    for(let j=0;j<=S;j++){
+      const th=j/S*PI*2, c=Math.cos(th), s=Math.sin(th);
+      pos.push(TA*k*Math.sign(c)*Math.pow(Math.abs(c),2/TN), y, TB*k*Math.sign(s)*Math.pow(Math.abs(s),2/TN));
+    }
+  }
+  for(let i=0;i<R;i++) for(let j=0;j<S;j++){
+    const a=i*(S+1)+j, b=a+S+1; idx.push(a,b,a+1,b,b+1,a+1);
+  }
+  const cy = pos.length/3; pos.push(0,TH,0);
+  const base = R*(S+1);
+  for(let j=0;j<S;j++) idx.push(base+j,cy,base+j+1);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position",new THREE.Float32BufferAttribute(pos,3));
+  geo.setIndex(idx); geo.computeVertexNormals();
+  return geo;
+}
+function buildKit(){
+  const g = new THREE.Group();
+  const body = mat("#1E8F5A",0.85,0), trim = mat("#F4F4F2",0.8,0), dark = mat("#1B1F24",0.9,0);
+  body.side = THREE.DoubleSide;
+  g.userData.mats = {body, trim};
+  const torso = new THREE.Mesh(superTorso(),body); torso.castShadow = torso.receiveShadow = true; g.add(torso);
+  const hem = new THREE.Mesh(new THREE.BoxGeometry(0.01,0.01,0.01),trim); // marcador no visible
+  hem.visible = false; g.add(hem);
+  const collar = new THREE.TorusGeometry(0.085,0.016,10,32); collar.rotateX(PI/2);
+  add(g,collar,trim,[0,TH+0.004,0],null,[1.05,1,0.85]);
+  const neck = new THREE.CircleGeometry(0.08,32); neck.rotateX(-PI/2);
+  add(g,neck,dark,[0,TH+0.002,0],null,[1.05,1,0.85]);
+  [1,-1].forEach(s=>{
+    const m = add(g,new THREE.CylinderGeometry(0.08,0.095,0.22,24),body,[s*0.35,0.5935,0],[0,0,-s*2.007]);
+    m.material = body;
+    add(g,new THREE.CylinderGeometry(0.083,0.083,0.04,24),trim,[s*0.4406,0.5512,0],[0,0,-s*2.007]);
+  });
+  /* escudo y número (decoración fija) */
+  const crestC = document.createElement("canvas"); crestC.width = crestC.height = 128;
+  const numC = document.createElement("canvas"); numC.width = 256; numC.height = 340;
+  const crestT = new THREE.CanvasTexture(crestC), numT = new THREE.CanvasTexture(numC);
+  crestT.encoding = numT.encoding = THREE.sRGBEncoding;
+  const dec = (tex,w,h,s)=>{
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
+    m.position.set(s.pos[0],s.pos[1],s.pos[2]); m.rotation.set(s.rot[0],s.rot[1],s.rot[2]); g.add(m);
+  };
+  dec(crestT,0.07,0.07,surf(0.13,0.57,1));
+  dec(numT,0.18,0.24,surf(0,0.38,-1));
+  g.userData.deco = {crestC,numC,crestT,numT};
+  return g;
+}
+function paintKitDeco(ath){
+  const d = models.kit.group.userData.deco;
+  let x = d.crestC.getContext("2d"); x.clearRect(0,0,128,128);
+  x.fillStyle = ath.accent; x.beginPath(); x.arc(64,64,60,0,PI*2); x.fill();
+  x.fillStyle = ath.color; x.beginPath(); x.arc(64,64,44,0,PI*2); x.fill();
+  d.crestT.needsUpdate = true;
+  x = d.numC.getContext("2d"); x.clearRect(0,0,256,340);
+  x.fillStyle = ath.accent; x.font = "800 260px Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.fillText(ath.num,128,180); d.numT.needsUpdate = true;
+}
+
+/* ---------- Zonas (marcos y logos) ---------- */
+function buildZones(defs){
+  const group = new THREE.Group(), items = {};
+  defs.forEach(z=>{
+    const item = {zone:z, variants:[]};
+    const list = [{pos:z.pos, rot:z.rot, mir:false}];
+    if(z.mirror) list.push({pos:[-z.pos[0],z.pos[1],z.pos[2]], rot:[z.rot[0],-z.rot[1],-z.rot[2]], mir:true});
+    list.forEach(v=>{
+      const holder = new THREE.Group();
+      holder.position.set(v.pos[0],v.pos[1],v.pos[2]); holder.rotation.set(v.rot[0],v.rot[1],v.rot[2]);
+      const fg = new THREE.PlaneGeometry(z.w/100,z.h/100);
+      const frame = new THREE.Mesh(fg,new THREE.MeshBasicMaterial({color:col("#FFFFFF"),transparent:true,opacity:0.2,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1}));
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(fg),new THREE.LineBasicMaterial({color:col("#FFFFFF")}));
+      edges.position.z = 0.002; edges.raycast = function(){};
+      const logo = new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2}));
+      logo.position.z = 0.0015; logo.visible = false;
+      frame.userData.zoneId = z.id; logo.userData.zoneId = z.id;
+      holder.add(frame,edges,logo); group.add(holder);
+      item.variants.push({holder,frame,edges,logo,mir:v.mir});
+    });
+    items[z.id] = item;
+  });
+  return {group, items};
+}
+
+const models = {
+  f1:  {group:buildCar(), def:F1_ZONES, base:[5.2,2.2,6.2], target:[0,0.45,0.1], minD:1, maxD:16, shadow:5, ground:true},
+  kit: {group:buildKit(), def:KIT_ZONES, base:[0.85,0.45,1.9], target:[0,0.38,0], minD:0.45, maxD:4.5, shadow:1.6, ground:false}
+};
+Object.keys(models).forEach(k=>{
+  const m = models[k]; m.zones = buildZones(m.def);
+  m.group.visible = false; m.zones.group.visible = false;
+  scene.add(m.group, m.zones.group);
+});
+
+/* ---------- Estado ---------- */
+const state = {athleteId:"mateo", zoneId:null, show:true, assign:{}};
+const athlete = () => ATHLETES.find(a=>a.id===state.athleteId);
+const cur = () => models[athlete().model];
+const assigns = () => state.assign[state.athleteId] || (state.assign[state.athleteId] = {});
+const getAssign = id => assigns()[id];
+const priceFor = z => Math.round(z.price*athlete().mult/5000)*5000;
+function fitSize(z,a){
+  const fitW = Math.min(z.w, z.h*a.ar), w = fitW*a.scale;
+  return {w, h:w/a.ar};
+}
+
+/* ---------- Actualizar visuales de una zona ---------- */
+function refreshZone(id){
+  const item = cur().zones.items[id]; if(!item) return;
+  const a = getAssign(id), sel = state.zoneId===id;
+  item.variants.forEach(v=>{
+    if(a){
+      const s = fitSize(item.zone,a);
+      const dx = a.ox*(item.zone.w-s.w)/2, dy = a.oy*(item.zone.h-s.h)/2;
+      v.logo.visible = true;
+      if(v.logo.material.map!==a.tex){ v.logo.material.map = a.tex; v.logo.material.needsUpdate = true; }
+      v.logo.scale.set(s.w/100,s.h/100,1);
+      v.logo.position.set((v.mir?-dx:dx)/100, dy/100, 0.0015);
+    } else v.logo.visible = false;
+    const showFrame = sel || (!a && state.show);
+    v.frame.visible = v.edges.visible = showFrame;
+    const c = col(sel?"#FFD60A":"#FFFFFF");
+    v.frame.material.color.copy(c); v.edges.material.color.copy(c);
+    v.frame.material.opacity = sel ? (a?0.12:0.4) : 0.18;
+  });
+}
+function refreshAll(){ Object.keys(cur().zones.items).forEach(refreshZone); }
+
+/* ---------- Cámara ---------- */
+let goal = null;
+function setLimits(){ const m = cur(); controls.minDistance = m.minD; controls.maxDistance = m.maxD;
+  sun.shadow.camera.left = sun.shadow.camera.bottom = -m.shadow; sun.shadow.camera.right = sun.shadow.camera.top = m.shadow;
+  sun.shadow.camera.updateProjectionMatrix(); ground.visible = m.ground; }
+function overview(instant){
+  const m = cur(), k = camera.aspect<1 ? 1.45 : 1;
+  const t = new THREE.Vector3(...m.target), p = t.clone().add(new THREE.Vector3(m.base[0]*k-m.target[0]*0, m.base[1]-m.target[1]*0, m.base[2]*k));
+  p.set(m.base[0]*k, m.base[1], m.base[2]*k);
+  if(instant||reduceMotion){ camera.position.copy(p); controls.target.copy(t); goal = null; }
+  else goal = {pos:p, target:t};
+  controls.autoRotate = !reduceMotion && instant===true;
+}
+function flyToZone(id){
+  const item = cur().zones.items[id], z = item.zone;
+  const t = new THREE.Vector3(); item.variants[0].holder.getWorldPosition(t);
+  const dir = new THREE.Vector3(...z.view).normalize().multiplyScalar(z.dist*(camera.aspect<1?1.3:1));
+  const p = t.clone().add(dir);
+  controls.autoRotate = false;
+  if(reduceMotion){ camera.position.copy(p); controls.target.copy(t); goal = null; }
+  else goal = {pos:p, target:t};
+}
+controls.addEventListener("start",()=>{ goal = null; controls.autoRotate = false; });
+
+/* ---------- Selección ---------- */
+function selectZone(id, opts){
+  opts = opts||{};
+  const prev = state.zoneId;
+  state.zoneId = (opts.toggle && prev===id) ? null : id;
+  if(prev) refreshZone(prev);
+  if(state.zoneId) refreshZone(state.zoneId);
+  $("#status").textContent = "";
+  renderZones();
+  if(state.zoneId){
+    flyToZone(state.zoneId);
+    const row = document.querySelector('[data-zone="'+state.zoneId+'"]');
+    if(row){ if(opts.focus) row.focus({preventScroll:true}); row.closest("li").scrollIntoView({block:"nearest"}); }
+  }
+}
+function selectAthlete(id){
+  const old = athlete(), prevModel = old.model;
+  state.athleteId = id;
+  const a = athlete();
+  models[prevModel].group.visible = models[prevModel].zones.group.visible = false;
+  const m = models[a.model]; m.group.visible = m.zones.group.visible = true;
+  const um = m.group.userData.mats;
+  um.body.color.copy(col(a.color)); um.trim.color.copy(col(a.accent));
+  if(a.model==="kit") paintKitDeco(a);
+  if(prevModel!==a.model || !state.zoneId){ state.zoneId = null; }
+  else if(!cur().zones.items[state.zoneId]) state.zoneId = null;
+  setLimits(); refreshAll();
+  if(prevModel!==a.model) overview(true);
+  $("#stageTitle").innerHTML = '<div class="display">'+a.name+'</div><span>'+a.role+'</span>';
+  renderAthletes(); renderZones(); renderSummary();
+  $("#status").textContent = "";
+}
+
+/* ---------- Logos ---------- */
+function setLogo(cv){
+  const id = state.zoneId; if(!id) return;
+  const as = assigns(), old = as[id];
+  const tex = new THREE.CanvasTexture(cv);
+  tex.encoding = THREE.sRGBEncoding; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  if(old && old.tex) old.tex.dispose();
+  as[id] = {tex, ar:cv.width/cv.height, scale:old?old.scale:0.8, ox:old?old.ox:0, oy:old?old.oy:0};
+  refreshZone(id); renderZones(); renderSummary();
+  const row = document.querySelector('[data-zone="'+id+'"]'); if(row) row.focus({preventScroll:true});
+}
+function removeLogo(){
+  const id = state.zoneId, as = assigns(); if(!id||!as[id]) return;
+  as[id].tex.dispose(); delete as[id];
+  refreshZone(id); renderZones(); renderSummary();
+}
+let sampleIdx = 0;
+function sampleCanvas(){
+  const S = [{bg:"#0B7A75",fg:"#FFFFFF",t:"AURORA"},{bg:"#F26B1D",fg:"#1A1A1A",t:"NOPAL"},{bg:"#FFFFFF",fg:"#1D3FBF",t:"volta"}][sampleIdx++%3];
+  const c = document.createElement("canvas"); c.width = 640; c.height = 280;
+  const x = c.getContext("2d"), r = 36;
+  x.fillStyle = S.bg; x.beginPath();
+  x.moveTo(r,0); x.lineTo(640-r,0); x.quadraticCurveTo(640,0,640,r); x.lineTo(640,280-r); x.quadraticCurveTo(640,280,640-r,280);
+  x.lineTo(r,280); x.quadraticCurveTo(0,280,0,280-r); x.lineTo(0,r); x.quadraticCurveTo(0,0,r,0); x.fill();
+  if(S.bg==="#FFFFFF"){ x.strokeStyle = S.fg; x.lineWidth = 10; x.stroke(); }
+  x.fillStyle = S.fg; x.font = "800 130px Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.fillText(S.t,320,148); return c;
+}
+function loadFile(f){
+  if(!f) return;
+  const st = $("#status");
+  if(!/^image\//.test(f.type)){ st.textContent = "Ese archivo no es una imagen. Sube un PNG, JPG o SVG."; return; }
+  const r = new FileReader();
+  r.onload = ()=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const w0 = img.naturalWidth||img.width||512, h0 = img.naturalHeight||img.height||256;
+      const sc = Math.min(1,1024/Math.max(w0,h0)), c = document.createElement("canvas");
+      c.width = Math.max(1,Math.round(w0*sc)); c.height = Math.max(1,Math.round(h0*sc));
+      c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+      st.textContent = ""; setLogo(c);
+    };
+    img.onerror = ()=>{ st.textContent = "No se pudo leer la imagen. Prueba con otro archivo PNG o JPG."; };
+    img.src = r.result;
+  };
+  r.onerror = ()=>{ st.textContent = "No se pudo abrir el archivo."; };
+  r.readAsDataURL(f);
+}
+
+/* ---------- Interfaz ---------- */
+function renderAthletes(){
+  const ul = $("#athletes"); ul.innerHTML = "";
+  ATHLETES.forEach(a=>{
+    const li = document.createElement("li");
+    li.innerHTML = '<button type="button" class="ath" data-ath="'+a.id+'" aria-pressed="'+(a.id===state.athleteId)+'"><span class="sw" style="background:'+a.color+';--sw2:'+a.accent+'"></span><span><b>'+a.name+'</b><small>'+a.role+'</small></span></button>';
+    ul.appendChild(li);
+  });
+}
+function editorHTML(z,a){
+  let h = '<div class="editor"><p class="zdesc">'+z.desc+(z.mirror?' Se aplica en ambos lados.':'')+'</p>';
+  h += '<div class="btnrow"><input class="sr" id="logoFile" type="file" accept="image/*"><label class="btn primary" for="logoFile">'+(a?'Cambiar logo':'Subir logo')+'</label>';
+  h += '<button type="button" class="btn" id="btnSample">Logo de ejemplo</button>';
+  if(a) h += '<button type="button" class="btn ghost" id="btnRemove">Quitar</button>';
+  h += '</div>';
+  if(a){
+    h += '<div class="ctrl"><label for="rngSize">Tamaño</label><input id="rngSize" type="range" min="20" max="100" value="'+Math.round(a.scale*100)+'"></div>';
+    h += '<div class="ctrl"><label for="rngX">Posición horizontal</label><input id="rngX" type="range" min="-100" max="100" value="'+Math.round(a.ox*100)+'"></div>';
+    h += '<div class="ctrl"><label for="rngY">Posición vertical</label><input id="rngY" type="range" min="-100" max="100" value="'+Math.round(a.oy*100)+'"></div>';
+    h += '<p class="readout" id="readout"></p>';
+  } else {
+    h += '<p class="hint">Un PNG con fondo transparente se ve mejor. Cabe en un área de '+z.w+' × '+z.h+' cm.</p>';
+  }
+  return h+'</div>';
+}
+function renderZones(){
+  const ul = $("#zones"); ul.innerHTML = "";
+  cur().def.forEach(z=>{
+    const a = getAssign(z.id), open = state.zoneId===z.id;
+    const li = document.createElement("li");
+    li.className = "zone"+(open?" open":"");
+    li.innerHTML = '<button type="button" class="zhead" data-zone="'+z.id+'" aria-expanded="'+open+'"><span><span class="zname">'+z.name+'</span><span class="zmeta">'+z.w+' × '+z.h+' cm'+(z.mirror?', ambos lados':'')+'</span></span><span class="zr"><span class="zprice">'+fmt.format(priceFor(z))+'</span>'+(a?'<span class="chip">Con logo</span>':'')+'</span></button>';
+    if(open) li.insertAdjacentHTML("beforeend",editorHTML(z,a));
+    ul.appendChild(li);
+  });
+  updateReadout();
+}
+function updateReadout(){
+  const el = $("#readout"); if(!el||!state.zoneId) return;
+  const z = cur().zones.items[state.zoneId].zone, a = getAssign(z.id); if(!a) return;
+  const s = fitSize(z,a);
+  el.innerHTML = 'Se imprimiría a <b>'+n1(s.w)+' × '+n1(s.h)+' cm</b> dentro de '+z.w+' × '+z.h+' cm disponibles.';
+}
+function renderSummary(){
+  const as = assigns(), z = cur().def.filter(d=>as[d.id]);
+  const total = z.reduce((t,d)=>t+priceFor(d),0);
+  $("#sumTotal").textContent = fmt.format(total);
+  $("#sumCount").textContent = z.length===0 ? "Aún no hay logos colocados" : z.length===1 ? "1 posición con logo" : z.length+" posiciones con logo";
+  $("#btnQuote").disabled = z.length===0;
+}
+$("#athletes").addEventListener("click",e=>{ const b = e.target.closest("[data-ath]"); if(b) selectAthlete(b.dataset.ath); });
+$("#zones").addEventListener("click",e=>{
+  const b = e.target.closest("[data-zone]");
+  if(b){ selectZone(b.dataset.zone,{toggle:true,focus:true}); return; }
+  if(e.target.id==="btnSample") setLogo(sampleCanvas());
+  if(e.target.id==="btnRemove") removeLogo();
+});
+$("#zones").addEventListener("change",e=>{ if(e.target.id==="logoFile") loadFile(e.target.files[0]); });
+$("#zones").addEventListener("input",e=>{
+  const id = state.zoneId, a = id && getAssign(id); if(!a) return;
+  const v = +e.target.value;
+  if(e.target.id==="rngSize") a.scale = v/100;
+  else if(e.target.id==="rngX") a.ox = v/100;
+  else if(e.target.id==="rngY") a.oy = v/100;
+  else return;
+  refreshZone(id); updateReadout();
+});
+$("#resetView").addEventListener("click",()=>{ overview(false); });
+$("#showZones").addEventListener("change",e=>{ state.show = e.target.checked; refreshAll(); });
+$("#btnQuote").addEventListener("click",()=>{
+  const as = assigns(), z = cur().def.filter(d=>as[d.id]);
+  $("#dlgWho").textContent = "Patrocinio para "+athlete().name+", "+athlete().role.toLowerCase()+".";
+  $("#dlgList").innerHTML = z.map(d=>{ const s = fitSize(d,as[d.id]);
+    return '<li><span>'+d.name+'<small>Logo de '+n1(s.w)+' × '+n1(s.h)+' cm</small></span><span>'+fmt.format(priceFor(d))+'</span></li>'; }).join("");
+  $("#dlgTotal").textContent = fmt.format(z.reduce((t,d)=>t+priceFor(d),0));
+  $("#dlg").showModal();
+});
+$("#dlgClose").addEventListener("click",()=>$("#dlg").close());
+
+/* ---------- Clic en el modelo ---------- */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let down = null;
+const vis = o => { while(o){ if(!o.visible) return false; o = o.parent; } return true; };
+canvas.addEventListener("pointerdown",e=>{ down = {x:e.clientX,y:e.clientY}; });
+canvas.addEventListener("pointerup",e=>{
+  if(!down) return;
+  const moved = Math.hypot(e.clientX-down.x,e.clientY-down.y); down = null;
+  if(moved>5) return;
+  const r = canvas.getBoundingClientRect();
+  ndc.set(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(ndc,camera);
+  const m = cur(), hits = ray.intersectObjects([m.group,m.zones.group],true).filter(h=>vis(h.object));
+  if(hits.length && hits[0].object.userData.zoneId) selectZone(hits[0].object.userData.zoneId,{focus:false});
+});
+
+/* ---------- Etiqueta de medidas sobre el modelo ---------- */
+const dimEl = $("#dim"), _p = new THREE.Vector3(), _q = new THREE.Quaternion(), _n = new THREE.Vector3(), _c = new THREE.Vector3();
+function updateDim(){
+  if(!state.zoneId){ dimEl.hidden = true; return; }
+  const item = cur().zones.items[state.zoneId], z = item.zone, a = getAssign(z.id);
+  let best = null, bestDot = -2;
+  item.variants.forEach(v=>{
+    v.holder.getWorldPosition(_p); v.holder.getWorldQuaternion(_q);
+    _n.set(0,0,1).applyQuaternion(_q); _c.copy(camera.position).sub(_p).normalize();
+    const d = _n.dot(_c); if(d>bestDot){ bestDot = d; best = _p.clone(); }
+  });
+  if(!best || bestDot<0.12){ dimEl.hidden = true; return; }
+  best.project(camera);
+  const w = stage.clientWidth, h = stage.clientHeight;
+  const x = (best.x*0.5+0.5)*w, y = (-best.y*0.5+0.5)*h;
+  if(best.z>1 || x<0 || x>w || y<0 || y>h){ dimEl.hidden = true; return; }
+  dimEl.textContent = a ? "Logo "+n1(fitSize(z,a).w)+" × "+n1(fitSize(z,a).h)+" cm" : "Zona "+z.w+" × "+z.h+" cm";
+  dimEl.hidden = false;
+  const bw = dimEl.offsetWidth, bh = dimEl.offsetHeight;
+  const px = Math.min(Math.max(x-bw/2,6),w-bw-6), py = Math.min(Math.max(y-bh-14-(z.h/100)*60,6),h-bh-6);
+  dimEl.style.transform = "translate("+px+"px,"+py+"px)";
+}
+
+/* ---------- Tamaño y bucle ---------- */
+function resize(){
+  const w = stage.clientWidth, h = stage.clientHeight; if(!w||!h) return;
+  renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage);
+const clock = new THREE.Clock();
+function loop(){
+  requestAnimationFrame(loop);
+  const dt = Math.min(clock.getDelta(),0.1), t = clock.elapsedTime;
+  if(goal){
+    const f = 1-Math.exp(-dt*6);
+    camera.position.lerp(goal.pos,f); controls.target.lerp(goal.target,f);
+    if(camera.position.distanceTo(goal.pos)<0.01 && controls.target.distanceTo(goal.target)<0.01) goal = null;
+  }
+  controls.update();
+  if(state.zoneId && !reduceMotion){
+    const item = cur().zones.items[state.zoneId];
+    if(!getAssign(state.zoneId)) item.variants.forEach(v=>{ v.frame.material.opacity = 0.3+0.14*Math.sin(t*3.2); });
+  }
+  updateDim();
+  renderer.render(scene,camera);
+}
+
+/* ---------- Inicio ---------- */
+resize();
+const first = ATHLETES[0], fm = models[first.model];
+fm.group.visible = fm.zones.group.visible = true;
+state.athleteId = first.id;
+(function(){ const um = fm.group.userData.mats; um.body.color.copy(col(first.color)); um.trim.color.copy(col(first.accent)); })();
+paintKitDeco(ATHLETES[2]);
+setLimits(); refreshAll(); overview(true);
+$("#stageTitle").innerHTML = '<div class="display">'+first.name+'</div><span>'+first.role+'</span>';
+renderAthletes(); renderZones(); renderSummary();
+loop();
+})();
+</script>
+</body>
+</html>
