@@ -19,15 +19,15 @@ const secciones = [
 export default function Page() {
   return (
     <div>
-      <h2 className="text-3xl md:text-4xl font-light text-foreground">Configuración</h2>
-      <p className="mt-3 text-lg text-muted-foreground leading-relaxed max-w-2xl">
+      <h2 className="text-lg font-medium text-foreground">Configuración</h2>
+      <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
         Herramientas para mantener el sitio y pasar tu trabajo de local a producción.
       </p>
-      <div className="mt-10 grid md:grid-cols-2 gap-6">
+      <div className="mt-5 grid md:grid-cols-2 gap-4">
         {secciones.map((s) => (
-          <Link key={s.href} href={s.href} className="group rounded-xl border border-border p-6 hover:border-foreground transition-colors">
+          <Link key={s.href} href={s.href} className="group rounded-xl border border-border p-5 hover:border-foreground transition-colors">
             <s.icono className="w-6 h-6 text-primary mb-4" strokeWidth={1.5} />
-            <h3 className="text-xl font-light text-foreground">{s.titulo}</h3>
+            <h3 className="text-base font-medium text-foreground">{s.titulo}</h3>
             <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.texto}</p>
             <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium">
               Abrir <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

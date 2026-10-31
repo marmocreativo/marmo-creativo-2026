@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
-import { AreaShell } from "@/components/layout/area-shell"
+import { cookies } from "next/headers"
+import { AdminShell } from "@/components/admin/admin-shell"
 import { requireAdmin } from "@/lib/session"
-import { recursos } from "@/lib/crm/recursos"
 
 export const metadata: Metadata = {
   title: "Administración | Marmo Creativo",
@@ -9,18 +9,13 @@ export const metadata: Metadata = {
 }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  await requireAdmin()
-
-  const links = [
-    { label: "Resumen", href: "/admin" },
-    ...Object.values(recursos).map((r) => ({ label: r.plural, href: `/admin/${r.slug}` })),
-    { label: "Configuración", href: "/admin/configuracion" },
-    { label: "Mi panel", href: "/panel" },
-  ]
+  const admin = await requireAdmin()
+  // Estado del menú (completo o solo íconos) guardado por el navegador.
+  const colapsado = (await cookies()).get("admin_menu")?.value === "icons"
 
   return (
-    <AreaShell eyebrow="Administración" titulo="CRM y usuarios" links={links}>
+    <AdminShell nombre={admin.nombre} avatar={admin.avatar} colapsadoInicial={colapsado}>
       {children}
-    </AreaShell>
+    </AdminShell>
   )
 }

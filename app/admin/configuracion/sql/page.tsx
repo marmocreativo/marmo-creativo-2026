@@ -20,7 +20,7 @@ export default async function Page() {
       <Link href="/admin/configuracion" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="w-4 h-4" /> Configuración
       </Link>
-      <h2 className="mt-4 text-3xl md:text-4xl font-light text-foreground">Consulta SQL</h2>
+      <h2 className="mt-4 text-lg font-medium text-foreground">Consulta SQL</h2>
       <p className="mt-3 mb-8 max-w-3xl text-muted-foreground leading-relaxed">
         Se ejecuta con el usuario de base de datos de la aplicación. Los archivos del proyecto traen <code>USE marmo_creativo;</code>: si tu
         base se llama distinto, cambia esa línea antes de ejecutarlos.
@@ -29,7 +29,7 @@ export default async function Page() {
       <ConsolaSql archivos={archivos} />
 
       <section className="mt-14 border-t border-border pt-10">
-        <h3 className="text-2xl font-light text-foreground">Bitácora de escritura</h3>
+        <h3 className="text-base font-medium text-foreground">Bitácora de escritura</h3>
         <p className="mt-1 mb-6 text-sm text-muted-foreground">
           Lo que se ejecuta en modo escritura queda registrado: quién, cuándo y con qué resultado.
         </p>

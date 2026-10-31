@@ -113,7 +113,7 @@ export const recursos: Record<string, Recurso> = {
         tabla: "tareas",
         singular: "Tarea",
         plural: "Tareas",
-        orden: "t.id DESC",
+        orden: "t.estimado IS NULL, t.estimado ASC, t.id DESC", // lo que vence antes, primero; sin fecha, al final
         columnas: ["titulo", "id_proyecto", "estado", "estimado", "id_responsable"],
         campos: [
             { name: "titulo", label: "Título", tipo: "text", requerido: true },

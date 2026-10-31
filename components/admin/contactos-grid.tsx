@@ -11,7 +11,7 @@ function enlaceWhatsapp(raw: string) {
     return `https://wa.me/${numero}`
 }
 
-export function ContactosGrid({ contactos }: { contactos: Fila[] }) {
+export function ContactosGrid({ contactos, volver }: { contactos: Fila[]; volver?: string }) {
     return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {contactos.map((c) => (
@@ -61,7 +61,7 @@ export function ContactosGrid({ contactos }: { contactos: Fila[] }) {
                     </ul>
 
                     <div className="mt-5 flex justify-end border-t border-border pt-4 text-sm">
-                        <Link href={`/admin/contactos/${c.id}`} className="text-foreground underline underline-offset-4">
+                        <Link href={`/admin/contactos/${c.id}${volver ? `?volver=${encodeURIComponent(volver)}` : ""}`} className="text-foreground underline underline-offset-4">
                             Editar
                         </Link>
                     </div>

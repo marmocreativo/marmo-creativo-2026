@@ -12,6 +12,9 @@ export const hoyMX = () => new Date().toLocaleDateString("en-CA", { timeZone: ZO
 
 export const esFecha = (s?: string): s is string => !!s && /^\d{4}-\d{2}-\d{2}$/.test(s) && deMs(aMs(s)) === s
 
+// Días completos de `desde` a `hasta` (negativo si `hasta` es anterior).
+export const diasEntre = (desde: string, hasta: string) => Math.round((aMs(hasta) - aMs(desde)) / DIA)
+
 export const addDias = (f: string, n: number) => deMs(aMs(f) + n * DIA)
 
 // La semana empieza en domingo.

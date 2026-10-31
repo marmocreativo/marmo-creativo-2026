@@ -1,18 +1,16 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { CalendarDays, List, ListChecks, Plus } from "lucide-react"
+import { ListChecks, Plus } from "lucide-react"
 import { Badge } from "@/components/admin/badge"
 import { ClientesGrid } from "@/components/admin/clientes-grid"
 import { ContactosGrid } from "@/components/admin/contactos-grid"
 import { UsuariosGrid } from "@/components/admin/usuarios-grid"
 import { EstadoSelect } from "@/components/admin/estado-select"
 import { Filtros } from "@/components/admin/filtros"
-import { TareasSemana } from "@/components/admin/tareas-semana"
-import { domingoDe, esFecha, hoyMX } from "@/lib/crm/semana"
-import { clientesConConteos, usuariosParaCards, listar, opciones, proyectosParaFiltro, type Fila } from "@/lib/crm/repo"
+import { clientesConConteos, usuariosParaCards, listar, opciones, type Fila } from "@/lib/crm/repo"
 import { campoDe, getRecurso } from "@/lib/crm/recursos"
 import { ETIQUETAS_CATEGORIA } from "@/lib/portafolio-categorias"
-import { camposRapidos, OPCIONES_ESTADO } from "@/lib/crm/estilos"
+import { camposRapidos } from "@/lib/crm/estilos"
 
 const peso = new Intl.NumberFormat("es-MX", { style: "currency", currency: "MXN" })
 
@@ -21,43 +19,41 @@ const entero = (v?: string) => {
   return Number.isInteger(n) && n > 0 ? n : undefined
 }
 
+const botonNuevo =
+  "inline-flex items-center gap-1.5 bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+
 export default async function Page({
   params,
   searchParams,
 }: {
   params: Promise<{ recurso: string }>
-  searchParams: Promise<{
-    id_cliente?: string
-    id_proyecto?: string
-    estado?: string
-    vista?: string
-    semana?: string
-  }>
+  searchParams: Promise<{ id_cliente?: string }>
 }) {
   const { recurso } = await params
   const sp = await searchParams
   const r = getRecurso(recurso)
   if (!r) notFound()
 
-  const nuevoHref = (q: Record<string, number | undefined>) => {
-    const qs = new URLSearchParams(Object.entries(q).flatMap(([k, v]) => (v ? [[k, String(v)]] : []))).toString()
-    return `/admin/${r.slug}/nuevo${qs ? `?${qs}` : ""}`
-  }
+  const lista = `/admin/${r.slug}`
+
+  const encabezado = (nuevo: string, detalle?: string) => (
+    <>
+      <div className="mb-1 flex items-center justify-between gap-3">
+        <h2 className="text-lg font-medium text-foreground">{r.plural}</h2>
+        <Link href={nuevo} className={botonNuevo}>
+          <Plus className="h-4 w-4" /> Nuevo
+        </Link>
+      </div>
+      {detalle && <p className="mb-4 text-sm text-muted-foreground">{detalle}</p>}
+    </>
+  )
 
   // --- Clientes: grid de cartas -------------------------------------------
   if (r.slug === "clientes") {
     const clientes = await clientesConConteos()
     return (
       <div>
-        <div className="flex items-end justify-between gap-4 mb-8">
-          <h2 className="text-3xl md:text-4xl font-light text-foreground">Clientes</h2>
-          <Link
-            href={nuevoHref({})}
-            className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <Plus className="w-4 h-4" /> Nuevo
-          </Link>
-        </div>
+        {encabezado(`${lista}/nuevo`, `${clientes.length} clientes`)}
         {clientes.length === 0 ? <p className="text-muted-foreground">Aún no hay clientes.</p> : <ClientesGrid clientes={clientes} />}
       </div>
     )
@@ -68,60 +64,25 @@ export default async function Page({
     const usuarios = await usuariosParaCards()
     return (
       <div>
-        <div className="flex items-end justify-between gap-4 mb-8">
-          <h2 className="text-3xl md:text-4xl font-light text-foreground">Usuarios</h2>
-          <Link
-            href={nuevoHref({})}
-            className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <Plus className="w-4 h-4" /> Nuevo
-          </Link>
-        </div>
+        {encabezado(`${lista}/nuevo`, `${usuarios.length} usuarios`)}
         <UsuariosGrid usuarios={usuarios} />
       </div>
     )
   }
 
-  // --- Contactos, proyectos y tareas: tabla con filtros --------------------
-  const conFiltroCliente = ["contactos", "proyectos", "tareas"].includes(r.slug)
-  const esTareas = r.slug === "tareas"
+  // --- Contactos y proyectos: lista con filtro por cliente ------------------
+  const idCliente = entero(sp.id_cliente)
+  const clientes = await opciones("clientes")
+  const filas = await listar(r, { id_cliente: idCliente })
 
-  let idCliente = entero(sp.id_cliente)
-  const idProyecto = esTareas ? entero(sp.id_proyecto) : undefined
-
-  const [clientes, proyectos] = await Promise.all([
-    conFiltroCliente ? opciones("clientes") : Promise.resolve([]),
-    esTareas ? proyectosParaFiltro() : Promise.resolve([]),
-  ])
-  // Si llegas con solo el proyecto (botón "Ver tareas"), el filtro de cliente se muestra con el suyo.
-  if (!idCliente && idProyecto) idCliente = proyectos.find((p) => p.id === idProyecto)?.id_cliente
-
-  // Tareas: la lista abre con las abiertas; la semana, con todas (para ver lo ya entregado).
-  const vistaSemana = esTareas && sp.vista === "semana"
-  const estadoSel = esTareas
-    ? OPCIONES_ESTADO.some((o) => o.value === sp.estado)
-      ? sp.estado!
-      : vistaSemana
-        ? "todas"
-        : "abiertas"
-    : undefined
-  const estados = estadoSel === "abiertas" ? ["Por Iniciar", "En Proceso"] : estadoSel && estadoSel !== "todas" ? [estadoSel] : undefined
-
-  const filas = await listar(r, { id_cliente: idCliente, id_proyecto: idProyecto, estados })
-
-  // Enlaces que conservan los filtros activos al cambiar de vista o de semana.
-  const hoy = hoyMX()
-  const domingo = domingoDe(esFecha(sp.semana) ? sp.semana : hoy)
-  const enlace = (cambios: Record<string, string | undefined>) => {
-    const q = new URLSearchParams()
-    const base: Record<string, string | undefined> = { ...sp, ...cambios }
-    for (const [k, v] of Object.entries(base)) if (v) q.set(k, v)
-    const qs = q.toString()
-    return `/admin/${r.slug}${qs ? `?${qs}` : ""}`
-  }
+  // Crear o editar desde esta lista regresa a ella, con el mismo cliente filtrado.
+  const volver = idCliente ? `${lista}?id_cliente=${idCliente}` : lista
+  const nuevo = new URLSearchParams()
+  if (idCliente) nuevo.set("id_cliente", String(idCliente))
+  if (volver !== lista) nuevo.set("volver", volver)
+  const hrefEditar = (id: unknown) => `${lista}/${id}${volver !== lista ? `?volver=${encodeURIComponent(volver)}` : ""}`
 
   const cols: { key: string; label: string }[] = r.columnas.map((n) => ({ key: n, label: campoDe(r, n).label }))
-  if (esTareas) cols.splice(1, 0, { key: "cliente__label", label: "Cliente" })
   if (r.slug === "proyectos") {
     // Portada | Proyecto (cliente pequeño sobre el título) | resto de columnas
     const resto = cols.filter((c) => c.key !== "titulo" && c.key !== "id_cliente")
@@ -129,7 +90,6 @@ export default async function Page({
   }
 
   const celda = (fila: Fila, key: string) => {
-    if (key === "cliente__label") return fila[key] ?? "—"
     if (key === "portada") {
       return fila.portada ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -140,7 +100,7 @@ export default async function Page({
     }
     if (key === "proyecto") {
       return (
-        <div className="whitespace-normal min-w-48">
+        <div className="min-w-48 whitespace-normal">
           <p className="text-xs text-muted-foreground">{fila.id_cliente__label ?? "—"}</p>
           <p className="text-foreground">{fila.titulo}</p>
           {fila.mostrar_en_portafolio ? (
@@ -165,67 +125,30 @@ export default async function Page({
     return fila[key] ?? "—"
   }
 
-  const proyectoFiltrado = idProyecto ? proyectos.find((p) => p.id === idProyecto)?.label : undefined
-
   return (
     <div>
-      <div className="flex items-end justify-between gap-4 mb-2">
-        <h2 className="text-3xl md:text-4xl font-light text-foreground">{r.plural}</h2>
-        <Link
-          href={nuevoHref({ id_cliente: idCliente, id_proyecto: idProyecto })}
-          className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-opacity"
-        >
-          <Plus className="w-4 h-4" /> Nuevo
-        </Link>
-      </div>
-      <p className="mb-6 text-sm text-muted-foreground">
-        {filas.length} {filas.length === 1 ? r.singular.toLowerCase() : r.plural.toLowerCase()}
-        {proyectoFiltrado ? ` en “${proyectoFiltrado}”` : ""}
-      </p>
+      {encabezado(
+        `${lista}/nuevo${nuevo.size ? `?${nuevo}` : ""}`,
+        `${filas.length} ${filas.length === 1 ? r.singular.toLowerCase() : r.plural.toLowerCase()}`,
+      )}
 
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        {conFiltroCliente && (
-          <Filtros
-            clientes={clientes}
-            proyectos={esTareas ? proyectos : undefined}
-            estado={estadoSel}
-            idCliente={idCliente}
-            idProyecto={idProyecto}
-          />
-        )}
-        {esTareas && (
-          <div className="inline-flex rounded-lg border border-border p-0.5 text-sm">
-            {[
-              { v: undefined, label: "Lista", icono: List },
-              { v: "semana", label: "Semana", icono: CalendarDays },
-            ].map(({ v, label, icono: Icono }) => (
-              <Link
-                key={label}
-                href={enlace({ vista: v, semana: undefined })}
-                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 transition-colors ${
-                  (v === "semana") === vistaSemana ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Icono className="w-4 h-4" /> {label}
-              </Link>
-            ))}
-          </div>
-        )}
+      <div className="mb-5">
+        <Filtros clientes={clientes} idCliente={idCliente} />
       </div>
 
-      {vistaSemana ? (
-        <TareasSemana filas={filas} domingo={domingo} hoy={hoy} href={(semana) => enlace({ semana })} />
-      ) : filas.length === 0 ? (
+      {filas.length === 0 ? (
         <p className="text-muted-foreground">No hay registros con estos filtros.</p>
       ) : r.slug === "contactos" ? (
-        <ContactosGrid contactos={filas} />
+        <ContactosGrid contactos={filas} volver={volver !== lista ? volver : undefined} />
       ) : (
-        <div className="overflow-x-auto border border-border rounded-xl">
+        <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-sm">
             <thead className="bg-neutral-100 text-left">
               <tr>
                 {cols.map((c) => (
-                  <th key={c.key} className="px-4 py-3 font-medium whitespace-nowrap">{c.label}</th>
+                  <th key={c.key} className="whitespace-nowrap px-4 py-3 font-medium">
+                    {c.label}
+                  </th>
                 ))}
                 <th className="px-4 py-3" />
               </tr>
@@ -234,18 +157,20 @@ export default async function Page({
               {filas.map((f) => (
                 <tr key={f.id} className="border-t border-border">
                   {cols.map((c) => (
-                    <td key={c.key} className="px-4 py-3 text-muted-foreground whitespace-nowrap">{celda(f, c.key)}</td>
+                    <td key={c.key} className="whitespace-nowrap px-4 py-3 text-muted-foreground">
+                      {celda(f, c.key)}
+                    </td>
                   ))}
-                  <td className="px-4 py-3 text-right whitespace-nowrap">
+                  <td className="whitespace-nowrap px-4 py-3 text-right">
                     {r.slug === "proyectos" && (
                       <Link
                         href={`/admin/tareas?id_proyecto=${f.id}`}
-                        className="mr-4 inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-foreground hover:border-foreground transition-colors"
+                        className="mr-4 inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-foreground transition-colors hover:border-foreground"
                       >
-                        <ListChecks className="w-4 h-4" /> Tareas ({Number(f.n_tareas)})
+                        <ListChecks className="h-4 w-4" /> Tareas ({Number(f.n_tareas)})
                       </Link>
                     )}
-                    <Link href={`/admin/${r.slug}/${f.id}`} className="text-foreground underline underline-offset-4">
+                    <Link href={hrefEditar(f.id)} className="text-foreground underline underline-offset-4">
                       Editar
                     </Link>
                   </td>

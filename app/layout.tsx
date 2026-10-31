@@ -10,6 +10,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { JsonLd } from "@/components/seo/json-ld";
 import { AuthProvider } from "@/components/auth/session-provider";
+import { OcultarEnAdmin } from "@/components/layout/ocultar-en-admin";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'})
 
@@ -80,9 +81,13 @@ export default function RootLayout({
       <body className={cn(inter.variable, fontMono.variable, "antialiased bg-cover bg-center bg-fixed")}>
         <JsonLd data={organizationJsonLd} />
         <AuthProvider>
-          <Header />
+          <OcultarEnAdmin>
+            <Header />
+          </OcultarEnAdmin>
           {children}
-          <Footer />
+          <OcultarEnAdmin>
+            <Footer />
+          </OcultarEnAdmin>
         </AuthProvider>
       </body>
       <GoogleAnalytics gaId="G-QTEDWT40GE" />

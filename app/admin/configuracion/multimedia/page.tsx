@@ -25,7 +25,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ r
       <Link href="/admin/configuracion" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
         <ChevronLeft className="w-4 h-4" /> Configuración
       </Link>
-      <h2 className="mt-4 text-3xl md:text-4xl font-light text-foreground">Importar multimedia</h2>
+      <h2 className="mt-4 text-lg font-medium text-foreground">Importar multimedia</h2>
       <p className="mt-3 mb-8 max-w-3xl text-muted-foreground leading-relaxed">
         Es la carpeta de imágenes del servidor (<code>uploads</code>). Para llevar tu portafolio de local a producción: sube aquí tu carpeta{" "}
         <code>uploads</code> completa (conserva <code>clientes/</code>, <code>proyectos/</code>, <code>galeria/</code>…) y luego importa los datos

@@ -15,12 +15,14 @@ export function RecursoForm({
     opciones,
     accion,
     cancelarHref,
+    permiteOtra = false,
 }: {
     campos: Campo[]
     valores: Record<string, string | number | null>
     opciones: Opciones
     accion: (prev: Estado, fd: FormData) => Promise<Estado>
     cancelarHref: string
+    permiteOtra?: boolean // en "nuevo": guardar y seguir capturando con el mismo cliente/proyecto
 }) {
     const [estado, enviar, pendiente] = useActionState(accion, undefined)
 
@@ -97,10 +99,21 @@ export function RecursoForm({
 
             {estado?.error && <p className="md:col-span-2 text-sm text-destructive" role="alert">{estado.error}</p>}
 
-            <div className="md:col-span-2 flex items-center gap-4">
+            <div className="md:col-span-2 flex flex-wrap items-center gap-3">
                 <button type="submit" disabled={pendiente} className={`${botonClass} sm:w-auto`}>
                     {pendiente ? "Guardando…" : "Guardar"}
                 </button>
+                {permiteOtra && (
+                    <button
+                        type="submit"
+                        name="_otra"
+                        value="1"
+                        disabled={pendiente}
+                        className="inline-flex items-center justify-center border border-border bg-white px-6 py-4 text-sm font-medium text-foreground transition-colors hover:border-foreground disabled:opacity-40 sm:w-auto"
+                    >
+                        Guardar y agregar otra
+                    </button>
+                )}
                 <Link href={cancelarHref} className="text-sm text-muted-foreground hover:text-foreground">Cancelar</Link>
             </div>
         </form>

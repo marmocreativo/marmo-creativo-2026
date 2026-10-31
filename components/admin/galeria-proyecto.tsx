@@ -6,7 +6,7 @@ import { SubirGaleria } from "./subir-galeria"
 export function GaleriaProyecto({ idProyecto, imagenes }: { idProyecto: number; imagenes: ImagenGaleria[] }) {
     return (
         <section className="mt-14 border-t border-border pt-10">
-            <h3 className="text-2xl font-light text-foreground">Galería</h3>
+            <h3 className="text-base font-medium text-foreground">Galería</h3>
             <p className="mt-1 mb-6 text-sm text-muted-foreground">
                 Se guardan en WebP con el lado más largo a 800 px, conservando la proporción. Hasta 10 por subida y 8 MB cada una.
             </p>

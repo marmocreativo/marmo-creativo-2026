@@ -44,7 +44,13 @@ function validar(c: Campo, raw: FormDataEntryValue | null): { valor: string | nu
     }
 }
 
-export async function guardarRegistro(slug: string, id: number | null, _: Estado, fd: FormData): Promise<Estado> {
+// Solo se vuelve a una lista del mismo recurso (con sus filtros): nunca a una dirección cualquiera.
+function rutaVolver(slug: string, v: string | null | undefined): string {
+    const base = `/admin/${slug}`
+    return typeof v === "string" && (v === base || v.startsWith(`${base}?`)) && !/[\r\n]/.test(v) ? v : base
+}
+
+export async function guardarRegistro(slug: string, id: number | null, volver: string | null, _: Estado, fd: FormData): Promise<Estado> {
     const admin = await requireAdmin()
     const r = getRecurso(slug)
     if (!r) return { error: "Recurso no encontrado." }
@@ -130,7 +136,36 @@ export async function guardarRegistro(slug: string, id: number | null, _: Estado
     await Promise.all(anteriores.map(borrarArchivo)) // ignora rutas externas (ej. avatar de Google)
 
     revalidatePath(`/admin/${slug}`)
-    redirect(`/admin/${slug}`)
+    const destino = rutaVolver(slug, volver)
+
+    // "Guardar y agregar otra": vuelve al formulario con el mismo cliente/proyecto ya elegido.
+    if (!id && fd.get("_otra")) {
+        const q = new URLSearchParams()
+        for (const c of r.campos) if (c.relacion && datos[c.name] !== null && datos[c.name] !== undefined) q.set(c.name, String(datos[c.name]))
+        if (destino !== `/admin/${slug}`) q.set("volver", destino)
+        redirect(`/admin/${slug}/nuevo${q.size ? `?${q}` : ""}`)
+    }
+    redirect(destino)
+}
+
+// Edición rápida de una tarea desde las listas (sin abrir el formulario completo).
+const CAMPOS_EDICION_RAPIDA = ["titulo", "descripcion", "estado", "inicio", "estimado", "entregado", "id_responsable", "url_entregable", "notas"]
+
+export async function editarTareaRapida(id: number, _: Estado, fd: FormData): Promise<Estado> {
+    await requireAdmin()
+    const r = getRecurso("tareas")!
+    if (!Number.isInteger(id) || !(await obtener(r, id))) return { error: "La tarea ya no existe." }
+
+    const datos: Fila = {}
+    for (const nombre of CAMPOS_EDICION_RAPIDA) {
+        const v = validar(r.campos.find((c) => c.name === nombre)!, fd.get(nombre))
+        if ("error" in v) return { error: v.error }
+        datos[nombre] = v.valor
+    }
+
+    await actualizar(r, id, datos)
+    revalidatePath("/admin/tareas")
+    return { ok: "Cambios guardados." }
 }
 
 // Cambio rápido de estado desde la lista (dropdown con badge).
@@ -146,7 +181,7 @@ export async function cambiarEstado(slug: string, id: number, campo: string, val
     return { ok: true }
 }
 
-export async function eliminarRegistro(slug: string, id: number) {
+export async function eliminarRegistro(slug: string, id: number, volver: string | null = null) {
     const admin = await requireAdmin()
     const r = getRecurso(slug)
     if (!r) return
@@ -156,5 +191,5 @@ export async function eliminarRegistro(slug: string, id: number) {
     await eliminar(r, id)
     await Promise.all(archivos.map(borrarArchivo))
     revalidatePath(`/admin/${slug}`)
-    redirect(`/admin/${slug}`)
+    redirect(rutaVolver(slug, volver))
 }

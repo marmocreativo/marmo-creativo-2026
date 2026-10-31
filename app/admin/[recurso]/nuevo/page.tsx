@@ -9,7 +9,7 @@ export default async function Page({
   searchParams,
 }: {
   params: Promise<{ recurso: string }>
-  searchParams: Promise<{ id_cliente?: string; id_proyecto?: string }>
+  searchParams: Promise<{ id_cliente?: string; id_proyecto?: string; volver?: string }>
 }) {
   const { recurso } = await params
   const sp = await searchParams
@@ -23,15 +23,20 @@ export default async function Page({
     if (c.relacion && v && /^\d+$/.test(v)) valores[c.name] = v
   }
 
+  // Al guardar o cancelar se regresa a la misma lista (con sus filtros); la acción vuelve a validarlo.
+  const lista = `/admin/${r.slug}`
+  const volver = sp.volver && (sp.volver === lista || sp.volver.startsWith(`${lista}?`)) ? sp.volver : lista
+
   return (
     <div>
-      <h2 className="text-3xl md:text-4xl font-light text-foreground mb-8">Nuevo: {r.singular.toLowerCase()}</h2>
+      <h2 className="text-lg font-medium text-foreground mb-4">Nuevo: {r.singular.toLowerCase()}</h2>
       <RecursoForm
         campos={r.campos}
         valores={valores}
         opciones={await opcionesDe(r)}
-        accion={guardarRegistro.bind(null, r.slug, null)}
-        cancelarHref={`/admin/${r.slug}`}
+        accion={guardarRegistro.bind(null, r.slug, null, volver)}
+        cancelarHref={volver}
+        permiteOtra
       />
     </div>
   )

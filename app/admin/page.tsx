@@ -12,22 +12,22 @@ export default async function Page() {
 
   return (
     <div>
-      <h2 className="text-3xl md:text-4xl font-light text-foreground">Resumen</h2>
-      <div className="mt-8 grid grid-cols-2 md:grid-cols-5 gap-6">
+      <h2 className="text-lg font-medium text-foreground">Resumen</h2>
+      <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-4">
         {lista.map((r, i) => (
-          <Link key={r.slug} href={`/admin/${r.slug}`} className="rounded-xl border border-border p-6 hover:border-foreground transition-colors">
-            <p className="text-5xl font-light">{totales[i]}</p>
+          <Link key={r.slug} href={`/admin/${r.slug}`} className="rounded-xl border border-border p-4 hover:border-foreground transition-colors">
+            <p className="text-3xl font-light">{totales[i]}</p>
             <p className="mt-2 text-sm text-muted-foreground">{r.plural}</p>
           </Link>
         ))}
       </div>
-      <div className="mt-6 grid md:grid-cols-2 gap-6">
-        <div className="rounded-xl border border-border p-6">
-          <p className="text-5xl font-light">{porCobrar}</p>
+      <div className="mt-4 grid md:grid-cols-2 gap-4">
+        <div className="rounded-xl border border-border p-4">
+          <p className="text-3xl font-light">{porCobrar}</p>
           <p className="mt-2 text-sm text-muted-foreground">Proyectos con pago pendiente, parcial o vencido</p>
         </div>
-        <div className="rounded-xl border border-border p-6">
-          <p className="text-5xl font-light">{abiertos}</p>
+        <div className="rounded-xl border border-border p-4">
+          <p className="text-3xl font-light">{abiertos}</p>
           <p className="mt-2 text-sm text-muted-foreground">Tareas por iniciar o en proceso</p>
         </div>
       </div>

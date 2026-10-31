@@ -28,6 +28,8 @@ export async function listar(r: Recurso, f: Filtros = {}): Promise<Fila[]> {
         // El cliente de una tarea es el de su proyecto.
         extras.push(
             "(SELECT c.nombre FROM proyectos p JOIN clientes c ON c.id = p.id_cliente WHERE p.id = t.id_proyecto) AS cliente__label",
+            "(SELECT p.id_cliente FROM proyectos p WHERE p.id = t.id_proyecto) AS cliente_id",
+            "(SELECT u.avatar FROM usuarios u WHERE u.id = t.id_responsable) AS responsable_avatar",
         )
     }
 

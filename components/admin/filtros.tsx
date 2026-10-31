@@ -44,10 +44,10 @@ export function Filtros({
     const hayFiltro = !!idCliente || !!idProyecto || actuales.has("estado")
 
     return (
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
             <select
                 aria-label="Filtrar por cliente"
-                className={`${inputClass} !w-auto min-w-52`}
+                className={`${inputClass} !py-2 sm:!w-auto sm:min-w-52`}
                 value={idCliente ?? ""}
                 onChange={(e) => ir({ id_cliente: e.target.value || undefined, id_proyecto: undefined })}
             >
@@ -60,7 +60,7 @@ export function Filtros({
             {proyectosVisibles && (
                 <select
                     aria-label="Filtrar por proyecto"
-                    className={`${inputClass} !w-auto min-w-60`}
+                    className={`${inputClass} !py-2 sm:!w-auto sm:min-w-60`}
                     value={idProyecto ?? ""}
                     onChange={(e) => ir({ id_proyecto: e.target.value || undefined })}
                 >
@@ -74,7 +74,7 @@ export function Filtros({
             {estado && (
                 <select
                     aria-label="Filtrar por estado"
-                    className={`${inputClass} !w-auto min-w-52`}
+                    className={`${inputClass} !py-2 sm:!w-auto sm:min-w-52`}
                     value={estado}
                     onChange={(e) => ir({ estado: e.target.value })}
                 >
@@ -85,7 +85,7 @@ export function Filtros({
             )}
 
             {hayFiltro && (
-                <Link href={limpiarHref} className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground">
+                <Link href={limpiarHref} className="self-center text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground">
                     Quitar filtros
                 </Link>
             )}
