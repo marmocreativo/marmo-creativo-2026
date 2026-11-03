@@ -1,0 +1,51 @@
+/* ==========================================================================
+   EXPERIMENTO · Rosa que se abre detrás de la doctora (solo home)
+
+   La rosa es un archivo externo y editable: images/rosa.svg
+   (ábrelo en Illustrator, Inkscape, Figma o Affinity). El color y la
+   transparencia están en ese archivo; la animación (Ken Burns) está aquí.
+
+   CÓMO REVERTIR (3 opciones, de más fácil a más limpia)
+   1. Comenta el <link> a este archivo en el <head> de index.html.
+   2. Borra la línea <img class="rosa-hero"> (bloque "EXPERIMENTO ROSA")
+      en el .hero-ph de index.html. Los pulsos de luz originales vuelven solos.
+   3. Borra este archivo, rosa.svg, la imagen y el <link>.
+
+   AJUSTES RÁPIDOS (más abajo)
+   top        altura del origen de la flor (más % = más abajo)
+   width      tamaño de la rosa
+   rosa-kenburns   zoom, desplazamiento y giro de la animación
+   ========================================================================== */
+
+/* Con la rosa, los círculos de luz del hero se ocultan (vuelven al revertir) */
+.hero-ph .pulse { display: none; }
+
+.rosa-hero {
+  position: absolute;
+  z-index: 0;                    /* detrás de la foto (z-index 1) */
+  left: 50%;
+  top: 72%;                      /* origen de la flor: abajo, a la altura del pecho */
+  translate: -50% -50%;          /* centra la imagen en ese punto */
+  width: 170%;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+  transform-origin: 50% 50%;     /* el zoom nace del centro de la flor */
+  animation: rosa-kenburns 28s ease-in-out infinite alternate;
+}
+
+/* Efecto Ken Burns: zoom muy lento + desplazamiento y giro mínimos.
+   Cambia 1.2 para más/menos zoom y los segundos de arriba para la velocidad. */
+@keyframes rosa-kenburns {
+  from { transform: scale(1)   translate(0, 0)     rotate(0deg); }
+  to   { transform: scale(1.2) translate(-3%, -4%) rotate(3deg); }
+}
+
+@media (max-width: 1000px) {
+  .rosa-hero { width: 135%; top: 72%; }
+}
+
+/* Móvil: la foto va centrada y más angosta, la rosa nace de su parte baja */
+@media (max-width: 640px) {
+  .rosa-hero { width: 170%; top: 72%; }
+}
