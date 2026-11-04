@@ -95,6 +95,7 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            <NavDropdown label="Herramientas" items={herramientasItems} />
           </nav>
         </div>
 
@@ -138,7 +139,7 @@ export function Header() {
                 </SheetTitle>
               </SheetHeader>
 
-              <nav className="flex flex-col gap-1 px-4">
+              <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain px-4 pb-6">
                 {[...grupos, { label: "Herramientas", items: herramientasItems }].map((g, i) => (
                   <div key={g.label} className="flex flex-col gap-1">
                     {i > 0 && g.label === "Herramientas" && (
