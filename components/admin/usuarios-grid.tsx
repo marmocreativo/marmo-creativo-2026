@@ -3,6 +3,7 @@ import { Bell, BellOff, KeyRound, ListChecks } from "lucide-react"
 import { SiGoogle } from "@icons-pack/react-simple-icons"
 import type { Fila } from "@/lib/crm/repo"
 import { Badge } from "./badge"
+import { BorrarFila, Casilla } from "./seleccion"
 
 const fecha = (v: unknown) =>
     new Date(String(v).replace(" ", "T") + "Z").toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric", timeZone: "America/Mexico_City" })
@@ -23,8 +24,9 @@ export function UsuariosGrid({ usuarios }: { usuarios: Fila[] }) {
                 return (
                     <article
                         key={u.id}
-                        className={`rounded-xl border border-border p-6 flex flex-col ${inactivo ? "opacity-60" : ""}`}
+                        className={`relative rounded-xl border border-border p-6 flex flex-col ${inactivo ? "opacity-60" : ""}`}
                     >
+                        <Casilla id={Number(u.id)} nombre={String(u.nombre)} esquina />
                         <div className="flex items-center gap-4">
                             {u.avatar ? (
                                 // eslint-disable-next-line @next/next/no-img-element
@@ -70,9 +72,12 @@ export function UsuariosGrid({ usuarios }: { usuarios: Fila[] }) {
 
                         <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
                             <span className="text-xs text-muted-foreground">Alta: {fecha(u.created_at)}</span>
-                            <Link href={`/admin/usuarios/${u.id}`} className="text-foreground underline underline-offset-4">
-                                Editar
-                            </Link>
+                            <span className="flex items-center gap-4">
+                                <BorrarFila id={Number(u.id)} nombre={String(u.nombre)} />
+                                <Link href={`/admin/usuarios/${u.id}`} className="text-foreground underline underline-offset-4">
+                                    Editar
+                                </Link>
+                            </span>
                         </div>
                     </article>
                 )

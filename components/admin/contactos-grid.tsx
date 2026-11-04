@@ -3,6 +3,7 @@ import { Building2, Mail, User } from "lucide-react"
 import { SiWhatsapp } from "@icons-pack/react-simple-icons"
 import type { Fila } from "@/lib/crm/repo"
 import { Badge } from "./badge"
+import { BorrarFila, Casilla } from "./seleccion"
 
 // Número para wa.me: con "+" se respeta el código de país; con 10 dígitos se asume México (52).
 function enlaceWhatsapp(raw: string) {
@@ -15,7 +16,8 @@ export function ContactosGrid({ contactos, volver }: { contactos: Fila[]; volver
     return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {contactos.map((c) => (
-                <article key={c.id} className={`rounded-xl border border-border p-6 flex flex-col ${c.estado === "Inactivo" ? "opacity-60" : ""}`}>
+                <article key={c.id} className={`relative rounded-xl border border-border p-6 flex flex-col ${c.estado === "Inactivo" ? "opacity-60" : ""}`}>
+                    <Casilla id={Number(c.id)} nombre={String(c.nombre)} esquina />
                     <div className="flex items-start gap-4">
                         <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-muted-foreground">
                             <User className="w-6 h-6" />
@@ -60,7 +62,8 @@ export function ContactosGrid({ contactos, volver }: { contactos: Fila[]; volver
                         )}
                     </ul>
 
-                    <div className="mt-5 flex justify-end border-t border-border pt-4 text-sm">
+                    <div className="mt-5 flex items-center justify-end gap-4 border-t border-border pt-4 text-sm">
+                        <BorrarFila id={Number(c.id)} nombre={String(c.nombre)} />
                         <Link href={`/admin/contactos/${c.id}${volver ? `?volver=${encodeURIComponent(volver)}` : ""}`} className="text-foreground underline underline-offset-4">
                             Editar
                         </Link>

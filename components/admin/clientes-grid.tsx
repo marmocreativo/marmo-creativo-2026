@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Mail, MapPin } from "lucide-react"
 import type { Fila } from "@/lib/crm/repo"
 import { Badge } from "./badge"
+import { BorrarFila, Casilla } from "./seleccion"
 
 const boton =
     "flex-1 rounded-lg border border-border px-3 py-2 text-center hover:border-foreground transition-colors"
@@ -10,7 +11,8 @@ export function ClientesGrid({ clientes }: { clientes: Fila[] }) {
     return (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {clientes.map((c) => (
-                <article key={c.id} className="rounded-xl border border-border p-6 flex flex-col">
+                <article key={c.id} className="relative rounded-xl border border-border p-6 flex flex-col">
+                    <Casilla id={Number(c.id)} nombre={String(c.nombre)} esquina />
                     <div className="flex items-start gap-3">
                         {c.logo ? (
                             // eslint-disable-next-line @next/next/no-img-element
@@ -48,9 +50,12 @@ export function ClientesGrid({ clientes }: { clientes: Fila[] }) {
                         <Link href={`/admin/tareas?id_cliente=${c.id}`} className="text-muted-foreground hover:text-foreground">
                             {Number(c.n_tareas_abiertas)} tareas abiertas
                         </Link>
-                        <Link href={`/admin/clientes/${c.id}`} className="text-foreground underline underline-offset-4">
-                            Editar
-                        </Link>
+                        <span className="flex items-center gap-4">
+                            <BorrarFila id={Number(c.id)} nombre={String(c.nombre)} />
+                            <Link href={`/admin/clientes/${c.id}`} className="text-foreground underline underline-offset-4">
+                                Editar
+                            </Link>
+                        </span>
                     </div>
                 </article>
             ))}

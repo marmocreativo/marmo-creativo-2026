@@ -229,6 +229,44 @@ export async function eliminarRegistro(slug: string, id: number, volver: string 
     const archivos = await archivosDeRegistro(slug, id)
     await eliminar(r, id)
     await Promise.all(archivos.map(borrarArchivo))
-    revalidatePath(`/admin/${slug}`)
+    revalidarTrasBorrar(slug)
     redirect(rutaVolver(slug, volver))
+}
+
+function revalidarTrasBorrar(slug: string) {
+    revalidatePath(`/admin/${slug}`)
+    if (slug === "articulos") revalidatePath("/blog")
+    // Borrar un cliente o proyecto arrastra contactos, proyectos y tareas.
+    if (slug === "clientes" || slug === "proyectos") {
+        for (const ruta of ["/admin/clientes", "/admin/proyectos", "/admin/contactos", "/admin/tareas", "/portafolio"]) revalidatePath(ruta)
+    }
+}
+
+// Borrado desde las listas: uno o varios registros a la vez (máximo 200). Quita también sus archivos del disco.
+export async function eliminarVarios(slug: string, ids: number[]): Promise<{ ok?: string; error?: string }> {
+    const admin = await requireAdmin()
+    const r = getRecurso(slug)
+    if (!r) return { error: "Recurso no encontrado." }
+
+    const lista = [...new Set(Array.isArray(ids) ? ids : [])].filter((n) => Number.isInteger(n) && n > 0).slice(0, 200)
+    if (!lista.length) return { error: "No hay nada seleccionado." }
+
+    let borrados = 0
+    let propia = false
+    for (const id of lista) {
+        if (slug === "usuarios" && id === admin.id) {
+            propia = true // no puedes borrarte a ti mismo
+            continue
+        }
+        if (!(await obtener(r, id))) continue
+        const archivos = await archivosDeRegistro(slug, id)
+        await eliminar(r, id)
+        await Promise.all(archivos.map(borrarArchivo))
+        borrados++
+    }
+    revalidarTrasBorrar(slug)
+
+    if (!borrados) return { error: propia ? "No puedes eliminar tu propia cuenta." : "Esos registros ya no existen." }
+    const texto = borrados === 1 ? "Se eliminó 1 registro." : `Se eliminaron ${borrados} registros.`
+    return { ok: propia ? `${texto} Tu propia cuenta no se elimina.` : texto }
 }

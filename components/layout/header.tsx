@@ -16,6 +16,7 @@ import { NavDropdown } from "./nav-dropdown";
 import { UserAccess } from "./user-access";
 
 const paginasWebItems = [
+  { label: "Precios", href: "/precios" },
   { label: "Página Express en 72 h", href: "/empezar" },
   { label: "Todos los paquetes", href: "/paginas-web" },
   { label: "Landing Pages", href: "/paginas-web/landing-pages" },
@@ -26,11 +27,24 @@ const paginasWebItems = [
   { label: "Mantenimiento", href: "/paginas-web/mantenimiento" },
 ];
 
-const navLinks = [
-  { label: "Precios", href: "/precios" },
+const otrosServiciosItems = [
   { label: "Desarrollo de Software", href: "/desarrollo-software" },
   { label: "Diseño Gráfico", href: "/diseno-grafico" },
   { label: "Outsourcing", href: "/outsourcing" },
+];
+
+const herramientasItems = [
+  { label: "Generador QR", href: "/herramientas/generador-qr" },
+  { label: "Botón WhatsApp", href: "/herramientas/boton-whatsapp" },
+  { label: "Paleta de Colores", href: "/herramientas/paleta-colores" },
+];
+
+const grupos = [
+  { label: "Páginas Web", items: paginasWebItems },
+  { label: "Otros servicios", items: otrosServiciosItems },
+];
+
+const enlaces = [
   { label: "Portafolio", href: "/portafolio" },
   { label: "Blog", href: "/blog" },
 ];
@@ -69,8 +83,10 @@ export function Header() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-7">
-            <NavDropdown label="Páginas Web" items={paginasWebItems} />
-            {navLinks.map((link) => (
+            {grupos.map((g) => (
+              <NavDropdown key={g.label} label={g.label} items={g.items} />
+            ))}
+            {enlaces.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -123,31 +139,36 @@ export function Header() {
               </SheetHeader>
 
               <nav className="flex flex-col gap-1 px-4">
-                <span className="text-xs font-semibold text-muted-foreground mt-2 mb-1">
-                  Páginas Web
-                </span>
-                {paginasWebItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-md px-3 py-2 text-sm hover:bg-muted transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-
-                <div className="h-px bg-border my-2" />
-
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
-                  >
-                    {link.label}
-                  </Link>
+                {[...grupos, { label: "Herramientas", items: herramientasItems }].map((g, i) => (
+                  <div key={g.label} className="flex flex-col gap-1">
+                    {i > 0 && g.label === "Herramientas" && (
+                      <>
+                        {enlaces.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={() => setMobileOpen(false)}
+                            className="rounded-md px-3 py-2 text-sm font-medium hover:bg-muted transition-colors"
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                        <div className="h-px bg-border my-2" />
+                      </>
+                    )}
+                    <span className="text-xs font-semibold text-muted-foreground mt-2 mb-1">{g.label}</span>
+                    {g.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileOpen(false)}
+                        className="rounded-md px-3 py-2 text-sm hover:bg-muted transition-colors"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                    {g.label !== "Herramientas" && <div className="h-px bg-border my-2" />}
+                  </div>
                 ))}
 
                 <div className="h-px bg-border my-2" />

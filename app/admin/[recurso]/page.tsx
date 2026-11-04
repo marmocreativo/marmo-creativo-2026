@@ -9,6 +9,8 @@ import { Encabezado } from "@/components/admin/encabezado"
 import { UsuariosGrid } from "@/components/admin/usuarios-grid"
 import { EstadoSelect } from "@/components/admin/estado-select"
 import { Filtros } from "@/components/admin/filtros"
+import { BorrarFila, Casilla, Seleccion } from "@/components/admin/seleccion"
+import { requireAdmin } from "@/lib/session"
 import { clientesConConteos, usuariosParaCards, listar, opciones, type Fila } from "@/lib/crm/repo"
 import { campoDe, getRecurso } from "@/lib/crm/recursos"
 import { ETIQUETAS_CATEGORIA } from "@/lib/portafolio-categorias"
@@ -23,6 +25,13 @@ const entero = (v?: string) => {
 
 const botonNuevo =
   "inline-flex items-center gap-1.5 bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+
+// Lo que arrastra borrar un registro, para decirlo en la confirmación.
+const AVISO: Record<string, string> = {
+  clientes: "También se eliminan sus contactos, proyectos, tareas e imágenes.",
+  proyectos: "También se eliminan sus tareas e imágenes.",
+  articulos: "También se eliminan sus imágenes.",
+}
 
 const PLACEHOLDER: Record<string, string> = {
   clientes: "Buscar cliente, correo, RFC…",
@@ -77,21 +86,33 @@ export default async function Page({
         <div className="mb-5">
           <Buscador placeholder={PLACEHOLDER.clientes} />
         </div>
-        {clientes.length === 0 ? sinResultados : <ClientesGrid clientes={clientes} />}
+        {clientes.length === 0 ? (
+          sinResultados
+        ) : (
+          <Seleccion slug={r.slug} ids={clientes.map((c) => Number(c.id))} aviso={AVISO.clientes}>
+            <ClientesGrid clientes={clientes} />
+          </Seleccion>
+        )}
       </div>
     )
   }
 
   // --- Usuarios: cartas -----------------------------------------------------
   if (r.slug === "usuarios") {
-    const usuarios = await usuariosParaCards(q)
+    const [usuarios, yo] = await Promise.all([usuariosParaCards(q), requireAdmin()])
     return (
       <div>
         {encabezado(`${lista}/nuevo`, cuenta(usuarios.length, "usuario", "usuarios"))}
         <div className="mb-5">
           <Buscador placeholder={PLACEHOLDER.usuarios} />
         </div>
-        {usuarios.length === 0 ? sinResultados : <UsuariosGrid usuarios={usuarios} />}
+        {usuarios.length === 0 ? (
+          sinResultados
+        ) : (
+          <Seleccion slug={r.slug} ids={usuarios.map((u) => Number(u.id))} bloqueados={[yo.id]}>
+            <UsuariosGrid usuarios={usuarios} />
+          </Seleccion>
+        )}
       </div>
     )
   }
@@ -199,12 +220,16 @@ export default async function Page({
       {filas.length === 0 ? (
         sinResultados
       ) : r.slug === "contactos" ? (
-        <ContactosGrid contactos={filas} volver={volver !== lista ? volver : undefined} />
+        <Seleccion slug={r.slug} ids={filas.map((f) => Number(f.id))}>
+          <ContactosGrid contactos={filas} volver={volver !== lista ? volver : undefined} />
+        </Seleccion>
       ) : (
+        <Seleccion slug={r.slug} ids={filas.map((f) => Number(f.id))} aviso={AVISO[r.slug]}>
         <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-sm">
             <thead className="bg-neutral-100 text-left">
               <tr>
+                <th className="w-10 py-3 pl-4" />
                 {cols.map((c) => (
                   <th key={c.key} className="whitespace-nowrap px-4 py-3 font-medium">
                     {c.label}
@@ -216,6 +241,9 @@ export default async function Page({
             <tbody>
               {filas.map((f) => (
                 <tr key={f.id} className="border-t border-border">
+                  <td className="py-3 pl-4">
+                    <Casilla id={Number(f.id)} nombre={String(f.titulo ?? f.id)} />
+                  </td>
                   {cols.map((c) => (
                     <td key={c.key} className="whitespace-nowrap px-4 py-3 text-muted-foreground">
                       {celda(f, c.key)}
@@ -230,15 +258,19 @@ export default async function Page({
                         <ListChecks className="h-4 w-4" /> Tareas ({Number(f.n_tareas)})
                       </Link>
                     )}
-                    <Link href={hrefEditar(f.id)} className="text-foreground underline underline-offset-4">
-                      Editar
-                    </Link>
+                    <span className="inline-flex items-center gap-4 align-middle">
+                      <BorrarFila id={Number(f.id)} nombre={String(f.titulo ?? f.id)} />
+                      <Link href={hrefEditar(f.id)} className="text-foreground underline underline-offset-4">
+                        Editar
+                      </Link>
+                    </span>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        </Seleccion>
       )}
     </div>
   )
