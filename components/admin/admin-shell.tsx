@@ -19,6 +19,7 @@ import {
     User,
     Users,
     type LucideIcon,
+    Newspaper,
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { cerrarSesion } from "@/lib/actions/auth"
@@ -31,6 +32,7 @@ const PRINCIPAL: Enlace[] = [
     { href: "/admin/contactos", label: "Contactos", icono: ContactRound },
     { href: "/admin/proyectos", label: "Proyectos", icono: FolderKanban },
     { href: "/admin/tareas", label: "Tareas", icono: ListChecks },
+    { href: "/admin/articulos", label: "Blog", icono: Newspaper },
     { href: "/admin/usuarios", label: "Usuarios", icono: Users },
 ]
 

@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { ciudades } from "@/lib/seo/ciudades";
 import { giros } from "@/lib/seo/giros";
 import { listarPortafolio } from "@/lib/portafolio";
+import { listarArticulos } from "@/lib/blog";
 
 const baseUrl = "https://marmo-creativo.com";
 
@@ -26,6 +27,7 @@ const routes: { path: string; lastModified: string; priority: number }[] = [
   { path: "/herramientas/boton-whatsapp", lastModified: "2026-10-20", priority: 0.7 },
   { path: "/herramientas/paleta-colores", lastModified: "2026-10-20", priority: 0.7 },
   { path: "/portafolio", lastModified: "2026-10-20", priority: 0.8 },
+  { path: "/blog", lastModified: "2026-11-04", priority: 0.7 },
   ...giros.map((g) => ({ path: `/pagina-web-para/${g.slug}`, lastModified: "2026-10-02", priority: 0.7 })),
   ...ciudades.map((c) => ({ path: `/pagina-web/${c.slug}`, lastModified: "2026-10-02", priority: 0.7 })),
 ];
@@ -43,8 +45,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   try {
     const proyectos = await listarPortafolio({ limite: 500 });
+    const articulos = await listarArticulos({ limite: 500 }).catch(() => []);
     return [
       ...fijas,
+      ...articulos.map((a) => ({
+        url: `${baseUrl}/blog/${a.slug}`,
+        lastModified: a.actualizado,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      })),
       ...proyectos.map((p) => ({
         url: `${baseUrl}/portafolio/${p.slug}`,
         changeFrequency: "monthly" as const,

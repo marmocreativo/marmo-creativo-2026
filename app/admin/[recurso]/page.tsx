@@ -114,13 +114,14 @@ export default async function Page({
     const c = campoDe(r, key)
     if (c.tipo === "select" && c.opciones) {
       const valor = String(fila[key])
+      if (c.etiquetas) return c.etiquetas[valor] ?? valor
       if (camposRapidos[r.slug]?.includes(key)) {
         return <EstadoSelect slug={r.slug} id={Number(fila.id)} campo={key} valor={valor} opciones={c.opciones} />
       }
       return <Badge valor={valor} />
     }
     if (c.relacion) return fila[`${key}__label`] ?? "—"
-    if (c.tipo === "checkbox") return fila[key] ? "Sí" : "No"
+    if (c.tipo === "checkbox") return r.slug === "articulos" ? (fila[key] ? "Publicado" : "Borrador") : fila[key] ? "Sí" : "No"
     if (key === "importe") return peso.format(Number(fila[key]))
     return fila[key] ?? "—"
   }
@@ -129,12 +130,14 @@ export default async function Page({
     <div>
       {encabezado(
         `${lista}/nuevo${nuevo.size ? `?${nuevo}` : ""}`,
-        `${filas.length} ${filas.length === 1 ? r.singular.toLowerCase() : r.plural.toLowerCase()}`,
+        `${filas.length} ${filas.length === 1 ? r.singular.toLowerCase() : r.slug === "articulos" ? "artículos" : r.plural.toLowerCase()}`,
       )}
 
-      <div className="mb-5">
-        <Filtros clientes={clientes} idCliente={idCliente} />
-      </div>
+      {r.slug !== "articulos" && (
+        <div className="mb-5">
+          <Filtros clientes={clientes} idCliente={idCliente} />
+        </div>
+      )}
 
       {filas.length === 0 ? (
         <p className="text-muted-foreground">No hay registros con estos filtros.</p>

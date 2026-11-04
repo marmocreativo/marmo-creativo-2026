@@ -6,7 +6,7 @@ import sharp, { type Sharp } from "sharp"
 // Carpeta donde se guardan las imágenes subidas. En Docker debe ser un volumen.
 export const RAIZ_UPLOADS = path.resolve(/*turbopackIgnore: true*/ process.cwd(), process.env.UPLOAD_DIR ?? "uploads")
 
-export const CARPETAS = ["clientes", "usuarios", "proyectos", "galeria", "herramientas"] as const
+export const CARPETAS = ["clientes", "usuarios", "proyectos", "galeria", "herramientas", "articulos"] as const
 export type Carpeta = (typeof CARPETAS)[number]
 
 const MAX_BYTES = 8 * 1024 * 1024

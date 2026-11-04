@@ -9,6 +9,7 @@ import { actualizar, crear, eliminar, obtener, type Fila } from "@/lib/crm/repo"
 import { archivosDeRegistro } from "@/lib/crm/galeria"
 import { borrarArchivo, ErrorImagen, guardarImagen } from "@/lib/uploads"
 import { camposRapidos } from "@/lib/crm/estilos"
+import { hoyMX } from "@/lib/crm/semana"
 import type { Estado } from "./auth"
 
 const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -40,7 +41,7 @@ function validar(c: Campo, raw: FormDataEntryValue | null): { valor: string | nu
             }
             return c.opciones?.includes(s) ? { valor: s } : { error: `${c.label} no es válido.` }
         default:
-            return { valor: s.slice(0, c.tipo === "textarea" ? 5000 : 500) }
+            return { valor: s.slice(0, c.tipo === "markdown" ? 60000 : c.tipo === "textarea" ? 5000 : 500) }
     }
 }
 
@@ -80,6 +81,12 @@ export async function guardarRegistro(slug: string, id: number | null, volver: s
             datos.rfc = String(datos.rfc).toUpperCase()
             if (!/^[A-ZÑ&0-9]{12,13}$/.test(String(datos.rfc))) return { error: "El RFC debe tener 12 o 13 caracteres." }
         }
+    }
+
+    if (slug === "articulos") {
+        if (!reCarpeta.test(String(datos.slug))) return { error: "La URL solo admite minúsculas, números y guiones (ej. mi-articulo)." }
+        if (datos.publicado && !datos.fecha_publicacion) datos.fecha_publicacion = hoyMX()
+        if (datos.publicado && String(datos.resumen ?? "").length < 50) return { error: "Para publicar, el resumen debe tener al menos 50 caracteres." }
     }
 
     if (slug === "usuarios") {
@@ -130,7 +137,7 @@ export async function guardarRegistro(slug: string, id: number | null, volver: s
         else await crear(r, datos)
     } catch (e) {
         await Promise.all(nuevas.map(borrarArchivo))
-        if ((e as { code?: string }).code === "ER_DUP_ENTRY") return { error: "Ya existe un registro con ese valor único (correo o carpeta)." }
+        if ((e as { code?: string }).code === "ER_DUP_ENTRY") return { error: "Ya existe un registro con ese valor único (correo, carpeta o URL)." }
         throw e
     }
     await Promise.all(anteriores.map(borrarArchivo)) // ignora rutas externas (ej. avatar de Google)

@@ -32,6 +32,7 @@ const navLinks = [
   { label: "Diseño Gráfico", href: "/diseno-grafico" },
   { label: "Outsourcing", href: "/outsourcing" },
   { label: "Portafolio", href: "/portafolio" },
+  { label: "Blog", href: "/blog" },
 ];
 
 export function Header() {

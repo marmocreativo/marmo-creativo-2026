@@ -28,6 +28,7 @@ const columnas = [
       { label: "Outsourcing creativo", href: "/outsourcing" },
       { label: "Para emprendedores", href: "/para-emprendedores" },
       { label: "Portafolio", href: "/portafolio" },
+      { label: "Blog", href: "/blog" },
     ],
   },
   {

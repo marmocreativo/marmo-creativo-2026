@@ -2,6 +2,7 @@
 // El repositorio, las acciones y las vistas del admin se generan a partir de aquí.
 
 import { ETIQUETAS_CATEGORIA, SLUGS_CATEGORIA } from "@/lib/portafolio-categorias"
+import { ETIQUETAS_BLOG, SLUGS_BLOG } from "@/lib/blog-categorias"
 
 export type TipoCampo =
     | "text"
@@ -14,6 +15,7 @@ export type TipoCampo =
     | "checkbox"
     | "password"
     | "imagen"
+    | "markdown"
 
 export type Relacion = "clientes" | "proyectos" | "usuarios"
 
@@ -26,7 +28,7 @@ export type Campo = {
     etiquetas?: Record<string, string> // texto a mostrar por opción, si difiere del valor
     relacion?: Relacion // para select con llave foránea
     virtual?: boolean // no es columna (ej. password -> password_hash)
-    imagen?: { carpeta: "clientes" | "usuarios" | "proyectos"; lado: number; modo?: "cuadrada" | "maximo" } // cuadrada (por defecto): recorte lado x lado; maximo: conserva proporción, lado mayor = lado. Siempre WebP
+    imagen?: { carpeta: "clientes" | "usuarios" | "proyectos" | "articulos"; lado: number; modo?: "cuadrada" | "maximo" } // cuadrada (por defecto): recorte lado x lado; maximo: conserva proporción, lado mayor = lado. Siempre WebP
     ayuda?: string
 }
 
@@ -126,6 +128,24 @@ export const recursos: Record<string, Recurso> = {
             { name: "id_responsable", label: "Responsable", tipo: "select", relacion: "usuarios" },
             { name: "url_entregable", label: "URL entregable", tipo: "url" },
             { name: "notas", label: "Notas", tipo: "textarea" },
+        ],
+    },
+    articulos: {
+        slug: "articulos",
+        tabla: "articulos",
+        singular: "Artículo",
+        plural: "Blog",
+        orden: "t.publicado ASC, t.fecha_publicacion DESC, t.id DESC", // borradores arriba, luego lo más reciente
+        columnas: ["titulo", "categoria", "publicado", "fecha_publicacion"],
+        campos: [
+            { name: "titulo", label: "Título", tipo: "text", requerido: true, ayuda: "Es el H1 y el título en Google (ideal: menos de 60 caracteres)" },
+            { name: "slug", label: "URL (slug)", tipo: "text", requerido: true, ayuda: "Minúsculas, números y guiones. Ej. cuanto-cuesta-una-pagina-web-en-mexico. No lo cambies después de publicar" },
+            { name: "resumen", label: "Resumen (meta descripción)", tipo: "textarea", requerido: true, ayuda: "De 120 a 160 caracteres: es lo que se lee en Google y en las tarjetas del blog" },
+            { name: "categoria", label: "Categoría", tipo: "select", opciones: SLUGS_BLOG, etiquetas: ETIQUETAS_BLOG, requerido: true },
+            { name: "portada", label: "Imagen de portada", tipo: "imagen", imagen: { carpeta: "articulos", lado: 1200, modo: "maximo" }, ayuda: "Opcional. Lado más largo a 1200 px máximo (WebP). Se usa también al compartir en redes" },
+            { name: "contenido", label: "Contenido (Markdown)", tipo: "markdown", requerido: true, ayuda: "## Subtítulo, **negritas**, listas con -, [enlaces](/precios), ![imagen](/archivos/...), tablas. Empieza con ## (el título ya es el H1)" },
+            { name: "publicado", label: "Publicado", tipo: "checkbox", ayuda: "Sin marcar es un borrador: no se ve en el sitio ni en el sitemap" },
+            { name: "fecha_publicacion", label: "Fecha de publicación", tipo: "date", ayuda: "Si la dejas vacía al publicar, se usa la de hoy. Una fecha futura lo programa" },
         ],
     },
     usuarios: {
