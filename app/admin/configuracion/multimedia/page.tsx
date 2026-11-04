@@ -1,6 +1,7 @@
 import Link from "next/link"
-import { ChevronLeft, ChevronRight, Folder, Home } from "lucide-react"
+import { ChevronRight, Folder, Home } from "lucide-react"
 import { BarraMultimedia } from "@/components/admin/barra-multimedia"
+import { Encabezado } from "@/components/admin/encabezado"
 import { BotonEliminar } from "@/components/admin/boton-eliminar"
 import { eliminarMultimedia } from "@/lib/actions/configuracion"
 import { formatoBytes, listarDirectorio, separar } from "@/lib/multimedia"
@@ -22,11 +23,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ r
 
   return (
     <div>
-      <Link href="/admin/configuracion" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="w-4 h-4" /> Configuración
-      </Link>
-      <h2 className="mt-4 text-lg font-medium text-foreground">Importar multimedia</h2>
-      <p className="mt-3 mb-8 max-w-3xl text-muted-foreground leading-relaxed">
+      <Encabezado migas={[{ label: "Configuración", href: "/admin/configuracion" }, { label: "Importar multimedia" }]} titulo="Importar multimedia" />
+      <p className="mb-8 max-w-3xl text-muted-foreground leading-relaxed">
         Es la carpeta de imágenes del servidor (<code>uploads</code>). Para llevar tu portafolio de local a producción: sube aquí tu carpeta{" "}
         <code>uploads</code> completa (conserva <code>clientes/</code>, <code>proyectos/</code>, <code>galeria/</code>…) y luego importa los datos
         con la{" "}

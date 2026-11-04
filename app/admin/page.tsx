@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Encabezado } from "@/components/admin/encabezado"
 import { contar } from "@/lib/crm/repo"
 import { recursos } from "@/lib/crm/recursos"
 
@@ -12,8 +13,8 @@ export default async function Page() {
 
   return (
     <div>
-      <h2 className="text-lg font-medium text-foreground">Resumen</h2>
-      <div className="mt-4 grid grid-cols-2 md:grid-cols-5 gap-4">
+      <Encabezado migas={[{ label: "Resumen" }]} titulo="Resumen" descripcion="Vista general de tu agencia" />
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
         {lista.map((r, i) => (
           <Link key={r.slug} href={`/admin/${r.slug}`} className="rounded-xl border border-border p-4 hover:border-foreground transition-colors">
             <p className="text-3xl font-light">{totales[i]}</p>

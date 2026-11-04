@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { Encabezado } from "@/components/admin/encabezado"
 import { ArrowRight, Database, FolderOpen } from "lucide-react"
 
 const secciones = [
@@ -19,11 +20,12 @@ const secciones = [
 export default function Page() {
   return (
     <div>
-      <h2 className="text-lg font-medium text-foreground">Configuración</h2>
-      <p className="mt-1 text-sm text-muted-foreground max-w-2xl">
-        Herramientas para mantener el sitio y pasar tu trabajo de local a producción.
-      </p>
-      <div className="mt-5 grid md:grid-cols-2 gap-4">
+      <Encabezado
+        migas={[{ label: "Configuración" }]}
+        titulo="Configuración"
+        descripcion="Herramientas para mantener el sitio y pasar tu trabajo de local a producción."
+      />
+      <div className="grid md:grid-cols-2 gap-4">
         {secciones.map((s) => (
           <Link key={s.href} href={s.href} className="group rounded-xl border border-border p-5 hover:border-foreground transition-colors">
             <s.icono className="w-6 h-6 text-primary mb-4" strokeWidth={1.5} />

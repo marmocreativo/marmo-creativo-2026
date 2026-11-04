@@ -1,12 +1,32 @@
 import type { ResultSetHeader, RowDataPacket } from "mysql2"
 import { db } from "@/lib/db"
-import { columnasDe, etiquetaRelacion, type Recurso, type Relacion } from "./recursos"
+import { columnasDe, etiquetaRelacion, recursos, type Recurso, type Relacion } from "./recursos"
 
 export type Fila = Record<string, string | number | null>
 
 // Tablas y columnas salen siempre de recursos.ts (nunca del usuario); los valores van parametrizados.
 
-export type Filtros = { id_cliente?: number; id_proyecto?: number; estados?: string[] }
+export type Filtros = { id_cliente?: number; id_proyecto?: number; estados?: string[]; q?: string }
+
+// Texto del buscador -> patrón LIKE (se escapan % y _ para que se busquen tal cual). Vacío = sin búsqueda.
+const patron = (q?: string) => {
+    const t = (q ?? "").trim().slice(0, 80)
+    return t ? `%${t.replace(/[\\%_]/g, "\\$&")}%` : null
+}
+
+// Cada palabra debe aparecer en alguna de las columnas (así "dental sonrisa" encuentra "Sonrisa Dental").
+function condicionBuscar(columnas: string[] | undefined, q?: string): { sql: string; params: string[] } | null {
+    const t = (q ?? "").trim().slice(0, 80)
+    if (!t || !columnas?.length) return null
+    const palabras = t.split(/\s+/).slice(0, 5)
+    const params: string[] = []
+    const grupos = palabras.map((p) => {
+        const like = patron(p)!
+        columnas.forEach(() => params.push(like))
+        return `(${columnas.map((c) => `${c} LIKE ?`).join(" OR ")})`
+    })
+    return { sql: grupos.join(" AND "), params }
+}
 
 export async function listar(r: Recurso, f: Filtros = {}): Promise<Fila[]> {
     const joins: string[] = []
@@ -48,6 +68,12 @@ export async function listar(r: Recurso, f: Filtros = {}): Promise<Fila[]> {
         params.push(...f.estados)
     }
 
+    const busca = condicionBuscar(r.buscar, f.q)
+    if (busca) {
+        where.push(busca.sql)
+        params.push(...busca.params)
+    }
+
     const [rows] = await db.query<RowDataPacket[]>(
         `SELECT ${["t.*", ...extras].join(", ")} FROM ${r.tabla} t ${joins.join(" ")}
          ${where.length ? "WHERE " + where.join(" AND ") : ""} ORDER BY ${r.orden} LIMIT 500`,
@@ -56,26 +82,30 @@ export async function listar(r: Recurso, f: Filtros = {}): Promise<Fila[]> {
     return rows as Fila[]
 }
 
-export async function clientesConConteos(): Promise<Fila[]> {
+export async function clientesConConteos(q?: string): Promise<Fila[]> {
+    const busca = condicionBuscar(recursos.clientes.buscar, q)
     const [rows] = await db.query<RowDataPacket[]>(
         `SELECT t.*,
             (SELECT COUNT(*) FROM contactos x WHERE x.id_cliente = t.id) AS n_contactos,
             (SELECT COUNT(*) FROM proyectos x WHERE x.id_cliente = t.id) AS n_proyectos,
             (SELECT COUNT(*) FROM tareas k JOIN proyectos p ON p.id = k.id_proyecto
               WHERE p.id_cliente = t.id AND k.estado IN ('Por Iniciar','En Proceso')) AS n_tareas_abiertas
-         FROM clientes t ORDER BY t.nombre ASC`,
+         FROM clientes t ${busca ? `WHERE ${busca.sql}` : ""} ORDER BY t.nombre ASC`,
+        busca?.params ?? [],
     )
     return rows as Fila[]
 }
 
 // Usuarios para las cartas del admin. Nunca incluye el hash de la contraseña.
-export async function usuariosParaCards(): Promise<Fila[]> {
+export async function usuariosParaCards(q?: string): Promise<Fila[]> {
+    const busca = condicionBuscar(recursos.usuarios.buscar, q)
     const [rows] = await db.query<RowDataPacket[]>(
         `SELECT t.id, t.nombre, t.email, t.avatar, t.rol, t.enviar_promociones, t.activo, t.created_at,
             (t.google_id IS NOT NULL) AS con_google,
             (t.password_hash IS NOT NULL) AS con_password,
             (SELECT COUNT(*) FROM tareas k WHERE k.id_responsable = t.id AND k.estado IN ('Por Iniciar','En Proceso')) AS n_tareas_abiertas
-         FROM usuarios t ORDER BY t.rol ASC, t.nombre ASC`,
+         FROM usuarios t ${busca ? `WHERE ${busca.sql}` : ""} ORDER BY t.rol ASC, t.nombre ASC`,
+        busca?.params ?? [],
     )
     return rows as Fila[]
 }

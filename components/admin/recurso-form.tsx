@@ -30,7 +30,7 @@ export function RecursoForm({
         <form action={enviar} className="grid md:grid-cols-2 gap-5 max-w-3xl">
             {campos.map((c) => {
                 const v = valores[c.name]
-                const ancho = c.tipo === "textarea" || c.tipo === "markdown" ? "md:col-span-2" : ""
+                const ancho = c.tipo === "textarea" ? "md:col-span-2" : ""
 
                 if (c.tipo === "checkbox") {
                     return (
@@ -67,9 +67,7 @@ export function RecursoForm({
                     <label key={c.name} className={`block text-sm text-muted-foreground ${ancho}`}>
                         {c.label}
                         {c.requerido && c.tipo !== "password" && " *"}
-                        {c.tipo === "markdown" ? (
-                            <textarea className={`${inputClass} mt-1 font-mono text-[13px] leading-relaxed`} rows={28} name={c.name} defaultValue={v ?? ""} spellCheck />
-                        ) : c.tipo === "textarea" ? (
+                        {c.tipo === "textarea" ? (
                             <textarea className={`${inputClass} mt-1`} rows={4} name={c.name} defaultValue={v ?? ""} />
                         ) : c.tipo === "select" ? (
                             <select className={`${inputClass} mt-1`} name={c.name} defaultValue={v ?? ""} required={c.requerido}>

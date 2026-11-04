@@ -4,12 +4,13 @@ import bcrypt from "bcryptjs"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { requireAdmin } from "@/lib/session"
-import { getRecurso, type Campo } from "@/lib/crm/recursos"
+import { campoDe, getRecurso, type Campo } from "@/lib/crm/recursos"
 import { actualizar, crear, eliminar, obtener, type Fila } from "@/lib/crm/repo"
 import { archivosDeRegistro } from "@/lib/crm/galeria"
 import { borrarArchivo, ErrorImagen, guardarImagen } from "@/lib/uploads"
 import { camposRapidos } from "@/lib/crm/estilos"
 import { hoyMX } from "@/lib/crm/semana"
+import { contarPalabras, sanitizarHtml } from "@/lib/blog-html"
 import type { Estado } from "./auth"
 
 const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -41,7 +42,7 @@ function validar(c: Campo, raw: FormDataEntryValue | null): { valor: string | nu
             }
             return c.opciones?.includes(s) ? { valor: s } : { error: `${c.label} no es válido.` }
         default:
-            return { valor: s.slice(0, c.tipo === "markdown" ? 60000 : c.tipo === "textarea" ? 5000 : 500) }
+            return { valor: s.slice(0, c.tipo === "html" ? 200000 : c.tipo === "textarea" ? 5000 : 500) }
     }
 }
 
@@ -87,6 +88,14 @@ export async function guardarRegistro(slug: string, id: number | null, volver: s
         if (!reCarpeta.test(String(datos.slug))) return { error: "La URL solo admite minúsculas, números y guiones (ej. mi-articulo)." }
         if (datos.publicado && !datos.fecha_publicacion) datos.fecha_publicacion = hoyMX()
         if (datos.publicado && String(datos.resumen ?? "").length < 50) return { error: "Para publicar, el resumen debe tener al menos 50 caracteres." }
+        const limites: Record<string, number> = { titulo: 200, slug: 120, resumen: 500, meta_titulo: 80, meta_descripcion: 220, palabra_clave: 120, portada_alt: 200 }
+        for (const [campo, max] of Object.entries(limites)) {
+            if (String(datos[campo] ?? "").length > max) return { error: `${campoDe(r, campo).label} admite hasta ${max} caracteres.` }
+        }
+        // El editor visual produce HTML: se limpia antes de guardar. Desde aquí el artículo ya es HTML.
+        datos.contenido = sanitizarHtml(String(datos.contenido ?? ""))
+        if (contarPalabras(String(datos.contenido)) === 0 && !String(datos.contenido).includes("<img")) return { error: "El contenido no puede estar vacío." }
+        datos.contenido_formato = "html"
     }
 
     if (slug === "usuarios") {
@@ -132,9 +141,10 @@ export async function guardarRegistro(slug: string, id: number | null, volver: s
         }
     }
 
+    let idGuardado = id
     try {
         if (id) await actualizar(r, id, datos)
-        else await crear(r, datos)
+        else idGuardado = await crear(r, datos)
     } catch (e) {
         await Promise.all(nuevas.map(borrarArchivo))
         if ((e as { code?: string }).code === "ER_DUP_ENTRY") return { error: "Ya existe un registro con ese valor único (correo, carpeta o URL)." }
@@ -144,6 +154,17 @@ export async function guardarRegistro(slug: string, id: number | null, volver: s
 
     revalidatePath(`/admin/${slug}`)
     const destino = rutaVolver(slug, volver)
+
+    if (slug === "articulos") {
+        revalidatePath("/blog")
+        revalidatePath(`/blog/${datos.slug}`)
+        if (id) revalidatePath(`/admin/articulos/${id}`) // el formulario se vuelve a pintar con lo guardado
+        // Un artículo es largo: al guardar se queda en el editor (no vuelve a la lista). Al crearlo, abre su edición
+        // para poder agregar la galería, que necesita que el artículo ya exista.
+        if (id) return { ok: "Cambios guardados." }
+        const q = destino !== "/admin/articulos" ? `&volver=${encodeURIComponent(destino)}` : ""
+        redirect(`/admin/articulos/${idGuardado}?creado=1${q}`)
+    }
 
     // "Guardar y agregar otra": vuelve al formulario con el mismo cliente/proyecto ya elegido.
     if (!id && fd.get("_otra")) {

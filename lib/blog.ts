@@ -2,6 +2,7 @@ import type { RowDataPacket } from "mysql2"
 import { db } from "@/lib/db"
 import { hoyMX } from "@/lib/crm/semana"
 import { SLUGS_BLOG } from "@/lib/blog-categorias"
+import { listarGaleriaArticulo, type ImagenArticulo } from "@/lib/crm/galeria-articulos"
 
 export type ResumenArticulo = {
     id: number
@@ -12,9 +13,18 @@ export type ResumenArticulo = {
     portada: string | null
     fecha: string // YYYY-MM-DD
     actualizado: string // YYYY-MM-DD
+    noindex: boolean
 }
 
-export type Articulo = ResumenArticulo & { contenido: string }
+export type Articulo = ResumenArticulo & {
+    contenido: string
+    formato: "markdown" | "html"
+    portadaAlt: string | null
+    metaTitulo: string | null
+    metaDescripcion: string | null
+    palabraClave: string | null
+    galeria: ImagenArticulo[]
+}
 
 type Fila = RowDataPacket & {
     id: number
@@ -25,10 +35,16 @@ type Fila = RowDataPacket & {
     portada: string | null
     fecha: string
     actualizado: string
+    noindex: number
     contenido?: string
+    contenido_formato?: "markdown" | "html"
+    portada_alt?: string | null
+    meta_titulo?: string | null
+    meta_descripcion?: string | null
+    palabra_clave?: string | null
 }
 
-const COLUMNAS = `a.id, a.slug, a.titulo, a.resumen, a.categoria, a.portada,
+const COLUMNAS = `a.id, a.slug, a.titulo, a.resumen, a.categoria, a.portada, a.noindex,
     DATE_FORMAT(a.fecha_publicacion, '%Y-%m-%d') AS fecha, DATE_FORMAT(a.updated_at, '%Y-%m-%d') AS actualizado`
 
 // Solo publicados cuya fecha ya llegó (una fecha futura los programa).
@@ -43,6 +59,7 @@ const aResumen = (f: Fila): ResumenArticulo => ({
     portada: f.portada,
     fecha: f.fecha,
     actualizado: f.actualizado,
+    noindex: !!f.noindex,
 })
 
 export async function listarArticulos(opts: { categoria?: string; excluirId?: number; limite?: number } = {}): Promise<ResumenArticulo[]> {
@@ -65,13 +82,27 @@ export async function listarArticulos(opts: { categoria?: string; excluirId?: nu
 }
 
 export async function obtenerArticulo(slug: string): Promise<Articulo | null> {
-    const [rows] = await db.query<Fila[]>(`SELECT ${COLUMNAS}, a.contenido FROM articulos a WHERE a.slug = ? AND ${VISIBLE}`, [slug, hoyMX()])
-    if (!rows[0]) return null
-    return { ...aResumen(rows[0]), contenido: rows[0].contenido ?? "" }
+    const [rows] = await db.query<Fila[]>(
+        `SELECT ${COLUMNAS}, a.contenido, a.contenido_formato, a.portada_alt, a.meta_titulo, a.meta_descripcion, a.palabra_clave
+         FROM articulos a WHERE a.slug = ? AND ${VISIBLE}`,
+        [slug, hoyMX()],
+    )
+    const f = rows[0]
+    if (!f) return null
+    return {
+        ...aResumen(f),
+        contenido: f.contenido ?? "",
+        formato: f.contenido_formato === "html" ? "html" : "markdown",
+        portadaAlt: f.portada_alt ?? null,
+        metaTitulo: f.meta_titulo ?? null,
+        metaDescripcion: f.meta_descripcion ?? null,
+        palabraClave: f.palabra_clave ?? null,
+        galeria: await listarGaleriaArticulo(f.id),
+    }
 }
 
 // Minutos de lectura (≈ 200 palabras por minuto).
-export const minutosLectura = (texto: string) => Math.max(1, Math.round(texto.split(/\s+/).filter(Boolean).length / 200))
+export const minutosLectura = (palabras: number) => Math.max(1, Math.round(palabras / 200))
 
 const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
 export const fechaLarga = (iso: string) => {

@@ -48,7 +48,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const articulos = await listarArticulos({ limite: 500 }).catch(() => []);
     return [
       ...fijas,
-      ...articulos.map((a) => ({
+      ...articulos.filter((a) => !a.noindex).map((a) => ({
         url: `${baseUrl}/blog/${a.slug}`,
         lastModified: a.actualizado,
         changeFrequency: "monthly" as const,

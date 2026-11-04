@@ -2,8 +2,10 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ListChecks, Plus } from "lucide-react"
 import { Badge } from "@/components/admin/badge"
+import { Buscador } from "@/components/admin/buscador"
 import { ClientesGrid } from "@/components/admin/clientes-grid"
 import { ContactosGrid } from "@/components/admin/contactos-grid"
+import { Encabezado } from "@/components/admin/encabezado"
 import { UsuariosGrid } from "@/components/admin/usuarios-grid"
 import { EstadoSelect } from "@/components/admin/estado-select"
 import { Filtros } from "@/components/admin/filtros"
@@ -22,12 +24,20 @@ const entero = (v?: string) => {
 const botonNuevo =
   "inline-flex items-center gap-1.5 bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
 
+const PLACEHOLDER: Record<string, string> = {
+  clientes: "Buscar cliente, correo, RFC…",
+  contactos: "Buscar contacto, puesto, cliente…",
+  proyectos: "Buscar proyecto o cliente…",
+  usuarios: "Buscar usuario o correo…",
+  articulos: "Buscar artículo, URL o palabra clave…",
+}
+
 export default async function Page({
   params,
   searchParams,
 }: {
   params: Promise<{ recurso: string }>
-  searchParams: Promise<{ id_cliente?: string }>
+  searchParams: Promise<{ id_cliente?: string; q?: string }>
 }) {
   const { recurso } = await params
   const sp = await searchParams
@@ -35,48 +45,68 @@ export default async function Page({
   if (!r) notFound()
 
   const lista = `/admin/${r.slug}`
+  const q = (sp.q ?? "").trim().slice(0, 80)
+  const textoNuevo = r.slug === "articulos" ? "Nuevo artículo" : "Nuevo"
 
-  const encabezado = (nuevo: string, detalle?: string) => (
-    <>
-      <div className="mb-1 flex items-center justify-between gap-3">
-        <h2 className="text-lg font-medium text-foreground">{r.plural}</h2>
+  const encabezado = (nuevo: string, descripcion: string) => (
+    <Encabezado
+      migas={[{ label: r.plural }]}
+      titulo={r.plural}
+      descripcion={descripcion}
+      acciones={
         <Link href={nuevo} className={botonNuevo}>
-          <Plus className="h-4 w-4" /> Nuevo
+          <Plus className="h-4 w-4" /> {textoNuevo}
         </Link>
-      </div>
-      {detalle && <p className="mb-4 text-sm text-muted-foreground">{detalle}</p>}
-    </>
+      }
+    />
+  )
+
+  const cuenta = (n: number, singular: string, plural: string) => `${n} ${n === 1 ? singular : plural}${q ? ` para “${q}”` : ""}`
+  const sinResultados = (
+    <p className="text-muted-foreground">
+      {q ? `Nada coincide con “${q}”. Prueba con otra palabra o borra la búsqueda.` : `Aún no hay ${r.plural.toLowerCase()}.`}
+    </p>
   )
 
   // --- Clientes: grid de cartas -------------------------------------------
   if (r.slug === "clientes") {
-    const clientes = await clientesConConteos()
+    const clientes = await clientesConConteos(q)
     return (
       <div>
-        {encabezado(`${lista}/nuevo`, `${clientes.length} clientes`)}
-        {clientes.length === 0 ? <p className="text-muted-foreground">Aún no hay clientes.</p> : <ClientesGrid clientes={clientes} />}
+        {encabezado(`${lista}/nuevo`, cuenta(clientes.length, "cliente", "clientes"))}
+        <div className="mb-5">
+          <Buscador placeholder={PLACEHOLDER.clientes} />
+        </div>
+        {clientes.length === 0 ? sinResultados : <ClientesGrid clientes={clientes} />}
       </div>
     )
   }
 
   // --- Usuarios: cartas -----------------------------------------------------
   if (r.slug === "usuarios") {
-    const usuarios = await usuariosParaCards()
+    const usuarios = await usuariosParaCards(q)
     return (
       <div>
-        {encabezado(`${lista}/nuevo`, `${usuarios.length} usuarios`)}
-        <UsuariosGrid usuarios={usuarios} />
+        {encabezado(`${lista}/nuevo`, cuenta(usuarios.length, "usuario", "usuarios"))}
+        <div className="mb-5">
+          <Buscador placeholder={PLACEHOLDER.usuarios} />
+        </div>
+        {usuarios.length === 0 ? sinResultados : <UsuariosGrid usuarios={usuarios} />}
       </div>
     )
   }
 
-  // --- Contactos y proyectos: lista con filtro por cliente ------------------
-  const idCliente = entero(sp.id_cliente)
-  const clientes = await opciones("clientes")
-  const filas = await listar(r, { id_cliente: idCliente })
+  // --- Contactos, proyectos y blog: lista con búsqueda (y filtro por cliente en los dos primeros) ---
+  const conCliente = r.slug === "contactos" || r.slug === "proyectos"
+  const idCliente = conCliente ? entero(sp.id_cliente) : undefined
+  const clientes = conCliente ? await opciones("clientes") : []
+  const filas = await listar(r, { id_cliente: idCliente, q })
 
-  // Crear o editar desde esta lista regresa a ella, con el mismo cliente filtrado.
-  const volver = idCliente ? `${lista}?id_cliente=${idCliente}` : lista
+  // Crear o editar desde esta lista regresa a ella, con el mismo cliente y búsqueda.
+  const estado = new URLSearchParams()
+  if (idCliente) estado.set("id_cliente", String(idCliente))
+  if (q) estado.set("q", q)
+  const volver = estado.size ? `${lista}?${estado}` : lista
   const nuevo = new URLSearchParams()
   if (idCliente) nuevo.set("id_cliente", String(idCliente))
   if (volver !== lista) nuevo.set("volver", volver)
@@ -87,6 +117,9 @@ export default async function Page({
     // Portada | Proyecto (cliente pequeño sobre el título) | resto de columnas
     const resto = cols.filter((c) => c.key !== "titulo" && c.key !== "id_cliente")
     cols.splice(0, cols.length, { key: "portada", label: "" }, { key: "proyecto", label: "Proyecto" }, ...resto)
+  }
+  if (r.slug === "articulos") {
+    cols.splice(0, cols.length, { key: "articulo", label: "Artículo" }, ...cols.filter((c) => c.key !== "titulo"))
   }
 
   const celda = (fila: Fila, key: string) => {
@@ -111,6 +144,22 @@ export default async function Page({
         </div>
       )
     }
+    if (key === "articulo") {
+      return (
+        <div className="flex min-w-64 items-center gap-3 whitespace-normal">
+          {fila.portada ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={String(fila.portada)} alt="" width={64} height={40} className="h-10 w-16 shrink-0 rounded border border-border object-cover" />
+          ) : (
+            <span className="block h-10 w-16 shrink-0 rounded bg-neutral-100" />
+          )}
+          <div>
+            <p className="text-foreground">{fila.titulo}</p>
+            <p className="text-xs text-muted-foreground">/blog/{fila.slug}</p>
+          </div>
+        </div>
+      )
+    }
     const c = campoDe(r, key)
     if (c.tipo === "select" && c.opciones) {
       const valor = String(fila[key])
@@ -121,7 +170,16 @@ export default async function Page({
       return <Badge valor={valor} />
     }
     if (c.relacion) return fila[`${key}__label`] ?? "—"
-    if (c.tipo === "checkbox") return r.slug === "articulos" ? (fila[key] ? "Publicado" : "Borrador") : fila[key] ? "Sí" : "No"
+    if (c.tipo === "checkbox") {
+      if (r.slug === "articulos") {
+        return fila[key] ? (
+          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700">Publicado</span>
+        ) : (
+          <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-muted-foreground">Borrador</span>
+        )
+      }
+      return fila[key] ? "Sí" : "No"
+    }
     if (key === "importe") return peso.format(Number(fila[key]))
     return fila[key] ?? "—"
   }
@@ -130,17 +188,16 @@ export default async function Page({
     <div>
       {encabezado(
         `${lista}/nuevo${nuevo.size ? `?${nuevo}` : ""}`,
-        `${filas.length} ${filas.length === 1 ? r.singular.toLowerCase() : r.slug === "articulos" ? "artículos" : r.plural.toLowerCase()}`,
+        cuenta(filas.length, r.slug === "articulos" ? "artículo" : r.singular.toLowerCase(), r.slug === "articulos" ? "artículos" : r.plural.toLowerCase()),
       )}
 
-      {r.slug !== "articulos" && (
-        <div className="mb-5">
-          <Filtros clientes={clientes} idCliente={idCliente} />
-        </div>
-      )}
+      <div className="mb-5 flex flex-wrap items-center gap-3">
+        <Buscador placeholder={PLACEHOLDER[r.slug]} />
+        {conCliente && <Filtros clientes={clientes} idCliente={idCliente} />}
+      </div>
 
       {filas.length === 0 ? (
-        <p className="text-muted-foreground">No hay registros con estos filtros.</p>
+        sinResultados
       ) : r.slug === "contactos" ? (
         <ContactosGrid contactos={filas} volver={volver !== lista ? volver : undefined} />
       ) : (

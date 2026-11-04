@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { CalendarCheck, CalendarDays, List, Plus } from "lucide-react"
+import { Encabezado } from "@/components/admin/encabezado"
 import { Filtros } from "@/components/admin/filtros"
 import { VistaTareas } from "@/components/admin/tareas/vista-tareas"
 import { OPCIONES_ESTADO } from "@/lib/crm/estilos"
@@ -66,19 +67,23 @@ export default async function Page({
 
   return (
     <div>
-      <div className="mb-1 flex items-center justify-between gap-3">
-        <h2 className="text-lg font-medium text-foreground">Tareas</h2>
-        <Link
-          href={`/admin/tareas/nuevo?${nuevo}`}
-          className="inline-flex items-center gap-1.5 bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
-        >
-          <Plus className="h-4 w-4" /> Nueva
-        </Link>
-      </div>
-      <p className="mb-4 text-sm text-muted-foreground">
-        {cuenta} {cuenta === 1 ? "tarea" : "tareas"}
-        {proyectoFiltrado ? ` en “${proyectoFiltrado}”` : ""}
-      </p>
+      <Encabezado
+        migas={
+          proyectoFiltrado
+            ? [{ label: "Proyectos", href: "/admin/proyectos" }, { label: proyectoFiltrado }, { label: "Tareas" }]
+            : [{ label: "Tareas" }]
+        }
+        titulo="Tareas"
+        descripcion={`${cuenta} ${cuenta === 1 ? "tarea" : "tareas"}${proyectoFiltrado ? ` en “${proyectoFiltrado}”` : ""}`}
+        acciones={
+          <Link
+            href={`/admin/tareas/nuevo?${nuevo}`}
+            className="inline-flex items-center gap-1.5 bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-90"
+          >
+            <Plus className="h-4 w-4" /> Nueva
+          </Link>
+        }
+      />
 
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <Filtros clientes={clientes} proyectos={proyectos} estado={vista === "hoy" ? undefined : estadoSel} idCliente={idCliente} idProyecto={idProyecto} />

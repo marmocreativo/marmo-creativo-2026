@@ -171,10 +171,16 @@ CREATE TABLE IF NOT EXISTS articulos (
   id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
   titulo            VARCHAR(200) NOT NULL,
   slug              VARCHAR(120) NOT NULL COMMENT 'URL: /blog/<slug>. Minúsculas, números y guiones',
-  resumen           VARCHAR(500) NOT NULL COMMENT 'Meta descripción y texto de las tarjetas',
+  resumen           VARCHAR(500) NOT NULL COMMENT 'Extracto de las tarjetas y del encabezado',
+  meta_titulo       VARCHAR(80) NULL COMMENT 'Título SEO (si está vacío se usa el título)',
+  meta_descripcion  VARCHAR(220) NULL COMMENT 'Meta descripción (si está vacía se usa el resumen)',
+  palabra_clave     VARCHAR(120) NULL COMMENT 'Consulta principal a la que apunta el artículo',
+  noindex           TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1 = no indexar en buscadores',
   categoria         VARCHAR(40) NOT NULL COMMENT 'Slug de categoría (ver lib/blog-categorias.ts)',
   portada           VARCHAR(255) NULL COMMENT 'Ruta pública, WebP con lado mayor de 1200 px',
-  contenido         MEDIUMTEXT NOT NULL COMMENT 'Markdown',
+  portada_alt       VARCHAR(200) NULL COMMENT 'Texto alternativo de la portada',
+  contenido         MEDIUMTEXT NOT NULL COMMENT 'HTML del editor visual (o Markdown en los borradores iniciales)',
+  contenido_formato VARCHAR(10) NOT NULL DEFAULT 'html' COMMENT 'markdown o html',
   publicado         TINYINT(1) NOT NULL DEFAULT 0,
   fecha_publicacion DATE NULL,
   created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -182,6 +188,20 @@ CREATE TABLE IF NOT EXISTS articulos (
   PRIMARY KEY (id),
   UNIQUE KEY uq_articulos_slug (slug),
   KEY idx_articulos_publicados (publicado, fecha_publicacion)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS articulo_imagenes (
+  id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  id_articulo  INT UNSIGNED NOT NULL,
+  archivo      VARCHAR(255) NOT NULL COMMENT 'Ruta pública, WebP con lado mayor de 1200 px',
+  ancho        SMALLINT UNSIGNED NOT NULL,
+  alto         SMALLINT UNSIGNED NOT NULL,
+  descripcion  VARCHAR(200) NULL COMMENT 'Texto alternativo / pie de foto',
+  created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_articulo_imagenes (id_articulo),
+  CONSTRAINT fk_articulo_imagenes FOREIGN KEY (id_articulo)
+    REFERENCES articulos (id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------------

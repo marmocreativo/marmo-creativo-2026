@@ -131,3 +131,93 @@
     @apply font-sans;
     }
 }
+
+/* Contenido de los artículos del blog. Lo usan el editor visual del admin y la página pública,
+   así lo que ves al escribir es lo que se publica. */
+@layer components {
+  .contenido-blog {
+    @apply text-lg leading-[1.8] text-foreground/85;
+  }
+  .contenido-blog > :first-child {
+    @apply mt-0;
+  }
+  .contenido-blog h2 {
+    @apply mt-12 mb-4 scroll-mt-28 text-2xl font-semibold tracking-tight text-foreground md:text-3xl;
+  }
+  .contenido-blog h3 {
+    @apply mt-8 mb-3 scroll-mt-28 text-xl font-semibold text-foreground;
+  }
+  .contenido-blog h4 {
+    @apply mt-6 mb-2 text-lg font-semibold text-foreground;
+  }
+  .contenido-blog p {
+    @apply my-5;
+  }
+  .contenido-blog ul {
+    @apply my-5 list-disc space-y-2 pl-6 marker:text-muted-foreground;
+  }
+  .contenido-blog ol {
+    @apply my-5 list-decimal space-y-2 pl-6 marker:text-muted-foreground;
+  }
+  .contenido-blog li > p {
+    @apply my-0;
+  }
+  .contenido-blog strong {
+    @apply font-semibold text-foreground;
+  }
+  .contenido-blog a {
+    @apply font-medium text-primary underline underline-offset-4 hover:opacity-80;
+  }
+  .contenido-blog blockquote {
+    @apply my-8 border-l-2 border-foreground pl-6 text-xl font-light text-foreground;
+  }
+  .contenido-blog blockquote p {
+    @apply my-0;
+  }
+  .contenido-blog hr {
+    @apply my-12 border-border;
+  }
+  .contenido-blog img {
+    @apply my-8 h-auto w-full rounded-xl border border-border;
+  }
+  .contenido-blog img.ProseMirror-selectednode {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+  .contenido-blog code {
+    @apply rounded bg-neutral-100 px-1.5 py-0.5 text-[0.9em];
+  }
+  .contenido-blog pre {
+    @apply my-6 overflow-x-auto rounded-xl bg-neutral-950 p-4 text-sm text-white;
+  }
+  .contenido-blog pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+  .contenido-blog table {
+    @apply w-full min-w-[32rem] border-collapse text-left text-base;
+  }
+  .contenido-blog th {
+    @apply border border-border bg-neutral-100 px-4 py-3 font-medium text-foreground;
+  }
+  .contenido-blog td {
+    @apply border border-border px-4 py-3;
+  }
+  .contenido-blog th > p,
+  .contenido-blog td > p {
+    @apply my-0;
+  }
+  .contenido-blog .selectedCell {
+    @apply bg-primary/10;
+  }
+  /* Las tablas se desplazan de lado en pantallas angostas (en el editor lo pone TipTap; en el sitio, prepararHtml) */
+  .contenido-blog .tableWrapper,
+  .contenido-blog .tabla-scroll {
+    margin-block: 2rem;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+  }
+  /* Marcador de "escribe aquí" del editor */
+  .contenido-blog p.is-editor-empty:first-child::before {
+    @apply pointer-events-none float-left h-0 text-muted-foreground/60;
+    content: attr(data-placeholder);
+  }
+}

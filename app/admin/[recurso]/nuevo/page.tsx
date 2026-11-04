@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation"
+import { ArticuloForm } from "@/components/admin/articulo-form"
+import { Encabezado } from "@/components/admin/encabezado"
 import { RecursoForm } from "@/components/admin/recurso-form"
 import { guardarRegistro } from "@/lib/actions/admin"
 import { opcionesDe } from "@/lib/crm/repo"
@@ -29,15 +31,29 @@ export default async function Page({
 
   return (
     <div>
-      <h2 className="text-lg font-medium text-foreground mb-4">Nuevo: {r.singular.toLowerCase()}</h2>
-      <RecursoForm
-        campos={r.campos}
-        valores={valores}
-        opciones={await opcionesDe(r)}
-        accion={guardarRegistro.bind(null, r.slug, null, volver)}
-        cancelarHref={volver}
-        permiteOtra
+      <Encabezado
+        migas={[{ label: r.plural, href: volver }, { label: `Crear ${r.singular.toLowerCase()}` }]}
+        titulo={`Crear ${r.singular.toLowerCase()}`}
       />
+      {r.slug === "articulos" ? (
+        <ArticuloForm
+          valores={{}}
+          formato="html"
+          galeria={[]}
+          accion={guardarRegistro.bind(null, r.slug, null, volver)}
+          cancelarHref={volver}
+          nuevo
+        />
+      ) : (
+        <RecursoForm
+          campos={r.campos}
+          valores={valores}
+          opciones={await opcionesDe(r)}
+          accion={guardarRegistro.bind(null, r.slug, null, volver)}
+          cancelarHref={volver}
+          permiteOtra
+        />
+      )}
     </div>
   )
 }

@@ -1,6 +1,5 @@
-import Link from "next/link"
-import { ChevronLeft } from "lucide-react"
 import { ConsolaSql } from "@/components/admin/consola-sql"
+import { Encabezado } from "@/components/admin/encabezado"
 import { listarArchivosSQL, listarBitacora } from "@/lib/sql/consola"
 
 const fecha = (v: string) =>
@@ -17,11 +16,8 @@ export default async function Page() {
 
   return (
     <div>
-      <Link href="/admin/configuracion" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-        <ChevronLeft className="w-4 h-4" /> Configuración
-      </Link>
-      <h2 className="mt-4 text-lg font-medium text-foreground">Consulta SQL</h2>
-      <p className="mt-3 mb-8 max-w-3xl text-muted-foreground leading-relaxed">
+      <Encabezado migas={[{ label: "Configuración", href: "/admin/configuracion" }, { label: "Consulta SQL" }]} titulo="Consulta SQL" />
+      <p className="mb-8 max-w-3xl text-muted-foreground leading-relaxed">
         Se ejecuta con el usuario de base de datos de la aplicación. Los archivos del proyecto traen <code>USE marmo_creativo;</code>: si tu
         base se llama distinto, cambia esa línea antes de ejecutarlos.
       </p>

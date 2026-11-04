@@ -2,6 +2,7 @@ import type { ResultSetHeader, RowDataPacket } from "mysql2"
 import { db } from "@/lib/db"
 import type { Procesada } from "@/lib/uploads"
 import { archivosHistorialUsuario } from "@/lib/herramientas/historial"
+import { imagenesDelContenido } from "@/lib/blog-html"
 
 export type ImagenGaleria = { id: number; id_proyecto: number; archivo: string; ancho: number; alto: number }
 
@@ -50,6 +51,11 @@ export async function archivosDeRegistro(slug: string, id: number): Promise<stri
         const [p] = await db.query<RowDataPacket[]>("SELECT portada FROM proyectos WHERE id = ?", [id])
         const [g] = await db.query<RowDataPacket[]>("SELECT archivo FROM proyecto_imagenes WHERE id_proyecto = ?", [id])
         return [...col(p, "portada"), ...col(g, "archivo")]
+    }
+    if (slug === "articulos") {
+        const [a] = await db.query<RowDataPacket[]>("SELECT portada, contenido FROM articulos WHERE id = ?", [id])
+        const [g] = await db.query<RowDataPacket[]>("SELECT archivo FROM articulo_imagenes WHERE id_articulo = ?", [id])
+        return [...col(a, "portada"), ...col(g, "archivo"), ...imagenesDelContenido(String(a[0]?.contenido ?? ""))]
     }
     if (slug === "clientes") {
         const [c] = await db.query<RowDataPacket[]>("SELECT logo FROM clientes WHERE id = ?", [id])

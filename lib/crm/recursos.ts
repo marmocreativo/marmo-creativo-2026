@@ -15,7 +15,7 @@ export type TipoCampo =
     | "checkbox"
     | "password"
     | "imagen"
-    | "markdown"
+    | "html"
 
 export type Relacion = "clientes" | "proyectos" | "usuarios"
 
@@ -40,6 +40,7 @@ export type Recurso = {
     campos: Campo[]
     columnas: string[] // campos que se muestran en la lista
     orden: string
+    buscar?: string[] // expresiones SQL (t.columna o j_<campo>.columna) donde busca el buscador del listado
 }
 
 // Texto que se muestra al elegir un registro relacionado.
@@ -60,6 +61,7 @@ export const recursos: Record<string, Recurso> = {
         plural: "Clientes",
         orden: "t.nombre ASC",
         columnas: ["nombre", "carpeta", "email", "tipo", "estado"],
+        buscar: ["t.nombre", "t.carpeta", "t.email", "t.nombre_fiscal", "t.rfc", "t.direccion"],
         campos: [
             { name: "nombre", label: "Nombre", tipo: "text", requerido: true },
             { name: "carpeta", label: "Carpeta de cliente", tipo: "text", requerido: true, ayuda: "Para URLs: minúsculas, números y guiones. Ej. dental-sonrisa" },
@@ -79,6 +81,7 @@ export const recursos: Record<string, Recurso> = {
         plural: "Contactos",
         orden: "t.nombre ASC",
         columnas: ["nombre", "id_cliente", "puesto", "whatsapp", "email", "estado"],
+        buscar: ["t.nombre", "t.puesto", "t.whatsapp", "t.email", "j_id_cliente.nombre"],
         campos: [
             { name: "nombre", label: "Nombre", tipo: "text", requerido: true },
             { name: "id_cliente", label: "Cliente", tipo: "select", relacion: "clientes", requerido: true },
@@ -95,6 +98,7 @@ export const recursos: Record<string, Recurso> = {
         plural: "Proyectos",
         orden: "t.id DESC",
         columnas: ["titulo", "id_cliente", "estimado", "estado_entrega", "importe", "estado_pago"],
+        buscar: ["t.titulo", "j_id_cliente.nombre", "t.descripcion_portafolio"],
         campos: [
             { name: "titulo", label: "Título", tipo: "text", requerido: true },
             { name: "id_cliente", label: "Cliente", tipo: "select", relacion: "clientes", requerido: true },
@@ -137,15 +141,22 @@ export const recursos: Record<string, Recurso> = {
         plural: "Blog",
         orden: "t.publicado ASC, t.fecha_publicacion DESC, t.id DESC", // borradores arriba, luego lo más reciente
         columnas: ["titulo", "categoria", "publicado", "fecha_publicacion"],
+        buscar: ["t.titulo", "t.slug", "t.resumen", "t.palabra_clave"],
+        // El formulario de este recurso es propio (components/admin/articulo-form.tsx); estos campos definen qué se guarda.
         campos: [
-            { name: "titulo", label: "Título", tipo: "text", requerido: true, ayuda: "Es el H1 y el título en Google (ideal: menos de 60 caracteres)" },
-            { name: "slug", label: "URL (slug)", tipo: "text", requerido: true, ayuda: "Minúsculas, números y guiones. Ej. cuanto-cuesta-una-pagina-web-en-mexico. No lo cambies después de publicar" },
-            { name: "resumen", label: "Resumen (meta descripción)", tipo: "textarea", requerido: true, ayuda: "De 120 a 160 caracteres: es lo que se lee en Google y en las tarjetas del blog" },
+            { name: "titulo", label: "Título", tipo: "text", requerido: true },
+            { name: "slug", label: "URL (slug)", tipo: "text", requerido: true },
+            { name: "resumen", label: "Resumen", tipo: "textarea", requerido: true },
+            { name: "meta_titulo", label: "Título SEO", tipo: "text" },
+            { name: "meta_descripcion", label: "Meta descripción", tipo: "textarea" },
+            { name: "palabra_clave", label: "Palabra clave principal", tipo: "text" },
+            { name: "noindex", label: "No indexar", tipo: "checkbox" },
             { name: "categoria", label: "Categoría", tipo: "select", opciones: SLUGS_BLOG, etiquetas: ETIQUETAS_BLOG, requerido: true },
-            { name: "portada", label: "Imagen de portada", tipo: "imagen", imagen: { carpeta: "articulos", lado: 1200, modo: "maximo" }, ayuda: "Opcional. Lado más largo a 1200 px máximo (WebP). Se usa también al compartir en redes" },
-            { name: "contenido", label: "Contenido (Markdown)", tipo: "markdown", requerido: true, ayuda: "## Subtítulo, **negritas**, listas con -, [enlaces](/precios), ![imagen](/archivos/...), tablas. Empieza con ## (el título ya es el H1)" },
-            { name: "publicado", label: "Publicado", tipo: "checkbox", ayuda: "Sin marcar es un borrador: no se ve en el sitio ni en el sitemap" },
-            { name: "fecha_publicacion", label: "Fecha de publicación", tipo: "date", ayuda: "Si la dejas vacía al publicar, se usa la de hoy. Una fecha futura lo programa" },
+            { name: "portada", label: "Imagen de portada", tipo: "imagen", imagen: { carpeta: "articulos", lado: 1200, modo: "maximo" } },
+            { name: "portada_alt", label: "Texto alternativo de la portada", tipo: "text" },
+            { name: "contenido", label: "Contenido", tipo: "html", requerido: true },
+            { name: "publicado", label: "Publicado", tipo: "checkbox" },
+            { name: "fecha_publicacion", label: "Fecha de publicación", tipo: "date" },
         ],
     },
     usuarios: {
@@ -155,6 +166,7 @@ export const recursos: Record<string, Recurso> = {
         plural: "Usuarios",
         orden: "t.id ASC",
         columnas: ["nombre", "email", "rol", "enviar_promociones", "activo"],
+        buscar: ["t.nombre", "t.email"],
         campos: [
             { name: "nombre", label: "Nombre", tipo: "text", requerido: true },
             { name: "email", label: "Email", tipo: "email", requerido: true },
