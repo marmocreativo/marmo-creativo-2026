@@ -1,13 +1,15 @@
 "use client"
 
-import { useActionState, useState } from "react"
+import { useActionState, useRef, useState } from "react"
 import Link from "next/link"
 import { ExternalLink } from "lucide-react"
-import { EditorHtml } from "@/components/admin/editor-html"
+import { EditorHtml, type ControlEditor } from "@/components/admin/editor-html"
+import { NotaIA } from "@/components/admin/nota-ia"
 import { SelectorImagen } from "@/components/forms/selector-imagen"
 import type { Estado } from "@/lib/actions/auth"
 import { CATEGORIAS_BLOG } from "@/lib/blog-categorias"
 import type { ImagenArticulo } from "@/lib/crm/galeria-articulos"
+import type { ResultadoIA } from "@/lib/ia/tipos"
 
 type Valores = Record<string, string | number | null | undefined>
 
@@ -24,6 +26,18 @@ const slugify = (t: string) =>
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "")
         .slice(0, 100)
+
+const escAttr = (t: string) => t.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;")
+
+// La segunda imagen de la IA va después del primer párrafo de la primera sección.
+function conImagenEnMedio(html: string, img?: { url: string; alt: string }) {
+    if (!img) return html
+    const h2 = html.indexOf("<h2")
+    const fin = h2 < 0 ? -1 : html.indexOf("</p>", h2)
+    if (fin < 0) return html
+    const corte = fin + 4
+    return `${html.slice(0, corte)}<img src="${escAttr(img.url)}" alt="${escAttr(img.alt)}">${html.slice(corte)}`
+}
 
 const hoyMX = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/Mexico_City" })
 
@@ -46,6 +60,7 @@ export function ArticuloForm({
     cancelarHref,
     nuevo,
     creado,
+    iaLista,
 }: {
     valores: Valores
     formato: "markdown" | "html"
@@ -54,6 +69,7 @@ export function ArticuloForm({
     cancelarHref: string
     nuevo: boolean
     creado?: boolean
+    iaLista: boolean
 }) {
     const [estado, enviar, pendiente] = useActionState(accion, undefined)
     const texto = (k: string) => String(valores[k] ?? "")
@@ -71,8 +87,30 @@ export function ArticuloForm({
     const [publicado, setPublicado] = useState(!!valores.publicado)
     const [fecha, setFecha] = useState(texto("fecha_publicacion"))
 
+    const editor = useRef<ControlEditor>(null)
+    const [portadaIA, setPortadaIA] = useState<string | null>(null) // portada creada por la IA, aún sin guardar
+
+    // Pasa al formulario lo que generó la IA. El artículo queda como estaba de publicado/fecha; se guarda con el botón de siempre.
+    const aplicarIA = (r: ResultadoIA) => {
+        const { meta, imagenes, nota } = r
+        if (!titulo.trim()) setTitulo(meta.titulo)
+        if (!slug.trim() || (nuevo && !slugManual)) setSlug(meta.slug)
+        setResumen(meta.resumen)
+        setMetaTitulo(meta.meta_titulo)
+        setMetaDescripcion(meta.meta_descripcion)
+        setPalabraClave(meta.palabra_clave)
+        setCategoria(meta.categoria)
+        if (imagenes[0]) {
+            setPortadaIA(imagenes[0].url)
+            setPortadaAlt(imagenes[0].alt || meta.portada_alt)
+        } else if (meta.portada_alt) {
+            setPortadaAlt(meta.portada_alt)
+        }
+        editor.current?.reemplazar(conImagenEnMedio(nota.html, imagenes[1]))
+    }
+
     const programado = publicado && !!fecha && fecha > hoyMX()
-    const portada = valores.portada ? String(valores.portada) : null
+    const portada = portadaIA ?? (valores.portada ? String(valores.portada) : null)
 
     // Vista previa de cómo se verá en Google.
     const tituloGoogle = (metaTitulo || titulo || "Título del artículo").slice(0, 70)
@@ -82,6 +120,8 @@ export function ArticuloForm({
         <form action={enviar} className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
             {/* ───────── Columna izquierda: contenido y SEO ───────── */}
             <div className="min-w-0 space-y-6">
+                <NotaIA iaLista={iaLista} tituloInicial={titulo} onAplicar={aplicarIA} />
+
                 <section className={`${tarjeta} space-y-5`}>
                     <label className={etiqueta}>
                         <span className="flex items-center justify-between">
@@ -157,7 +197,7 @@ export function ArticuloForm({
                     <div>
                         <span className={etiqueta}>Contenido *</span>
                         <div className="mt-1">
-                            <EditorHtml nombre="contenido" valor={texto("contenido")} formato={formato} galeria={galeria} />
+                            <EditorHtml nombre="contenido" valor={texto("contenido")} formato={formato} galeria={galeria} controlRef={editor} />
                         </div>
                         {formato === "markdown" && !nuevo && (
                             <span className={ayuda}>Este borrador estaba en Markdown: se convirtió al editor visual y, al guardar, queda en formato visual.</span>
@@ -299,7 +339,8 @@ export function ArticuloForm({
                         <img src={portada} alt="" className="w-full rounded-lg border border-border object-cover" />
                     )}
                     <div className="min-w-0 [&_input[type=file]]:w-full [&_input[type=file]]:max-w-full">
-                        <SelectorImagen name="portada" />
+                        <input type="hidden" name="portada_existente" value={portadaIA ?? ""} />
+                    <SelectorImagen name="portada" />
                     </div>
                     {portada && (
                         <label className="flex items-center gap-2 text-sm text-muted-foreground">

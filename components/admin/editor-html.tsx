@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useImperativeHandle, useState } from "react"
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react"
 import type { Editor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
@@ -29,6 +29,9 @@ import {
 import type { ImagenArticulo } from "@/lib/crm/galeria-articulos"
 
 type ImagenGaleria = Pick<ImagenArticulo, "id" | "archivo" | "descripcion">
+
+// Lo que el formulario puede pedirle al editor (por ejemplo, cargar el texto que generó la IA).
+export type ControlEditor = { reemplazar: (html: string) => void }
 
 const campo = "w-full border border-border bg-white px-3 py-2 text-sm text-foreground focus:border-foreground focus:outline-none"
 
@@ -193,11 +196,13 @@ export function EditorHtml({
     valor,
     formato,
     galeria,
+    controlRef,
 }: {
     nombre: string
     valor: string
     formato: "markdown" | "html"
     galeria: ImagenGaleria[]
+    controlRef?: React.Ref<ControlEditor>
 }) {
     const [inicial] = useState(() => (formato === "markdown" ? (marked.parse(valor, { async: false, gfm: true }) as string) : valor))
     const [html, setHtml] = useState(inicial)
@@ -254,6 +259,8 @@ export function EditorHtml({
             },
         },
     })
+
+    useImperativeHandle(controlRef, () => ({ reemplazar: (h: string) => editor?.commands.setContent(h, { emitUpdate: true }) }), [editor])
 
     const abrirPanel = (p: "enlace" | "imagen") => {
         if (!editor) return

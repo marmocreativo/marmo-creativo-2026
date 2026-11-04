@@ -8,6 +8,7 @@ import { RecursoForm } from "@/components/admin/recurso-form"
 import { listarGaleria } from "@/lib/crm/galeria"
 import { listarGaleriaArticulo } from "@/lib/crm/galeria-articulos"
 import { eliminarRegistro, guardarRegistro } from "@/lib/actions/admin"
+import { iaConfigurada } from "@/lib/ia/gemini"
 import { obtener, opcionesDe } from "@/lib/crm/repo"
 import { getRecurso } from "@/lib/crm/recursos"
 
@@ -54,6 +55,7 @@ export default async function Page({
             cancelarHref={volver}
             nuevo={false}
             creado={sp.creado === "1"}
+            iaLista={iaConfigurada()}
           />
           <GaleriaArticulo idArticulo={n} imagenes={galeriaArticulo} />
         </>

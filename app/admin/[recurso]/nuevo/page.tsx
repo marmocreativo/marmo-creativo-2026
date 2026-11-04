@@ -3,6 +3,7 @@ import { ArticuloForm } from "@/components/admin/articulo-form"
 import { Encabezado } from "@/components/admin/encabezado"
 import { RecursoForm } from "@/components/admin/recurso-form"
 import { guardarRegistro } from "@/lib/actions/admin"
+import { iaConfigurada } from "@/lib/ia/gemini"
 import { opcionesDe } from "@/lib/crm/repo"
 import { getRecurso } from "@/lib/crm/recursos"
 
@@ -43,6 +44,7 @@ export default async function Page({
           accion={guardarRegistro.bind(null, r.slug, null, volver)}
           cancelarHref={volver}
           nuevo
+          iaLista={iaConfigurada()}
         />
       ) : (
         <RecursoForm

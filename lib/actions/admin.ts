@@ -7,7 +7,7 @@ import { requireAdmin } from "@/lib/session"
 import { campoDe, getRecurso, type Campo } from "@/lib/crm/recursos"
 import { actualizar, crear, eliminar, obtener, type Fila } from "@/lib/crm/repo"
 import { archivosDeRegistro } from "@/lib/crm/galeria"
-import { borrarArchivo, ErrorImagen, guardarImagen } from "@/lib/uploads"
+import { borrarArchivo, ErrorImagen, guardarImagen, leerArchivo } from "@/lib/uploads"
 import { camposRapidos } from "@/lib/crm/estilos"
 import { hoyMX } from "@/lib/crm/semana"
 import { contarPalabras, sanitizarHtml } from "@/lib/blog-html"
@@ -16,6 +16,13 @@ import type { Estado } from "./auth"
 const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const reFecha = /^\d{4}-\d{2}-\d{2}$/
 const reCarpeta = /^[a-z0-9]+(-[a-z0-9]+)*$/
+
+// Portada generada con IA (ruta /archivos/articulos/<uuid>.webp): se acepta solo si es una ruta nuestra, existe y no es la actual.
+const reGenerada = /^\/archivos\/articulos\/[0-9a-f-]{36}\.webp$/i
+async function portadaGenerada(valor: FormDataEntryValue | null, previa: string): Promise<boolean> {
+    if (typeof valor !== "string" || valor === previa || !reGenerada.test(valor)) return false
+    return (await leerArchivo(valor.slice("/archivos/".length).split("/"))) !== null
+}
 
 // Devuelve el valor listo para la BD, o un mensaje de error.
 function validar(c: Campo, raw: FormDataEntryValue | null): { valor: string | number | null } | { error: string } {
@@ -135,6 +142,10 @@ export async function guardarRegistro(slug: string, id: number | null, volver: s
                 if (e instanceof ErrorImagen) return { error: `${c.label}: ${e.message}` }
                 throw e
             }
+        } else if (slug === "articulos" && c.name === "portada" && (await portadaGenerada(fd.get("portada_existente"), previa))) {
+            // Portada creada con IA: ya está guardada en el servidor; solo se asigna.
+            datos[c.name] = String(fd.get("portada_existente"))
+            if (previa) anteriores.push(previa)
         } else if (fd.get(`${c.name}__quitar`) === "on" && previa) {
             datos[c.name] = null
             anteriores.push(previa)
