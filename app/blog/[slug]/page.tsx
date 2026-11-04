@@ -34,7 +34,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const titulo = a.metaTitulo || a.titulo
   const descripcion = a.metaDescripcion || a.resumen
-  const imagen = a.portada ?? "/og-main.jpg"
+  // Imagen para compartir: siempre 1200 × 630 JPG (la ruta /og la recorta desde la portada).
+  const imagen = a.portada ? `/blog/${a.slug}/og` : "/og-main.jpg"
   return {
     title: conMarca(titulo),
     description: descripcion,
@@ -51,7 +52,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       modifiedTime: a.actualizado,
       authors: ["Manuel Marmolejo Martínez"],
       section: ETIQUETAS_BLOG[a.categoria],
-      images: [{ url: imagen, alt: a.portadaAlt ?? a.titulo }],
+      images: [{ url: imagen, width: 1200, height: 630, type: "image/jpeg", alt: a.portadaAlt ?? a.titulo }],
     },
     twitter: { card: "summary_large_image", title: titulo, description: descripcion, images: [imagen] },
   }

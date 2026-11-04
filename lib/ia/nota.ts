@@ -30,7 +30,10 @@ INVESTIGACIÓN OBLIGATORIA
 - Menciona en el texto el nombre de la fuente cuando uses un dato (por ejemplo: "según la documentación de Google Search Central…"). Parafrasea; no copies frases textuales largas.
 
 REDACCIÓN
-- 900 a 1,300 palabras. Tono cercano y profesional, tuteo, frases claras, sin relleno ni frases de moda.
+- 900 a 1,300 palabras.
+- TONO INFORMAL Y NADA TÉCNICO: escribe como si le explicaras el tema a un amigo que tiene un negocio y no sabe de tecnología, platicando en español de México y tuteando. Frases cortas, lenguaje de todos los días, algún comentario natural o toque de humor ligero (sin exagerar ni ser grosero).
+- Evita la jerga. Si un término técnico es inevitable, explícalo en una frase simple con una analogía cotidiana (la tienda, la cocina, el taller, el mostrador) y no lo repitas sin necesidad. Prefiere ejemplos de negocios reales de barrio (una taquería, una estética, una papelería, un consultorio) sobre definiciones formales.
+- Cero relleno, cero frases de moda y cero tono de manual o de comunicado corporativo.
 - La introducción responde la intención de búsqueda en las primeras líneas.
 - 4 a 6 secciones con subtítulos (h2, y h3 si hace falta). Usa listas o una tabla cuando ayuden a comparar.
 - Incluye una sección "Preguntas frecuentes" (3 o 4 preguntas con respuesta breve) y cierra con un siguiente paso para el lector.
@@ -86,13 +89,13 @@ export async function generarMetadatos(titulo: string, html: string, palabraClav
 
 - "titulo": título atractivo de la nota, máximo 60 caracteres, con la palabra clave al inicio (si el del editor ya es bueno, déjalo).
 - "slug": URL en minúsculas, sin acentos, solo letras, números y guiones, máximo 70 caracteres.
-- "resumen": 150 a 250 caracteres, para tarjetas del blog.
+- "resumen": 150 a 250 caracteres, para tarjetas del blog, en tono cercano e informal y sin tecnicismos.
 - "meta_titulo": máximo 60 caracteres.
 - "meta_descripcion": entre 120 y 155 caracteres, resume la nota e invita a hacer clic.
 - "palabra_clave": la consulta principal a la que apunta la nota (2 a 5 palabras).
 - "categoria": exactamente una de: ${SLUGS_BLOG.join(", ")}.
 - "portada_alt": descripción de la imagen de portada, máximo 120 caracteres, en español.
-- "imagenes": arreglo de EXACTAMENTE 2 objetos {"prompt","alt"}. "prompt" es una descripción EN INGLÉS para generar una imagen editorial relacionada con el tema (la primera será la portada horizontal; la segunda ilustra una sección). Sin texto, sin letras, sin logotipos, sin marcas reales y sin rostros de personas reconocibles; escenas o conceptos visuales claros. "alt" es el texto alternativo en español (máximo 120 caracteres).
+- "imagenes": arreglo de EXACTAMENTE 2 objetos {"prompt","alt"}. "prompt" es una descripción EN INGLÉS para generar una imagen editorial relacionada con el tema (la primera será la portada horizontal y se recortará a proporción 1.91:1 para compartir en redes: el sujeto principal debe quedar centrado y con aire a los lados y arriba y abajo, sin nada importante pegado a los bordes; la segunda ilustra una sección). Sin texto, sin letras, sin logotipos, sin marcas reales y sin rostros de personas reconocibles; escenas o conceptos visuales claros. "alt" es el texto alternativo en español (máximo 120 caracteres).
 
 TÍTULO DEL EDITOR: ${titulo}
 ${palabraClave ? `PALABRA CLAVE DEL EDITOR: ${palabraClave}\n` : ""}
