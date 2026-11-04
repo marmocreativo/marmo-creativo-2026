@@ -52,12 +52,12 @@ const heroServices = [
 ];
 
 const gallery = [
-  { image: "/images/grafico/grafico-1.png", title: "70 Aniversario Sonora Santanera", tag: "Redes" },
-  { image: "/images/grafico/grafico-3.png", title: "Logo CES ENERGY", tag: "Branding" },
-  { image: "/images/grafico/grafico-5.png", title: "Glass Studio", tag: "Branding" },
-  { image: "/images/grafico/grafico-6.png", title: "CREE-IXE", tag: "Redes sociales" },
-  { image: "/images/grafico/grafico-9.png", title: "Key Productions", tag: "Impresos" },
-  { image: "/images/grafico/grafico-12.png", title: "Capetillo Producciones", tag: "Redes sociales" },
+  { image: "/images/grafico/grafico-1.webp", title: "70 Aniversario Sonora Santanera", tag: "Redes" },
+  { image: "/images/grafico/grafico-3.webp", title: "Logo CES ENERGY", tag: "Branding" },
+  { image: "/images/grafico/grafico-5.webp", title: "Glass Studio", tag: "Branding" },
+  { image: "/images/grafico/grafico-6.webp", title: "CREE-IXE", tag: "Redes sociales" },
+  { image: "/images/grafico/grafico-9.webp", title: "Key Productions", tag: "Impresos" },
+  { image: "/images/grafico/grafico-12.webp", title: "Capetillo Producciones", tag: "Redes sociales" },
 ];
 
 const brandingIncludes = [
