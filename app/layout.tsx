@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Inter } from "next/font/google"
-import { GoogleAnalytics } from "@next/third-parties/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -11,6 +10,7 @@ import { Footer } from "@/components/layout/footer";
 import { JsonLd } from "@/components/seo/json-ld";
 import { AuthProvider } from "@/components/auth/session-provider";
 import { OcultarEnAdmin } from "@/components/layout/ocultar-en-admin";
+import { Analytics } from "@/components/layout/analytics";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'})
 
@@ -90,7 +90,7 @@ export default function RootLayout({
           </OcultarEnAdmin>
         </AuthProvider>
       </body>
-      <GoogleAnalytics gaId="G-QTEDWT40GE" />
+      <Analytics />
     </html>
   );
 }
