@@ -5,6 +5,7 @@ import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import { requireAdmin } from "@/lib/session"
 import { campoDe, getRecurso, type Campo } from "@/lib/crm/recursos"
+import { reCarpeta, validar } from "@/lib/crm/validar"
 import { actualizar, crear, eliminar, obtener, type Fila } from "@/lib/crm/repo"
 import { archivosDeRegistro } from "@/lib/crm/galeria"
 import { borrarArchivo, ErrorImagen, guardarImagen, leerArchivo } from "@/lib/uploads"
@@ -13,44 +14,11 @@ import { hoyMX } from "@/lib/crm/semana"
 import { contarPalabras, sanitizarHtml } from "@/lib/blog-html"
 import type { Estado } from "./auth"
 
-const reEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const reFecha = /^\d{4}-\d{2}-\d{2}$/
-const reCarpeta = /^[a-z0-9]+(-[a-z0-9]+)*$/
-
 // Portada generada con IA (ruta /archivos/articulos/<uuid>.webp): se acepta solo si es una ruta nuestra, existe y no es la actual.
 const reGenerada = /^\/archivos\/articulos\/[0-9a-f-]{36}\.webp$/i
 async function portadaGenerada(valor: FormDataEntryValue | null, previa: string): Promise<boolean> {
     if (typeof valor !== "string" || valor === previa || !reGenerada.test(valor)) return false
     return (await leerArchivo(valor.slice("/archivos/".length).split("/"))) !== null
-}
-
-// Devuelve el valor listo para la BD, o un mensaje de error.
-function validar(c: Campo, raw: FormDataEntryValue | null): { valor: string | number | null } | { error: string } {
-    if (c.tipo === "checkbox") return { valor: raw === "on" ? 1 : 0 }
-
-    const s = typeof raw === "string" ? raw.trim() : ""
-    if (!s) return c.requerido ? { error: `${c.label} es obligatorio.` } : { valor: null }
-
-    switch (c.tipo) {
-        case "email":
-            return reEmail.test(s) ? { valor: s.toLowerCase() } : { error: `${c.label} no es un correo válido.` }
-        case "url":
-            return /^https?:\/\//i.test(s) ? { valor: s } : { error: `${c.label} debe empezar con http:// o https://` }
-        case "date":
-            return reFecha.test(s) ? { valor: s } : { error: `${c.label} no es una fecha válida.` }
-        case "number": {
-            const n = Number(s)
-            return Number.isFinite(n) && n >= 0 ? { valor: n } : { error: `${c.label} debe ser un número.` }
-        }
-        case "select":
-            if (c.relacion) {
-                const n = Number(s)
-                return Number.isInteger(n) && n > 0 ? { valor: n } : { error: `Elige ${c.label.toLowerCase()}.` }
-            }
-            return c.opciones?.includes(s) ? { valor: s } : { error: `${c.label} no es válido.` }
-        default:
-            return { valor: s.slice(0, c.tipo === "html" ? 200000 : c.tipo === "textarea" ? 5000 : 500) }
-    }
 }
 
 // Solo se vuelve a una lista del mismo recurso (con sus filtros): nunca a una dirección cualquiera.
