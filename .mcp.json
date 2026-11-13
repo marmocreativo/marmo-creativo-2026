@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "marmo-crm": {
+      "type": "http",
+      "url": "https://marmo-creativo.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${MARMO_MCP_TOKEN}"
+      }
+    }
+  }
+}

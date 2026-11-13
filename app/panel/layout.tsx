@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { AreaShell } from "@/components/layout/area-shell"
 import { requireUsuario } from "@/lib/session"
+import { puedeCrearSitios } from "@/lib/sitios/acceso"
 
 export const metadata: Metadata = {
   title: "Mi panel | Marmo Creativo",
@@ -13,6 +14,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const links = [
     { label: "Inicio", href: "/panel" },
     { label: "Historial", href: "/panel/historial" },
+    ...(puedeCrearSitios(u) ? [{ label: "Sitios web", href: "/panel/sitios" }] : []),
     { label: "Mi perfil", href: "/panel/perfil" },
     ...(u.rol === "admin" ? [{ label: "Administración", href: "/admin" }] : []),
   ]
