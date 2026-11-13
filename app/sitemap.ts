@@ -19,6 +19,7 @@ const routes: { path: string; lastModified: string; priority: number }[] = [
   { path: "/paginas-web/cms-custom", lastModified: "2026-10-02", priority: 0.8 },
   { path: "/paginas-web/mantenimiento", lastModified: "2026-10-02", priority: 0.8 },
   { path: "/para-emprendedores", lastModified: "2026-10-02", priority: 0.8 },
+  { path: "/creador-de-sitios-web", lastModified: "2026-11-13", priority: 0.8 },
   { path: "/desarrollo-software", lastModified: "2026-10-02", priority: 0.8 },
   { path: "/diseno-grafico", lastModified: "2026-10-02", priority: 0.8 },
   { path: "/outsourcing", lastModified: "2026-10-02", priority: 0.8 },

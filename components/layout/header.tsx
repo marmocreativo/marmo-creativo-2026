@@ -25,6 +25,7 @@ const paginasWebItems = [
   { label: "E-commerce", href: "/paginas-web/ecommerce" },
   { label: "CMS Custom", href: "/paginas-web/cms-custom" },
   { label: "Mantenimiento", href: "/paginas-web/mantenimiento" },
+  { label: "Creador de sitios con IA", href: "/creador-de-sitios-web" },
 ];
 
 const otrosServiciosItems = [
