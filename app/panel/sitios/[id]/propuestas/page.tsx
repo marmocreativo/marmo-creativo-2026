@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { elegirPropuestaAccion, estadoIAAccion, generarPropuestasAccion } from "@/lib/actions/sitios-ia"
-import { anthropicConfigurada } from "@/lib/ia/anthropic"
+import { opcionesProveedor, proveedorPorDefecto } from "@/lib/ia/texto"
 import { requireCreadorSitios } from "@/lib/sitios/acceso"
 import { listarArchivos, listarPropuestas, obtenerSitio } from "@/lib/sitios/repo"
 import { consumoDelSitio, ultimaTarea } from "@/lib/sitios/tareas"
@@ -30,8 +30,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         { ok: referencias.length > 0 || sitio.referencias_urls.length > 0, texto: `Referencias: ${sitio.referencias_urls.length} direcciones, ${referencias.length} imágenes (opcional)`, href: `${base}/referencias` },
     ]
 
-    const bloqueo = !anthropicConfigurada()
-        ? "Falta configurar ANTHROPIC_API_KEY en el servidor."
+    const proveedores = opcionesProveedor()
+    const defecto = proveedorPorDefecto()
+    const bloqueo = !proveedores.some((p) => p.disponible)
+        ? "Falta configurar ANTHROPIC_API_KEY o GEMINI_API_KEY en el servidor."
         : !briefingListo
           ? "Completa el briefing (empresa, giro y descripción) en el paso 1."
           : null
@@ -65,6 +67,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     consultar={estadoIAAccion}
                     inicial={tarea}
                     bloqueo={bloqueo}
+                    proveedores={proveedores}
+                    defecto={defecto}
                 />
                 {consumo.tareas > 0 && (
                     <p className="mt-2 text-xs text-muted-foreground">

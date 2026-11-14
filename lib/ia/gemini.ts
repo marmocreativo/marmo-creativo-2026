@@ -195,3 +195,110 @@ export function generarImagen(prompt: string, aspecto: Aspecto): Promise<Buffer>
         return imagen
     })
 }
+
+// ───────────── Generación larga con instrucciones, imágenes y PDFs (creador de sitios) ─────────────
+
+export type ParteGemini = { text: string } | { inlineData: { mimeType: string; data: string } }
+export type RespuestaPartes = { texto: string; entrada: number; salida: number }
+
+// Modelo para el creador de sitios; por defecto el mismo de texto. GEMINI_MODELO_SITIOS permite usar uno más potente.
+export const modeloSitios = () => process.env.GEMINI_MODELO_SITIOS?.trim() || modeloTexto()
+
+// generateContent en streaming (SSE): las respuestas con HTML tardan minutos y así la conexión no se queda esperando muda.
+export async function generarConPartes(o: { sistema: string; partes: ParteGemini[]; maxTokens: number; urlContext?: boolean }): Promise<RespuestaPartes> {
+    const clave = process.env.GEMINI_API_KEY?.trim()
+    if (!clave) throw new ErrorIA("Falta configurar GEMINI_API_KEY en el servidor (.env.local en local, variables de entorno en Dokploy).")
+
+    const cuerpo = {
+        systemInstruction: { parts: [{ text: o.sistema }] },
+        contents: [{ role: "user", parts: o.partes }],
+        generationConfig: { maxOutputTokens: o.maxTokens },
+        ...(o.urlContext ? { tools: [{ url_context: {} }] } : {}),
+    }
+    const url = `${BASE}/models/${encodeURIComponent(modeloSitios())}:streamGenerateContent?alt=sse`
+
+    let res: Response | null = null
+    for (let intento = 0; intento < 2; intento++) {
+        try {
+            res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "x-goog-api-key": clave },
+                body: JSON.stringify(cuerpo),
+                signal: AbortSignal.timeout(10 * 60_000),
+            })
+        } catch (e) {
+            const tiempo = e instanceof Error && (e.name === "TimeoutError" || e.name === "AbortError")
+            throw new ErrorIA(tiempo ? "Gemini tardó demasiado en responder. Inténtalo de nuevo." : "No se pudo conectar con Gemini.")
+        }
+        // Saturación momentánea: un reintento tras unos segundos.
+        if ((res.status === 429 || res.status === 503) && intento === 0) {
+            await new Promise((r) => setTimeout(r, 6000))
+            continue
+        }
+        break
+    }
+    if (!res) throw new ErrorIA("No se pudo conectar con Gemini.")
+    if (!res.ok || !res.body) {
+        const texto = await res.text().catch(() => "")
+        let detalle = texto.slice(0, 200)
+        try {
+            detalle = str(obj(obj(JSON.parse(texto)).error).message) || detalle
+        } catch {
+            // no era JSON
+        }
+        throw new ErrorIA(mensajeHttp(res.status, detalle), res.status)
+    }
+
+    const textos: string[] = []
+    let finalizacion = ""
+    let bloqueo = ""
+    let entrada = 0
+    let salida = 0
+    const lector = res.body.getReader()
+    const decodificador = new TextDecoder()
+    let pendiente = ""
+
+    const procesar = (linea: string) => {
+        if (!linea.startsWith("data:")) return
+        const cargaUtil = linea.slice(5).trim()
+        if (!cargaUtil || cargaUtil === "[DONE]") return
+        let j: unknown
+        try {
+            j = JSON.parse(cargaUtil)
+        } catch {
+            return
+        }
+        const raiz = obj(j)
+        if (raiz.error) throw new ErrorIA(`Gemini devolvió un error: ${str(obj(raiz.error).message) || "desconocido"}`)
+        bloqueo = str(obj(raiz.promptFeedback).blockReason) || bloqueo
+        const candidato = obj(arr(raiz.candidates)[0])
+        for (const parte of arr(obj(candidato.content).parts).map(obj)) {
+            if (parte.thought !== true && typeof parte.text === "string") textos.push(parte.text)
+        }
+        finalizacion = str(candidato.finishReason) || finalizacion
+        const uso = obj(raiz.usageMetadata)
+        if (typeof uso.promptTokenCount === "number") entrada = uso.promptTokenCount
+        // Los tokens de "pensamiento" también se cobran como salida.
+        const salidaTotal = (Number(uso.candidatesTokenCount) || 0) + (Number(uso.thoughtsTokenCount) || 0)
+        if (salidaTotal) salida = salidaTotal
+    }
+
+    for (;;) {
+        const { done, value } = await lector.read()
+        if (done) break
+        pendiente += decodificador.decode(value, { stream: true })
+        const lineas = pendiente.split(/\r?\n/)
+        pendiente = lineas.pop() ?? ""
+        lineas.forEach(procesar)
+    }
+    procesar(pendiente)
+
+    if (bloqueo) throw new ErrorIA("Gemini bloqueó la solicitud por sus filtros de seguridad. Revisa que el briefing no contenga contenido sensible.")
+    if (finalizacion === "MAX_TOKENS") throw new ErrorIA("La respuesta de Gemini quedó incompleta (demasiado larga). Simplifica el briefing o inténtalo de nuevo.")
+    if (["SAFETY", "PROHIBITED_CONTENT", "BLOCKLIST", "SPII", "RECITATION"].includes(finalizacion)) {
+        throw new ErrorIA("Gemini no pudo atender esta solicitud por sus filtros de seguridad.")
+    }
+    const texto = textos.join("")
+    if (!texto.trim()) throw new ErrorIA("Gemini devolvió una respuesta vacía. Inténtalo de nuevo.")
+    return { texto, entrada, salida }
+}

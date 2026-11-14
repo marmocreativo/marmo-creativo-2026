@@ -104,7 +104,7 @@ const faqs = [
   },
   {
     q: "¿Qué hacen con la información y los documentos que subo?",
-    a: "Se usan únicamente para generar tu sitio. El contenido de tu briefing se envía a Claude, la IA de Anthropic, para redactar y diseñar las páginas. No pongas en el briefing contraseñas ni datos que no quieras que aparezcan en tu sitio.",
+    a: "Se usan únicamente para generar tu sitio. El contenido de tu briefing se envía a la IA que elijas al generar (Claude, de Anthropic, o Gemini, de Google) para redactar y diseñar las páginas. No pongas en el briefing contraseñas ni datos que no quieras que aparezcan en tu sitio.",
   },
   {
     q: "¿Puedo editar mi sitio después de generarlo?",

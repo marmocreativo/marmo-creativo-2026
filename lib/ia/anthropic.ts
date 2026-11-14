@@ -1,7 +1,6 @@
 // Cliente de Claude (Anthropic) para el creador de sitios. Todo lo que habla con Anthropic vive aquí.
 //
-// · Los modelos se configuran por entorno: ANTHROPIC_MODELO_GENERAR (propuestas y sitio, calidad) y
-//   ANTHROPIC_MODELO_EDITAR (análisis y ediciones por prompt, más barato).
+// · Un solo modelo para todo el creador de sitios: Claude Sonnet 5.5 (ANTHROPIC_MODELO permite cambiarlo).
 // · Se usa streaming (las respuestas de HTML son largas) y el fallback del servidor ante rechazos de seguridad.
 // · El SDK lee ANTHROPIC_API_KEY y, solo para pruebas locales con un servidor simulado, ANTHROPIC_BASE_URL.
 
@@ -10,8 +9,7 @@ import Anthropic from "@anthropic-ai/sdk"
 export class ErrorAnthropic extends Error {}
 
 export const anthropicConfigurada = () => !!process.env.ANTHROPIC_API_KEY?.trim()
-export const modeloGenerar = () => process.env.ANTHROPIC_MODELO_GENERAR?.trim() || "claude-opus-5-5"
-export const modeloEditar = () => process.env.ANTHROPIC_MODELO_EDITAR?.trim() || "claude-sonnet-5-5"
+export const modeloSitios = () => process.env.ANTHROPIC_MODELO?.trim() || "claude-sonnet-5-5"
 
 // USD por millón de tokens (entrada, salida). Solo para estimar el costo en pantalla.
 const PRECIOS: Record<string, [number, number]> = {
@@ -22,8 +20,9 @@ const PRECIOS: Record<string, [number, number]> = {
     "claude-haiku-5-5": [0.1, 0.5],
 }
 
-export type Uso = { entrada: number; salida: number; costo: number }
-export const usoVacio = (): Uso => ({ entrada: 0, salida: 0, costo: 0 })
+// `conocido`: si el costo en dólares es fiable. Con Gemini no se estima (cambia de modelo y de precio con frecuencia): solo se cuentan tokens.
+export type Uso = { entrada: number; salida: number; costo: number; conocido: boolean }
+export const usoVacio = (): Uso => ({ entrada: 0, salida: 0, costo: 0, conocido: true })
 
 function sumar(uso: Uso, modelo: string, entrada: number, salida: number) {
     uso.entrada += entrada
@@ -49,7 +48,7 @@ function mensajeDe(e: unknown): string {
         return "Anthropic rechazó la API key (inválida o sin permiso). Revisa ANTHROPIC_API_KEY."
     }
     if (e instanceof Anthropic.RateLimitError) return "Se alcanzó el límite de uso de Anthropic. Espera un momento e inténtalo de nuevo."
-    if (e instanceof Anthropic.NotFoundError) return `Anthropic no encontró el modelo solicitado. Revisa ANTHROPIC_MODELO_GENERAR / ANTHROPIC_MODELO_EDITAR. (${e.message})`
+    if (e instanceof Anthropic.NotFoundError) return `Anthropic no encontró el modelo solicitado. Revisa ANTHROPIC_MODELO. (${e.message})`
     if (e instanceof Anthropic.BadRequestError) return `Anthropic rechazó la solicitud: ${e.message}`
     if (e instanceof Anthropic.APIConnectionTimeoutError) return "Anthropic tardó demasiado en responder. Inténtalo de nuevo."
     if (e instanceof Anthropic.APIConnectionError) return "No se pudo conectar con Anthropic."

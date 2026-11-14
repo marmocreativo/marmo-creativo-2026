@@ -2,7 +2,7 @@
 
 import { after } from "next/server"
 import { revalidatePath } from "next/cache"
-import { anthropicConfigurada } from "@/lib/ia/anthropic"
+import { resolverProveedor, type Proveedor } from "@/lib/ia/texto"
 import { requireCreadorSitios } from "@/lib/sitios/acceso"
 import { ejecutarEdicion, ejecutarPropuestas, ejecutarSitio, type AlcanceEdicion, type ResultadoEdicion } from "@/lib/sitios/generar"
 import * as repo from "@/lib/sitios/repo"
@@ -21,19 +21,20 @@ const refrescar = (id: number) => revalidatePath(`/panel/sitios/${id}`, "layout"
 
 // Las generaciones cuestan dinero: antes de lanzarlas se revisa que haya API key y material mínimo.
 function revisarListo(s: repo.Sitio): string | null {
-    if (!anthropicConfigurada()) return "Falta configurar ANTHROPIC_API_KEY en el servidor."
     if (!s.briefing.empresa || !s.briefing.giro || !s.briefing.descripcion) return "Completa primero el briefing (empresa, giro y descripción) en el paso 1."
     return null
 }
 
-export async function generarPropuestasAccion(idSitio: number): Promise<Estado> {
+export async function generarPropuestasAccion(idSitio: number, proveedor?: Proveedor): Promise<Estado> {
     const s = await sitioPropio(idSitio)
     const motivo = revisarListo(s)
     if (motivo) return { error: motivo }
+    const elegido = resolverProveedor(proveedor)
+    if ("error" in elegido) return { error: elegido.error }
 
     const id = await iniciarTarea(s.id, "propuestas")
     if (!id) return { error: "Ya hay una generación en curso para este sitio. Espera a que termine." }
-    after(() => ejecutarPropuestas(id, s)) // sigue corriendo después de responder; la pantalla consulta el avance
+    after(() => ejecutarPropuestas(id, s, elegido.proveedor)) // sigue corriendo después de responder; la pantalla consulta el avance
     return { ok: "Generando propuestas…" }
 }
 
@@ -45,15 +46,17 @@ export async function elegirPropuestaAccion(idSitio: number, numero: number): Pr
     return { ok: "Propuesta elegida." }
 }
 
-export async function generarSitioAccion(idSitio: number): Promise<Estado> {
+export async function generarSitioAccion(idSitio: number, proveedor?: Proveedor): Promise<Estado> {
     const s = await sitioPropio(idSitio)
     const motivo = revisarListo(s)
     if (motivo) return { error: motivo }
+    const elegido = resolverProveedor(proveedor)
+    if ("error" in elegido) return { error: elegido.error }
     if (!s.propuesta_elegida) return { error: "Primero elige una propuesta en el paso 4." }
 
     const id = await iniciarTarea(s.id, "sitio")
     if (!id) return { error: "Ya hay una generación en curso para este sitio. Espera a que termine." }
-    after(() => ejecutarSitio(id, s))
+    after(() => ejecutarSitio(id, s, elegido.proveedor))
     return { ok: "Generando el sitio…" }
 }
 
@@ -65,6 +68,7 @@ export async function estadoIAAccion(idSitio: number): Promise<Tarea | null> {
 // ---- Edición por prompts ---------------------------------------------------------------------------------
 
 export type EntradaEdicion = {
+    proveedor?: Proveedor
     alcance: AlcanceEdicion
     idPagina?: number
     instruccion: string
@@ -76,7 +80,8 @@ const MAX_ARCHIVO = 500_000
 
 export async function iniciarEdicionAccion(idSitio: number, e: EntradaEdicion): Promise<Estado> {
     const s = await sitioPropio(idSitio)
-    if (!anthropicConfigurada()) return { error: "Falta configurar ANTHROPIC_API_KEY en el servidor." }
+    const elegido = resolverProveedor(e?.proveedor)
+    if ("error" in elegido) return { error: elegido.error }
 
     const instruccion = typeof e?.instruccion === "string" ? e.instruccion.trim() : ""
     if (instruccion.length < 5) return { error: "Escribe qué quieres cambiar (al menos unas palabras)." }
@@ -99,7 +104,7 @@ export async function iniciarEdicionAccion(idSitio: number, e: EntradaEdicion): 
 
     const id = await iniciarTarea(s.id, "edicion")
     if (!id) return { error: "Ya hay una generación en curso para este sitio. Espera a que termine." }
-    const params = { alcance: e.alcance, idPagina: e.idPagina, instruccion, paginas: limpias, css: typeof e.css === "string" ? e.css : undefined }
+    const params = { proveedor: elegido.proveedor, alcance: e.alcance, idPagina: e.idPagina, instruccion, paginas: limpias, css: typeof e.css === "string" ? e.css : undefined }
     after(() => ejecutarEdicion(id, s, params))
     return { ok: "Editando…" }
 }

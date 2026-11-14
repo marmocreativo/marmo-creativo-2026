@@ -8,7 +8,7 @@ import {
     subirImagenesAccion,
 } from "@/lib/actions/sitios"
 import { estadoIAAccion, generarSitioAccion, iniciarEdicionAccion, resultadoEdicionAccion } from "@/lib/actions/sitios-ia"
-import { anthropicConfigurada } from "@/lib/ia/anthropic"
+import { opcionesProveedor, proveedorPorDefecto } from "@/lib/ia/texto"
 import { requireCreadorSitios } from "@/lib/sitios/acceso"
 import { dominioDe, revisar } from "@/lib/sitios/exportar"
 import { ultimaTarea } from "@/lib/sitios/tareas"
@@ -28,8 +28,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     const galeria = archivos.filter((a) => a.tipo === "galeria")
     const avisos = revisar(sitio, paginas, archivos)
     const yaGenerado = sitio.estado === "completo"
-    const bloqueo = !anthropicConfigurada()
-        ? "Falta configurar ANTHROPIC_API_KEY en el servidor."
+    const proveedores = opcionesProveedor()
+    const defecto = proveedorPorDefecto()
+    const bloqueo = !proveedores.some((p) => p.disponible)
+        ? "Falta configurar ANTHROPIC_API_KEY o GEMINI_API_KEY en el servidor."
         : !sitio.propuesta_elegida
           ? "Primero elige una propuesta en el paso 4."
           : null
@@ -54,6 +56,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                         consultar={estadoIAAccion}
                         inicial={tarea}
                         bloqueo={bloqueo}
+                        proveedores={proveedores}
+                        defecto={defecto}
                     />
                 </div>
                 <p className="mt-2 mb-6 max-w-3xl text-sm text-muted-foreground">
@@ -73,6 +77,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     iniciarEdicion={iniciarEdicionAccion}
                     consultar={estadoIAAccion}
                     recoger={resultadoEdicionAccion}
+                    proveedores={proveedores}
+                    defecto={defecto}
                 />
             </section>
 

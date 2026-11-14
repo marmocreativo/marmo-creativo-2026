@@ -1,4 +1,5 @@
-import { ErrorAnthropic, generarTexto, modeloEditar, modeloGenerar, usoVacio, type Herramienta, type Uso } from "@/lib/ia/anthropic"
+import { ErrorAnthropic, usoVacio, type Uso } from "@/lib/ia/anthropic"
+import { generar, type Proveedor } from "@/lib/ia/texto"
 import { bloquesReferencias, construirContexto, huellaReferencias } from "./contexto"
 import { DIRECCIONES, instruccionBase, instruccionEdicionCss, instruccionEdicionHtml, SISTEMA_EDICION, instruccionPagina, instruccionPropuesta, instruccionReferencias, SISTEMA, SISTEMA_REFERENCIAS, TEMA_CONTACTO, TEMA_SERVICIO } from "./prompts"
 import * as repo from "./repo"
@@ -78,22 +79,21 @@ const menu = (items: { slug: string; titulo: string }[]) => items.map((i) => `- 
 
 // ---- Análisis de referencias -------------------------------------------------------------------------------
 
-async function asegurarAnalisis(s: Sitio, uso: Uso): Promise<string | null> {
+async function asegurarAnalisis(s: Sitio, uso: Uso, proveedor: Proveedor): Promise<string | null> {
     const refs = await repo.listarArchivos(s.id, "referencia")
     if (!s.referencias_urls.length && !refs.length) return null
 
     const hash = await huellaReferencias(s)
     if (s.referencias_analisis?.hash === hash) return s.referencias_analisis.texto
 
-    const herramientas: Herramienta[] = s.referencias_urls.length ? [{ type: "web_fetch_20260209", name: "web_fetch", max_uses: 4, max_content_tokens: 6000 }] : []
     const texto = (
-        await generarTexto({
-            modelo: modeloEditar(),
+        await generar({
+            proveedor,
             sistema: SISTEMA_REFERENCIAS,
             contenido: [...(await bloquesReferencias(refs)), { type: "text", text: instruccionReferencias(s.referencias_urls) }],
             maxTokens: 4000,
             effort: "low",
-            herramientas,
+            conWeb: s.referencias_urls.length > 0,
             uso,
         })
     ).trim()
@@ -103,14 +103,14 @@ async function asegurarAnalisis(s: Sitio, uso: Uso): Promise<string | null> {
 
 // ---- Paso 4: tres propuestas de Home -------------------------------------------------------------------
 
-export async function ejecutarPropuestas(idTarea: number, s: Sitio) {
+export async function ejecutarPropuestas(idTarea: number, s: Sitio, proveedor: Proveedor) {
     const uso = usoVacio()
     try {
         const actuales = await repo.listarPaginas(s.id)
         const plan = planearPaginas(s, actuales)
 
         await progreso(idTarea, "Estudiando las referencias…", uso)
-        const analisis = await asegurarAnalisis(s, uso).catch((e) => {
+        const analisis = await asegurarAnalisis(s, uso, proveedor).catch((e) => {
             console.error("[sitios-ia] análisis de referencias:", e) // no es indispensable: se sigue sin él
             return null
         })
@@ -125,8 +125,8 @@ export async function ejecutarPropuestas(idTarea: number, s: Sitio) {
 
         const resultados = await Promise.allSettled(
             DIRECCIONES.map(async (dir, i) => {
-                const texto = await generarTexto({
-                    modelo: modeloGenerar(),
+                const texto = await generar({
+                    proveedor,
                     sistema: SISTEMA,
                     contenido: [...ctx.bloques, { type: "text", text: instruccionPropuesta(dir, nav) }],
                     maxTokens: MAX_SALIDA,
@@ -159,7 +159,7 @@ export async function ejecutarPropuestas(idTarea: number, s: Sitio) {
 
 // ---- Paso 5: sitio completo -----------------------------------------------------------------------------
 
-export async function ejecutarSitio(idTarea: number, s: Sitio) {
+export async function ejecutarSitio(idTarea: number, s: Sitio, proveedor: Proveedor) {
     const uso = usoVacio()
     try {
         const propuestas = await repo.listarPropuestas(s.id)
@@ -175,8 +175,8 @@ export async function ejecutarSitio(idTarea: number, s: Sitio) {
         // 1) Hoja de estilos + Home definitivo + descripción de las imágenes.
         await progreso(idTarea, "Creando la hoja de estilos y la página de inicio…", uso)
         const ctx = await construirContexto(s, { conImagenes: true, analisis: s.referencias_analisis?.texto ?? null })
-        const base = await generarTexto({
-            modelo: modeloGenerar(),
+        const base = await generar({
+            proveedor,
             sistema: SISTEMA,
             contenido: [
                 ...ctx.bloques,
@@ -211,8 +211,8 @@ export async function ejecutarSitio(idTarea: number, s: Sitio) {
         const trabajador = async () => {
             for (let p = cola.shift(); p; p = cola.shift()) {
                 try {
-                    const texto = await generarTexto({
-                        modelo: modeloGenerar(),
+                    const texto = await generar({
+                        proveedor,
                         sistema: SISTEMA,
                         contenido: [
                             ...(await construirContexto(s, { conImagenes: false, analisis: s.referencias_analisis?.texto ?? null })).bloques,
@@ -248,6 +248,7 @@ export async function ejecutarSitio(idTarea: number, s: Sitio) {
 
 export type AlcanceEdicion = "pagina" | "css" | "sitio"
 export type ParamsEdicion = {
+    proveedor: Proveedor
     alcance: AlcanceEdicion
     idPagina?: number
     instruccion: string
@@ -269,6 +270,7 @@ Páginas: ${paginas.map((p) => `${p.titulo} (${p.slug === "index" ? "index" : p.
 // vuelve a la pantalla, que lo pone en los campos del editor para que el usuario lo revise y lo guarde.
 export async function ejecutarEdicion(idTarea: number, s: Sitio, p: ParamsEdicion) {
     const uso = usoVacio()
+    const proveedor = p.proveedor
     try {
         const guardadas = await repo.listarPaginas(s.id)
         const paginas = guardadas.map((x) => ({ ...x, html: p.paginas[x.id] ?? x.html }))
@@ -278,8 +280,8 @@ export async function ejecutarEdicion(idTarea: number, s: Sitio, p: ParamsEdicio
 
         const editarCss = async () => {
             const inicio = paginas.find((x) => x.slug === "index") ?? paginas[0]
-            const texto = await generarTexto({
-                modelo: modeloEditar(),
+            const texto = await generar({
+                proveedor,
                 sistema: SISTEMA_EDICION,
                 contenido: [
                     { type: "text", text: resumen },
@@ -305,8 +307,8 @@ ${css}
 
         const editarPagina = async (pg: Pagina & { html: string }, puedeCss: boolean) => {
             const nombre = pg.slug === "index" ? "index.html" : `${pg.slug}.html`
-            const texto = await generarTexto({
-                modelo: modeloEditar(),
+            const texto = await generar({
+                proveedor,
                 sistema: SISTEMA_EDICION,
                 contenido: [
                     { type: "text", text: resumen },

@@ -66,7 +66,7 @@ export async function terminarTarea(idTarea: number, uso: Uso, resultado?: strin
     await db.query("UPDATE sitio_ia_tareas SET estado = 'listo', progreso = 'Listo', tokens_entrada = ?, tokens_salida = ?, costo_usd = ?, resultado = ? WHERE id = ?", [
         uso.entrada,
         uso.salida,
-        Number(uso.costo.toFixed(4)),
+        uso.conocido ? Number(uso.costo.toFixed(4)) : null,
         resultado ?? null,
         idTarea,
     ])
@@ -86,7 +86,7 @@ export async function fallarTarea(idTarea: number, mensaje: string, uso?: Uso) {
         mensaje.slice(0, 500),
         uso?.entrada ?? null,
         uso?.salida ?? null,
-        uso ? Number(uso.costo.toFixed(4)) : null,
+        uso?.conocido ? Number(uso.costo.toFixed(4)) : null,
         idTarea,
     ])
 }

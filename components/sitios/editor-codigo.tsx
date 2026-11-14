@@ -5,8 +5,10 @@ import type { Estado } from "@/lib/actions/auth"
 import type { EntradaEdicion } from "@/lib/actions/sitios-ia"
 import type { ResultadoEdicion } from "@/lib/sitios/generar"
 import type { Pagina } from "@/lib/sitios/repo"
+import type { OpcionProveedor, Proveedor } from "@/lib/ia/texto"
 import type { Tarea } from "@/lib/sitios/tareas"
 import { botonClass, inputClass } from "@/components/auth/auth-shell"
+import { SelectorProveedor, useProveedorIA } from "./proveedor-ia"
 
 type Props = {
     idSitio: number
@@ -20,6 +22,8 @@ type Props = {
     iniciarEdicion: (idSitio: number, e: EntradaEdicion) => Promise<Estado>
     consultar: (idSitio: number) => Promise<Tarea | null>
     recoger: (idSitio: number, idTarea: number) => Promise<ResultadoEdicion | null>
+    proveedores: OpcionProveedor[]
+    defecto: Proveedor
 }
 
 type Alcance = "pagina" | "css" | "sitio"
@@ -41,7 +45,7 @@ function documentoDeVista(html: string, css: string) {
     return /<head[^>]*>/i.test(conEstilos) ? conEstilos.replace(/<head[^>]*>/i, (m) => `${m}<base target="_blank">`) : `<base target="_blank">${conEstilos}`
 }
 
-export function EditorCodigo({ idSitio, paginas, css, maxPaginas, guardarPagina, guardarCss, eliminarPagina, crearPagina, iniciarEdicion, consultar, recoger }: Props) {
+export function EditorCodigo({ idSitio, paginas, css, maxPaginas, guardarPagina, guardarCss, eliminarPagina, crearPagina, iniciarEdicion, consultar, recoger, proveedores, defecto }: Props) {
     const [activaElegida, setActiva] = useState<string>(paginas[0] ? clave(paginas[0]) : CSS)
     const [vistaElegida, setVista] = useState<number | null>(paginas[0]?.id ?? null)
     const [ediciones, setEdiciones] = useState<Record<string, string>>({}) // solo lo modificado y sin guardar
@@ -54,6 +58,7 @@ export function EditorCodigo({ idSitio, paginas, css, maxPaginas, guardarPagina,
     const [tareaIA, setTareaIA] = useState<number | null>(null)
     const [progresoIA, setProgresoIA] = useState("")
     const [msgIA, setMsgIA] = useState<Estado>(undefined)
+    const [proveedor, cambiarProveedor] = useProveedorIA(proveedores, defecto)
 
     // Si borran la página activa (o cambia la lista), se usa la primera que exista.
     const activa = activaElegida === CSS || paginas.some((p) => clave(p) === activaElegida) ? activaElegida : paginas[0] ? clave(paginas[0]) : CSS
@@ -169,7 +174,7 @@ export function EditorCodigo({ idSitio, paginas, css, maxPaginas, guardarPagina,
         if (alcance === "pagina" && !pagina) return setMsgIA({ error: "Elige primero la pestaña de la página que quieres editar." })
         const sucioPaginas: Record<number, string> = {}
         for (const p of paginas) if (sucio(clave(p))) sucioPaginas[p.id] = ediciones[clave(p)]
-        const r = await iniciarEdicion(idSitio, { alcance, idPagina: pagina?.id, instruccion, paginas: sucioPaginas, css: sucio(CSS) ? ediciones[CSS] : undefined })
+        const r = await iniciarEdicion(idSitio, { proveedor, alcance, idPagina: pagina?.id, instruccion, paginas: sucioPaginas, css: sucio(CSS) ? ediciones[CSS] : undefined })
         if (r?.error) return setMsgIA(r)
         const t = await consultar(idSitio)
         if (!t) return setMsgIA({ error: "No se pudo iniciar la edición." })
@@ -295,12 +300,13 @@ export function EditorCodigo({ idSitio, paginas, css, maxPaginas, guardarPagina,
                     placeholder="Ej. Cambia el botón principal a verde y agrega un botón flotante de WhatsApp. / Haz el texto del inicio más corto y directo."
                     className={`${inputClass} max-w-3xl`}
                 />
-                <div className="mt-3 flex flex-wrap items-center gap-3">
+                <div className="mt-3 flex flex-wrap items-center gap-4">
+                    <SelectorProveedor opciones={proveedores} valor={proveedor} onChange={cambiarProveedor} deshabilitado={tareaIA !== null} />
                     <button type="button" onClick={aplicarIA} disabled={tareaIA !== null || instruccion.trim().length < 5} className={`${botonClass} sm:w-auto`}>
                         {tareaIA !== null ? "Editando…" : "Aplicar con IA"}
                     </button>
                     <span className="text-xs text-muted-foreground">
-                        {alcance === "sitio" ? "Edita los estilos y todas las páginas; toma varios minutos." : "Suele tardar menos de 2 minutos."} Usa Claude Sonnet: costo bajo por edición.
+                        {alcance === "sitio" ? "Edita los estilos y todas las páginas; toma varios minutos." : "Suele tardar menos de 2 minutos."}
                     </span>
                 </div>
                 {tareaIA !== null && (
